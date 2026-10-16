@@ -1,40 +1,41 @@
 # barrier.gd
 class_name Barrier
 
-# Polygon (Liste von Punkten)
+# Polygon (lista de puntos)
 var polygon: Array = []
 
-# Biom der Barriere (für Textur-Auswahl)
+# Bioma de la barrera (para seleccion de textura)
 var biome: String = ""
 
-# Öffnungen in dieser Barriere
+# Aperturas en esta barrera
 var openings: Array = []
 
 
-# --- Hilfsfunktionen ---
 func is_polygon_closed() -> bool:
-	"""Prüft, ob das Polygon geschlossen ist (erster = letzter Punkt)."""
+	"""Comprueba si el poligono esta cerrado (primer punto = ultimo punto)."""
 	if polygon.size() < 3:
 		return false
 	var first_point: Vector2 = polygon[0]
 	var last_point: Vector2 = polygon[-1]
 	return first_point.distance_to(last_point) < 0.001
 
-# --- Öffnungsverwaltung ---
+
 func add_opening(p_opening: Opening) -> void:
-	"""Fügt eine Öffnung zur Barriere hinzu."""
+	"""Agrega una apertura a la barrera."""
 	openings.append(p_opening)
 
+
 func has_interactive_openings() -> bool:
-	"""Prüft, ob die Barriere interaktive Öffnungen hat."""
+	"""Comprueba si la barrera tiene aperturas interactivas."""
 	for opening_item in openings:
 		var opening: Opening = opening_item
 		if opening.is_interactive:
 			return true
 	return false
 
+
 func get_passable_points(chunk_size: int = 32) -> Array[Vector2]:
-	"""Gibt alle passierbaren Punkte der Barriere zurück (Öffnungen)."""
+	"""Devuelve todos los puntos transitables de la barrera (aperturas)."""
 	var passable_points := []
 	
 	for opening_item in openings:
@@ -50,12 +51,13 @@ func get_passable_points(chunk_size: int = 32) -> Array[Vector2]:
 	
 	return passable_points
 
+
 func contains_point(p_point: Vector2) -> bool:
-	"""Prüft, ob ein Punkt innerhalb des Polygons liegt (Ray-Casting).
+	"""Comprueba si un punto esta dentro del poligono (Ray-Casting).
 	
-	Berücksichtigt auch Öffnungen - Punkte in Öffnungen gelten als NICHT in der Barriere.
+	Tambien considera aperturas - los puntos en aperturas NO se consideran dentro de la barrera.
 	"""
-	# Prüfe zuerst, ob der Punkt in einer Öffnung liegt
+	# Primero comprueba si el punto esta en una apertura
 	for opening_item in openings:
 		var opening: Opening = opening_item
 		if opening.is_passable():
@@ -66,7 +68,7 @@ func contains_point(p_point: Vector2) -> bool:
 			if p_point.x >= start_x and p_point.x <= end_x and p_point.y >= y - 0.5 and p_point.y <= y + 0.5:
 				return false
 	
-	# Standard Ray-Casting-Algorithmus
+	# Algoritmo estandar de Ray-Casting
 	var inside := false
 	var n := polygon.size()
 
@@ -79,7 +81,7 @@ func contains_point(p_point: Vector2) -> bool:
 		var xj := point_j.x
 		var yj := point_j.y
 
-		# Prüfe, ob der Ray (von Punkt nach rechts) die Kante schneidet
+		# Comprueba si el rayo (desde el punto hacia la derecha) intersecta el borde
 		var intersect := ((yi > p_point.y) != (yj > p_point.y)) and \
 			(p_point.x < (xj - xi) * (p_point.y - yi) / (yj - yi) + xi)
 		if intersect:
