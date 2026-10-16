@@ -139,22 +139,26 @@ var seed: int       # Semilla base para determinismo
 var chunks: Array[Chunk] # Array 2D de chunks
 ```
 
+#### Clases Globales de Enums
+- `BiomeType` (`src/core/biome_type.gd`): `GRASSLAND`, `WOOD`, `ROCKS`, `WATER`, `SAND`
+- `TileType` (`src/core/tile_type.gd`): `GRASS`, `ROCK`, `TREE`, `SAND`, `WATER`
+
 #### Chunk
 ```gdscript
 class_name Chunk
-var x: int          # Coordenada del chunk (x)
-var y: int          # Coordenada del chunk (y)
-var biome: String   # Tipo de bioma (ej. "Grassland")
-var tiles: Array    # Array 2D de tipos de baldosas
-var barriers: Array[Barrier] # Lista de barreras en el chunk
+var x: int                  # Coordenada del chunk (x)
+var y: int                  # Coordenada del chunk (y)
+var biome: BiomeType.Type   # Tipo de bioma (ej. BiomeType.GRASSLAND)
+var tiles: Array            # Array 2D de tipos de baldosas (TileType)
+var barriers: Array         # Lista de barreras en el chunk
 ```
 
 #### Barrier
 ```gdscript
 class_name Barrier
-var polygon: Array[Vector2] # Lista de puntos (coordenadas de baldosas)
-var biome: String           # Tipo de bioma de la superficie interna
-var openings: Array[Opening] # Lista de aperturas
+var polygon: Array          # Lista de puntos (coordenadas de baldosas)
+var biome: BiomeType.Type   # Tipo de bioma de la barrera
+var openings: Array         # Lista de aperturas
 ```
 
 #### Opening
@@ -162,9 +166,10 @@ var openings: Array[Opening] # Lista de aperturas
 class_name Opening
 enum OpeningType { STEPS, DOOR, FORD, PASS }
 var type: OpeningType
-var position: Vector2 # Baldosa inicial de la apertura
-var width: int       # Ancho en baldosas
-var is_interactive: bool # Para puertas: true
+var position: Vector2       # Baldosa inicial de la apertura
+var width: int              # Ancho en baldosas
+var is_interactive: bool    # Para puertas: true
+var biome: BiomeType.Type   # Tipo de bioma de la apertura
 ```
 
 ### Flujo de Generacion en GDScript

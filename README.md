@@ -50,15 +50,19 @@
   lennox/
   ├── src/
   │   └── core/
-  │       ├── level.gd      # Generacion de niveles
-  │       ├── chunk.gd      # Sistema de chunks
-  │       ├── barrier.gd     # Barreras (LEN-5)
-  │       └── opening.gd     # Aperturas (LEN-5)
+  │       ├── level.gd        # Generacion de niveles
+  │       ├── chunk.gd        # Sistema de chunks
+  │       ├── barrier.gd      # Barreras (LEN-5)
+  │       ├── opening.gd      # Aperturas (LEN-5)
+  │       ├── biome_type.gd   # Enum global de biomas (BiomeType)
+  │       └── tile_type.gd    # Enum global de baldosas (TileType)
   ├── test/
-  │   └── unit/             # Tests unitarios (GUT)
+  │   └── unit/               # Tests unitarios (GUT)
   ├── doc/
-  │   ├── map-generation.md # Documentacion LEN-3
-  │   ├── barriers.md       # Documentacion LEN-5
+  │   ├── map-generation.md   # Documentacion LEN-3
+  │   ├── barriers.md         # Documentacion LEN-5
+  │   ├── biomes.md           # Documentacion de biomas
+  │   ├── level-structure.md  # Estructura de chunks y niveles
   │   └── snap-in-mechanism.md # Documentacion LEN-4
   └── README.md
   ```

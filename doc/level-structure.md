@@ -71,8 +71,8 @@ func generate_chunk(x: int, y: int) -> Chunk:
 | Parametro | Valor | Descripcion |
 |-----------|-------|-------------|
 | **x, y** | int | Coordenadas del chunk en el nivel |
-| **biome** | String | Tipo de bioma (ej. "Grassland") |
-| **tiles** | Array[Array] | Array 2D de tipos de baldosas (32x32) |
+| **biome** | BiomeType.Type | Tipo de bioma (ej. `BiomeType.GRASSLAND`) |
+| **tiles** | Array[Array] | Array 2D de tipos de baldosas (`TileType`, 32x32) |
 | **barriers** | Array[Barrier] | Lista de barreras en el chunk |
 
 ### Clase Chunk (GDScript)
@@ -84,42 +84,36 @@ class_name Chunk
 var x: int
 var y: int
 
-# Bioma
-var biome: String
+# Bioma (usa clase global BiomeType)
+var biome: BiomeType.Type
 
-# Baldosas (Array 2D: tiles[x][y] = tipo de baldosa)
+# Baldosas (Array 2D: tiles[x][y] = tipo de baldosa TileType)
 var tiles: Array = []
 
 # Barreras
-var barriers: Array[Barrier] = []
+var barriers: Array = []
 
 # Funciones de ayuda
 func _init(p_x: int, p_y: int):
     x = p_x
     y = p_y
+    biome = BiomeType.GRASSLAND
     tiles = []
     for i in range(32):  # chunk_size = 32
         tiles.append([])
         for j in range(32):
-            tiles[i].append("Grass")  # Baldosa por defecto
+            tiles[i].append(TileType.GRASS)  # Baldosa por defecto
 
 # Obtener tipo de baldosa
-func get_tile(x: int, y: int) -> String:
-    if x >= 0 and x < 32 and y >= 0 and y < 32:
-        return tiles[x][y]
-    return null
+func get_tile(p_x: int, p_y: int) -> int:
+    if p_x >= 0 and p_x < 32 and p_y >= 0 and p_y < 32:
+        return tiles[p_x][p_y]
+    return TileType.GRASS
 
 # Verificar si hay barrera en la posicion
-func is_barrier(x: int, y: int) -> bool:
+func is_barrier(p_x: int, p_y: int) -> bool:
     for barrier in barriers:
-        if barrier.contains_point(Vector2(x, y)):
-            return true
-    return false
-
-# Verificar si hay apertura en la posicion
-func is_opening(x: int, y: int) -> bool:
-    for barrier in barriers:
-        if barrier.is_opening_at(Vector2(x, y)):
+        if barrier.contains_point(Vector2(p_x, p_y)):
             return true
     return false
 ```
@@ -128,15 +122,38 @@ func is_opening(x: int, y: int) -> bool:
 
 ## Tipos de Baldosas
 
+### Definicion Tecnica: Clase Global `TileType` (`src/core/tile_type.gd`)
+
+Los tipos de baldosas estan definidos en la clase global `TileType`:
+
+```gdscript
+# src/core/tile_type.gd
+class_name TileType
+
+enum Type {
+	GRASS,
+	ROCK,
+	TREE,
+	SAND,
+	WATER
+}
+
+const GRASS: Type = Type.GRASS
+const ROCK: Type = Type.ROCK
+const TREE: Type = Type.TREE
+const SAND: Type = Type.SAND
+const WATER: Type = Type.WATER
+```
+
 ### Baldosas Base
 
-| Tipo de Baldosa | Descripcion | Comportamiento de Colision | Textura |
-|-----------------|-------------|----------------------------|---------|
-| Grass | Baldosa por defecto para Grassland. | Sin colision | grass.png |
-| Sand | Baldosa por defecto para bioma Sand. | Sin colision | sand.png |
-| Water | Baldosa por defecto para bioma Water. | Colision (agua) | water.png |
-| Rock | Baldosa por defecto para bioma Rocks. | Colision | rock.png |
-| Tree | Baldosa con arbol (para bioma Wood). | Colision | tree.png |
+| Tipo de Baldosa | Constante / Enum | Descripcion | Comportamiento de Colision | Textura |
+|-----------------|------------------|-------------|----------------------------|---------|
+| Grass | `TileType.GRASS` | Baldosa por defecto para Grassland. | Sin colision | grass.png |
+| Sand | `TileType.SAND` | Baldosa por defecto para bioma Sand. | Sin colision | sand.png |
+| Water | `TileType.WATER` | Baldosa por defecto para bioma Water. | Colision (agua) | water.png |
+| Rock | `TileType.ROCK` | Baldosa por defecto para bioma Rocks. | Colision | rock.png |
+| Tree | `TileType.TREE` | Baldosa con arbol (para bioma Wood). | Colision | tree.png |
 
 ### Baldosas de Barrera
 
@@ -165,13 +182,13 @@ func is_opening(x: int, y: int) -> bool:
 class_name Barrier
 
 # Poligono (lista de puntos en coordenadas de baldosas)
-var polygon: Array[Vector2] = []
+var polygon: Array = []
 
-# Tipo de bioma de la superficie interna
-var biome: String
+# Tipo de bioma de la barrera (usa clase global BiomeType)
+var biome: BiomeType.Type = BiomeType.GRASSLAND
 
 # Aperturas en esta barrera
-var openings: Array[Opening] = []
+var openings: Array = []
 
 # Funciones de ayuda
 func contains_point(point: Vector2) -> bool:
@@ -223,6 +240,9 @@ var width: int
 
 # ¿Es interactiva? (ej. para puertas)
 var is_interactive: bool = false
+
+# Bioma de la apertura
+var biome: BiomeType.Type
 
 # Funciones de ayuda
 func contains_point(point: Vector2) -> bool:

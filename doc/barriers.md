@@ -7,6 +7,8 @@ Las barreras son **obstaculos cerrados** en el mundo del juego que impiden el pa
 **Implementacion:**
 - `src/core/barrier.gd` - Clase de barreras con poligono y aperturas
 - `src/core/opening.gd` - Clase de aperturas (Tipos: Steps, Door, Ford, Pass)
+- `src/core/biome_type.gd` - Enum global para biomas (`BiomeType`)
+- `src/core/tile_type.gd` - Enum global para tipos de baldosas (`TileType`)
 - `src/core/level.gd` - Generacion de barreras por Chunk
 - `src/core/chunk.gd` - Integracion de barreras en las baldosas
 - `test/unit/test_barrier.gd` - Tests unitarios para barreras
@@ -337,9 +339,9 @@ func generate_barriers_for_chunk(chunk_x: int, chunk_y: int, biome: String, seed
 #### Barrier (`src/core/barrier.gd`)
 ```gdscript
 class_name Barrier
-var polygon: Array[Vector2]  # Puntos del poligono
-var biome: String             # Tipo de bioma (para textura)
-var openings: Array           # Lista de aperturas
+var polygon: Array           # Puntos del poligono
+var biome: BiomeType.Type    # Tipo de bioma de la barrera (BiomeType.GRASSLAND, etc.)
+var openings: Array          # Lista de aperturas
 ```
 
 #### Opening (`src/core/opening.gd`)
@@ -350,7 +352,7 @@ var type: OpeningType
 var position: Vector2
 var width: int
 var is_interactive: bool
-var biome: String
+var biome: BiomeType.Type    # Tipo de bioma de la apertura
 ```
 
 ### Implementacion del Algoritmo

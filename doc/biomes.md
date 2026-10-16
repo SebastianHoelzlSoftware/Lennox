@@ -18,6 +18,43 @@ Los biomas definen la **estructura basica y la apariencia** del mundo del juego.
 
 ---
 
+## Definicion Tecnica: Clase Global `BiomeType` (`src/core/biome_type.gd`)
+
+Los biomas estan modelados como una **clase global con enum** en GDScript (`class_name BiomeType`). Esto permite acceder directamente a los valores y tipos en cualquier parte del codigo sin prefijos (ej. `BiomeType.GRASSLAND`):
+
+```gdscript
+# src/core/biome_type.gd
+class_name BiomeType
+
+enum Type {
+	GRASSLAND,
+	WOOD,
+	ROCKS,
+	WATER,
+	SAND
+}
+
+const GRASSLAND: Type = Type.GRASSLAND
+const WOOD: Type = Type.WOOD
+const ROCKS: Type = Type.ROCKS
+const WATER: Type = Type.WATER
+const SAND: Type = Type.SAND
+```
+
+### Correspondencia de Valores:
+| Enum / Constante | Indice Numerico | Nombre |
+|------------------|-----------------|--------|
+| `BiomeType.GRASSLAND` | `0` | Grassland |
+| `BiomeType.WOOD` | `1` | Wood |
+| `BiomeType.ROCKS` | `2` | Rocks |
+| `BiomeType.WATER` | `3` | Water |
+| `BiomeType.SAND` | `4` | Sand |
+
+> [!NOTE]
+> `BiomeType` fue desacoplado de `Level` a su propio archivo global (`src/core/biome_type.gd`). Clases como `Chunk`, `Barrier`, `Opening` y los tests unitarios pueden referenciarlo directamente como `BiomeType.GRASSLAND` o como tipo estatico `BiomeType.Type`.
+
+---
+
 ## Parametros por Bioma
 
 ### Grassland
@@ -192,37 +229,37 @@ func generate_biome_map(seed: int, width: int, height: int) -> Array:
 
 ### Obtener Parametros Especificos del Bioma
 ```gdscript
-func get_biome_params(biome: String) -> Dictionary:
+func get_biome_params(biome: BiomeType.Type) -> Dictionary:
     match biome:
-        "Grassland":
+        BiomeType.GRASSLAND:
             return {
                 "barrier_count": randi_range(1, 2),
                 "barrier_size": randi_range(5, 10),
                 "opening_count": randi_range(1, 3),
                 "opening_types": ["Ford", "Pass", "Steps"]
             }
-        "Wood":
+        BiomeType.WOOD:
             return {
                 "barrier_count": randi_range(3, 5),
                 "barrier_size": randi_range(8, 15),
                 "opening_count": randi_range(1, 2),
                 "opening_types": ["Pass", "Ford", "Door"]
             }
-        "Rocks":
+        BiomeType.ROCKS:
             return {
                 "barrier_count": randi_range(5, 8),
                 "barrier_size": randi_range(10, 20),
                 "opening_count": randi_range(0, 1),
                 "opening_types": ["Pass", "Steps"]
             }
-        "Water":
+        BiomeType.WATER:
             return {
                 "barrier_count": randi_range(0, 1),
                 "barrier_size": randi_range(15, 30),
                 "opening_count": randi_range(1, 2),
                 "opening_types": ["Ford"]
             }
-        "Sand":
+        BiomeType.SAND:
             return {
                 "barrier_count": randi_range(1, 2),
                 "barrier_size": randi_range(6, 12),
