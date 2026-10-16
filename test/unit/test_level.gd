@@ -2,6 +2,7 @@
 extends GutTest
 
 func test_level_initialization():
+    gut.p("INITIALIZING LENNOX TEST SUITE")
     var width := 64
     var height := 64
     var chunk_size := 32
