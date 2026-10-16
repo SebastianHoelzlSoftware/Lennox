@@ -15,13 +15,13 @@
 ✅ **LEN-3: Generación de Niveles** – Finalizado
 - Sistema de generación procedural de niveles con semilla (*seed*) determinística
 - División en *chunks* para manejo eficiente de mundos grandes
-- Generación de biomas variados (Grasland, Wald, Fels, Wasser, Sand)
+- Generación de biomas variados (Pradera, Bosque, Roca, Agua, Arena)
 - Acceso a chunks mediante coordenadas `(x, y)`
 
 ✅ **LEN-5: Sistema de barreras y obstáculos** – **¡NUEVO! Implementado**
 - Generación procedural de barreras por chunk (Convex Hull + Perturbation)
-- Tipos de barreras: Fels, Baumgruppe, Düne, Insel, Wand
-- Aberturas: Treppe, Tür (interactiva), Furt, Pass
+- Tipos de barreras: Roca, Grupo de árboles, Duna, Isla, Pared
+- Aberturas: Escalera, Puerta (interactiva), Vado, Paso
 - Integración con el sistema de chunks y biomas
 - Tests unitarios en `test/unit/test_barrier.gd`
 
@@ -52,14 +52,14 @@
   │   └── core/
   │       ├── level.gd      # Generación de niveles
   │       ├── chunk.gd      # Sistema de chunks
-  │       ├── barrier.gd     # Barrieren (LEN-5)
-  │       └── opening.gd     # Öffnungen (LEN-5)
+  │       ├── barrier.gd     # Barreras (LEN-5)
+  │       └── opening.gd     # Aberturas (LEN-5)
   ├── test/
   │   └── unit/             # Tests unitarios (GUT)
   ├── doc/
-  │   ├── map-generation.md # Dokumentation LEN-3
-  │   ├── barriers.md       # Dokumentation LEN-5
-  │   └── snap-in-mechanism.md # Dokumentation LEN-4
+  │   ├── map-generation.md # Documentación LEN-3
+  │   ├── barriers.md       # Documentación LEN-5
+  │   └── snap-in-mechanism.md # Documentación LEN-4
   └── README.md
   ```
 
@@ -81,8 +81,8 @@
    - O arrastra la carpeta del proyecto al editor
 
 3. **Ejecutar pruebas** (opcional):
-   - Abre la escena `gut_main.tscn` en Godot
-   - Ejecuta la escena para correr todos los tests con GUT
+   - Abre el panel **GUT** en el editor de Godot
+   - Ejecuta los tests utilizando la interfaz gráfica de GUT
 
 ---
 
@@ -100,7 +100,7 @@ El proyecto incluye pruebas unitarias para garantizar la estabilidad del código
 | `test_barrier_with_opening` | Prueba de barreras con aberturas |
 
 **Ejecutar pruebas:**
-Abre `gut_main.tscn` en Godot y corre la escena.
+Busca el panel **GUT** en el editor y ejecuta los tests con la interfaz gráfica.
 
 ---
 
