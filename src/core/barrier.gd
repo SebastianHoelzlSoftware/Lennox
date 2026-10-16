@@ -40,8 +40,8 @@ func get_passable_points(chunk_size: int = 32) -> Array[Vector2]:
 	for opening_item in openings:
 		var opening: Opening = opening_item
 		if opening.is_passable():
-			var start_x := int(opening.position.x - opening.width / 2)
-			var end_x := int(opening.position.x + opening.width / 2)
+			var start_x := int(opening.position.x - opening.width / 2.0)
+			var end_x := int(opening.position.x + opening.width / 2.0)
 			var y := int(opening.position.y)
 			
 			for x in range(start_x, end_x + 1):
@@ -59,8 +59,8 @@ func contains_point(p_point: Vector2) -> bool:
 	for opening_item in openings:
 		var opening: Opening = opening_item
 		if opening.is_passable():
-			var start_x := int(opening.position.x - opening.width / 2)
-			var end_x := int(opening.position.x + opening.width / 2)
+			var start_x := int(opening.position.x - opening.width / 2.0)
+			var end_x := int(opening.position.x + opening.width / 2.0)
 			var y := int(opening.position.y)
 			
 			if p_point.x >= start_x and p_point.x <= end_x and p_point.y >= y - 0.5 and p_point.y <= y + 0.5:
