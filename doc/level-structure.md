@@ -1,38 +1,38 @@
-# Level- und Chunk-Struktur für Lennox
+# Estructura de Niveles y Chunks para Lennox
 
-## Übersicht
+## Descripcion General
 
-Dieses Dokument beschreibt die **Datenstrukturen und den Aufbau** von Levels und Chunks in Lennox. Die Map wird **prozedural generiert** und besteht aus **Chunks**, die jeweils **Biome, Barrieren und Öffnungen** enthalten.
+Este documento describe las **estructuras de datos y la organizacion** de los niveles y chunks en Lennox. El mapa se genera **proceduralmente** y consiste en **chunks**, cada uno de los cuales contiene **biomas, barreras y aperturas**.
 
 ---
 
-## Level-Struktur
+## Estructura del Nivel
 
-### Grundlegende Parameter
+### Parametros Basicos
 
-| Parameter          | Wert                     | Beschreibung                          |
-|--------------------|--------------------------|--------------------------------------|
-| **Level-Größe**    | 64x64 Chunks             | Gesamtgröße eines Levels              |
-| **Chunk-Größe**    | 32x32 Kacheln            | Anzahl Kacheln pro Chunk              |
-| **Kachelgröße**    | 32x32 Pixel              | Größe einer Kachel in Pixeln         |
-| **Gesamtgröße**    | 2048x2048 Pixel          | 64 × 32 × 32 = 2048 Pixel pro Achse   |
+| Parametro | Valor | Descripcion |
+|-----------|-------|-------------|
+| **Tamano del Nivel** | 64x64 chunks | Tamano total de un nivel |
+| **Tamano del Chunk** | 32x32 baldosas | Numero de baldosas por chunk |
+| **Tamano de Baldosa** | 32x32 pixeles | Tamano de una baldosa en pixeles |
+| **Tamano Total** | 2048x2048 pixeles | 64 x 32 x 32 = 2048 pixeles por eje |
 
-### Level-Klasse (GDScript)
+### Clase Level (GDScript)
 
 ```gdscript
 class_name Level
 
-# Basisparameter
-var width: int          # Anzahl Chunks in x-Richtung (64)
-var height: int         # Anzahl Chunks in y-Richtung (64)
-var chunk_size: int     # Kacheln pro Chunk (32)
-var tile_size: int      # Pixel pro Kachel (32)
-var seed: int           # Basis-Seed für Determinismus
+# Parametros base
+var width: int          # Numero de chunks en direccion x (64)
+var height: int         # Numero de chunks en direccion y (64)
+var chunk_size: int     # Baldosas por chunk (32)
+var tile_size: int      # Pixeles por baldosa (32)
+var seed: int           # Semilla base para determinismo
 
 # Chunks
-var chunks: Array = []  # 2D-Array von Chunks (chunks[x][y])
+var chunks: Array = []  # Array 2D de chunks (chunks[x][y])
 
-# Hilfsfunktionen
+# Funciones de ayuda
 func _init(p_width: int = 64, p_height: int = 64, p_chunk_size: int = 32, p_tile_size: int = 32, p_seed: int = 0):
     width = p_width
     height = p_height
@@ -45,55 +45,55 @@ func _init(p_width: int = 64, p_height: int = 64, p_chunk_size: int = 32, p_tile
         for y in range(height):
             chunks[x].append(null)
 
-# Chunk abrufen oder generieren
+# Obtener o generar chunk
 func get_chunk(x: int, y: int) -> Chunk:
     if chunks[x][y] == null:
         chunks[x][y] = generate_chunk(x, y)
     return chunks[x][y]
 
-# Level generieren
+# Generar nivel
 func generate() -> void:
     for x in range(width):
         for y in range(height):
             chunks[x][y] = generate_chunk(x, y)
 
-# Chunk generieren (wird in Unterklassen implementiert)
+# Generar chunk (se implementa en subclases)
 func generate_chunk(x: int, y: int) -> Chunk:
     pass
 ```
 
 ---
 
-## Chunk-Struktur
+## Estructura del Chunk
 
-### Grundlegende Parameter
+### Parametros Basicos
 
-| Parameter      | Wert                     | Beschreibung                          |
-|----------------|--------------------------|--------------------------------------|
-| **x, y**       | int                      | Chunk-Koordinaten im Level           |
-| **biome**      | String                   | Biom-Typ (z.B. "Grasland")            |
-| **tiles**      | Array[Array]             | 2D-Array von Kachel-Typen (32x32)     |
-| **barriers**   | Array[Barrier]           | Liste von Barrieren im Chunk          |
+| Parametro | Valor | Descripcion |
+|-----------|-------|-------------|
+| **x, y** | int | Coordenadas del chunk en el nivel |
+| **biome** | String | Tipo de bioma (ej. "Grassland") |
+| **tiles** | Array[Array] | Array 2D de tipos de baldosas (32x32) |
+| **barriers** | Array[Barrier] | Lista de barreras en el chunk |
 
-### Chunk-Klasse (GDScript)
+### Clase Chunk (GDScript)
 
 ```gdscript
 class_name Chunk
 
-# Position
+# Posicion
 var x: int
 var y: int
 
-# Biom
+# Bioma
 var biome: String
 
-# Kacheln (2D-Array: tiles[x][y] = Kachel-Typ)
+# Baldosas (Array 2D: tiles[x][y] = tipo de baldosa)
 var tiles: Array = []
 
-# Barrieren
+# Barreras
 var barriers: Array[Barrier] = []
 
-# Hilfsfunktionen
+# Funciones de ayuda
 func _init(p_x: int, p_y: int):
     x = p_x
     y = p_y
@@ -101,22 +101,22 @@ func _init(p_x: int, p_y: int):
     for i in range(32):  # chunk_size = 32
         tiles.append([])
         for j in range(32):
-            tiles[i].append("Gras")  # Standard-Kachel
+            tiles[i].append("Grass")  # Baldosa por defecto
 
-# Kachel-Typ abrufen
+# Obtener tipo de baldosa
 func get_tile(x: int, y: int) -> String:
     if x >= 0 and x < 32 and y >= 0 and y < 32:
         return tiles[x][y]
     return null
 
-# Barriere an Position prüfen
+# Verificar si hay barrera en la posicion
 func is_barrier(x: int, y: int) -> bool:
     for barrier in barriers:
         if barrier.contains_point(Vector2(x, y)):
             return true
     return false
 
-# Öffnung an Position prüfen
+# Verificar si hay apertura en la posicion
 func is_opening(x: int, y: int) -> bool:
     for barrier in barriers:
         if barrier.is_opening_at(Vector2(x, y)):
@@ -126,54 +126,54 @@ func is_opening(x: int, y: int) -> bool:
 
 ---
 
-## Kachel-Typen
+## Tipos de Baldosas
 
-### Basis-Kacheln
+### Baldosas Base
 
-| Kachel-Typ       | Beschreibung                          | Kollisionsverhalten | Textur          |
-|------------------|---------------------------------------|----------------------|-----------------|
-| Gras             | Standard-Kachel für Grasland.         | Keine Kollision      | gras.png        |
-| Sand             | Standard-Kachel für Sand-Biome.       | Keine Kollision      | sand.png        |
-| Wasser           | Standard-Kachel für Wasser-Biome.    | Kollision (Wasser)   | water.png       |
-| Fels             | Standard-Kachel für Fels-Biome.       | Kollision            | rock.png        |
-| Baum             | Kachel mit Baum (für Wald-Biome).    | Kollision            | tree.png        |
+| Tipo de Baldosa | Descripcion | Comportamiento de Colision | Textura |
+|-----------------|-------------|----------------------------|---------|
+| Grass | Baldosa por defecto para Grassland. | Sin colision | grass.png |
+| Sand | Baldosa por defecto para bioma Sand. | Sin colision | sand.png |
+| Water | Baldosa por defecto para bioma Water. | Colision (agua) | water.png |
+| Rock | Baldosa por defecto para bioma Rocks. | Colision | rock.png |
+| Tree | Baldosa con arbol (para bioma Wood). | Colision | tree.png |
 
-### Barrieren-Kacheln
+### Baldosas de Barrera
 
-| Kachel-Typ       | Beschreibung                          | Kollisionsverhalten | Textur          |
-|------------------|---------------------------------------|----------------------|-----------------|
-| Fels-Barriere    | Kachel innerhalb einer Fels-Barriere. | Kollision            | rock_barrier.png |
-| Baum-Barriere    | Kachel innerhalb einer Baumgruppe.    | Kollision            | tree_barrier.png |
-| Sand-Barriere    | Kachel innerhalb einer Düne.          | Kollision            | sand_barrier.png |
+| Tipo de Baldosa | Descripcion | Comportamiento de Colision | Textura |
+|-----------------|-------------|----------------------------|---------|
+| Rock-Barrier | Baldosa dentro de una barrera de Rocks. | Colision | rock_barrier.png |
+| Tree-Barrier | Baldosa dentro de un grupo de arboles. | Colision | tree_barrier.png |
+| Sand-Barrier | Baldosa dentro de una duna. | Colision | sand_barrier.png |
 
-### Öffnungs-Kacheln
+### Baldosas de Apertura
 
-| Kachel-Typ       | Beschreibung                          | Kollisionsverhalten | Textur          |
-|------------------|---------------------------------------|----------------------|-----------------|
-| Treppe           | Kachel für Treppen-Öffnungen.          | Keine Kollision      | stairs.png      |
-| Tür              | Kachel für Tür-Öffnungen.              | Kollision (interaktiv) | door.png       |
-| Furt             | Kachel für Furt-Öffnungen.             | Keine Kollision      | water_shallow.png |
-| Pass             | Kachel für Pass-Öffnungen.            | Keine Kollision      | pass.png        |
+| Tipo de Baldosa | Descripcion | Comportamiento de Colision | Textura |
+|-----------------|-------------|----------------------------|---------|
+| Steps | Baldosa para aperturas tipo Steps. | Sin colision | steps.png |
+| Door | Baldosa para aperturas tipo Door. | Colision (interactiva) | door.png |
+| Ford | Baldosa para aperturas tipo Ford. | Sin colision | water_shallow.png |
+| Pass | Baldosa para aperturas tipo Pass. | Sin colision | pass.png |
 
 ---
 
-## Barrieren-Struktur
+## Estructura de Barreras
 
-### Barrieren-Klasse (GDScript)
+### Clase Barrier (GDScript)
 
 ```gdscript
 class_name Barrier
 
-# Polygon (Liste von Punkten in Kachel-Koordinaten)
+# Poligono (lista de puntos en coordenadas de baldosas)
 var polygon: Array[Vector2] = []
 
-# Biom-Typ der Innenfläche
+# Tipo de bioma de la superficie interna
 var biome: String
 
-# Öffnungen in dieser Barriere
+# Aperturas en esta barrera
 var openings: Array[Opening] = []
 
-# Hilfsfunktionen
+# Funciones de ayuda
 func contains_point(point: Vector2) -> bool:
     return is_point_in_polygon(point, polygon)
 
@@ -184,7 +184,7 @@ func is_opening_at(point: Vector2) -> bool:
     return false
 
 func is_point_in_polygon(point: Vector2, polygon: Array[Vector2]) -> bool:
-    # Ray-Casting-Algorithmus
+    # Algoritmo Ray-Casting
     var inside = false
     var n = polygon.size()
     for i in range(n):
@@ -203,90 +203,93 @@ func is_point_in_polygon(point: Vector2, polygon: Array[Vector2]) -> bool:
 
 ---
 
-## Öffnungs-Struktur
+## Estructura de Aperturas
 
-### Öffnungs-Klasse (GDScript)
+### Clase Opening (GDScript)
 
 ```gdscript
 class_name Opening
 
-# Typ der Öffnung
-var type: String  # "Treppe", "Tür", "Furt", "Pass"
+# Tipo de apertura
+enum OpeningType { STEPS, DOOR, FORD, PASS }
 
-# Position (Start-Kachel der Öffnung)
+var type: OpeningType  # STEPS, DOOR, FORD, PASS
+
+# Posicion (baldosa inicial de la apertura)
 var position: Vector2
 
-# Breite in Kacheln
+# Ancho en baldosas
 var width: int
 
-# Interaktiv? (z.B. für Türen)
+# ¿Es interactiva? (ej. para puertas)
 var is_interactive: bool = false
 
-# Hilfsfunktionen
+# Funciones de ayuda
 func contains_point(point: Vector2) -> bool:
-    # Prüfe, ob der Punkt innerhalb der Öffnung liegt
+    # Verifica si el punto esta dentro de la apertura
     var end_position = Vector2(position.x + width - 1, position.y)
     return (point.x >= position.x and point.x <= end_position.x and \
             point.y == position.y)
 
 func open() -> void:
     if is_interactive:
-        is_interactive = false
-        # Kollisionslayer ändern (z.B. von "Barrier" zu "Passable")
-        print("Öffnung geöffnet!")
+        # Cambiar capa de colision (ej. de "Barrier" a "Passable")
+        print("Apertura abierta!")
 ```
 
 ---
 
-## Generierungs-Ablauf
+## Flujo de Generacion
 
-### 1. Level generieren
+### 1. Generar Nivel
 
 ```gdscript
 func generate_level(seed: int, width: int = 64, height: int = 64) -> Level:
-    var level = Level.new(width, height, 32, 32, seed)
+    var level = Level.new()
+    level.seed = seed
+    level.width = width
+    level.height = height
     
-    # Seed für Determinismus setzen
-    seed_random(seed)
-    
-    # 1. Biom-Karte generieren
+    # 1. Generar mapa de biomas
     var biome_map = generate_biome_map(seed, width, height)
     
-    # 2. Chunks generieren
+    # 2. Generar chunks
     for x in range(width):
         for y in range(height):
             var chunk = generate_chunk(seed, x, y, biome_map[x][y])
             level.chunks[x][y] = chunk
     
-    # 3. Chunk-Übergänge glätten (optional)
+    # 3. Suavizar transiciones entre chunks (opcional)
     smooth_chunk_transitions(level)
     
     return level
 ```
 
-### 2. Chunk generieren
+### 2. Generar Chunk
 
 ```gdscript
 func generate_chunk(seed: int, x: int, y: int, biome: String) -> Chunk:
-    var chunk = Chunk.new(x, y)
+    var chunk = Chunk.new()
+    chunk.x = x
+    chunk.y = y
     chunk.biome = biome
     
-    # 1. Biom-spezifische Parameter abrufen
+    # 1. Obtener parametros especificos del bioma
     var biome_params = get_biome_params(biome)
     
-    # 2. Barrieren generieren
+    # 2. Generar barreras
     var num_barriers = biome_params["barrier_count"]
     for i in range(num_barriers):
         var barrier = generate_barrier(seed, x, y, biome)
         chunk.barriers.append(barrier)
     
-    # 3. Kacheln aus Barrieren und Biom erstellen
+    # 3. Crear baldosas a partir de barreras y bioma
     chunk.tiles = generate_tiles_from_barriers(chunk)
     
     return chunk
 ```
 
-### 3. Kacheln aus Barrieren erstellen
+### 3. Crear Baldosas a partir de Barreras
 
 ```gdscript
 func generate_tiles_from_barriers(chunk: Chunk) -> Array:
@@ -294,10 +297,10 @@ func generate_tiles_from_barriers(chunk: Chunk) -> Array:
     for x in range(32):
         tiles.append([])
         for y in range(32):
-            # Standard-Kachel basierend auf Biom
+            # Baldosa base segun bioma
             var tile_type = get_base_tile_for_biome(chunk.biome)
             
-            # Prüfe, ob die Kachel in einer Barriere liegt
+            # Verificar si la baldosa esta en una barrera
             var is_barrier = false
             for barrier in chunk.barriers:
                 if barrier.contains_point(Vector2(x, y)):
@@ -305,7 +308,7 @@ func generate_tiles_from_barriers(chunk: Chunk) -> Array:
                     tile_type = get_barrier_tile_for_biome(chunk.biome)
                     break
             
-            # Prüfe, ob die Kachel eine Öffnung ist
+            # Verificar si la baldosa es una apertura
             if is_barrier:
                 for barrier in chunk.barriers:
                     if barrier.is_opening_at(Vector2(x, y)):
@@ -318,45 +321,45 @@ func generate_tiles_from_barriers(chunk: Chunk) -> Array:
 
 func get_base_tile_for_biome(biome: String) -> String:
     match biome:
-        "Grasland": return "Gras"
-        "Wald": return "Gras"  # Wald hat Gras als Basis
-        "Fels": return "Fels"
-        "Wasser": return "Wasser"
+        "Grassland": return "Grass"
+        "Wood": return "Grass"  # Wood tiene Grass como base
+        "Rocks": return "Rock"
+        "Water": return "Water"
         "Sand": return "Sand"
-        _: return "Gras"
+        _: return "Grass"
 
 func get_barrier_tile_for_biome(biome: String) -> String:
     match biome:
-        "Grasland": return "Fels-Barriere"
-        "Wald": return "Baum-Barriere"
-        "Fels": return "Fels-Barriere"
-        "Wasser": return "Fels-Barriere"  # Inseln
-        "Sand": return "Sand-Barriere"
-        _: return "Fels-Barriere"
+        "Grassland": return "Rock-Barrier"
+        "Wood": return "Tree-Barrier"
+        "Rocks": return "Rock-Barrier"
+        "Water": return "Rock-Barrier"  # Islas
+        "Sand": return "Sand-Barrier"
+        _: return "Rock-Barrier"
 
-func get_opening_tile_for_type(opening_type: String) -> String:
+func get_opening_tile_for_type(opening_type: int) -> String:
     match opening_type:
-        "Treppe": return "Treppe"
-        "Tür": return "Tür"
-        "Furt": return "Furt"
-        "Pass": return "Pass"
+        Opening.OpeningType.STEPS: return "Steps"
+        Opening.OpeningType.DOOR: return "Door"
+        Opening.OpeningType.FORD: return "Ford"
+        Opening.OpeningType.PASS: return "Pass"
         _: return "Pass"
 ```
 
 ---
 
-## Chunk-Übergänge glätten
+## Suavizar Transiciones entre Chunks
 
-### Problem
-- Barrieren an **Chunk-Grenzen** können unnatürlich aussehen, wenn sie abrupt enden.
+### Problema
+- Las barreras en los **limites de los chunks** pueden verse antinaturales si terminan abruptamente.
 
-### Lösung
-1. **Barrieren nicht am Chunk-Rand platzieren:**
-   - Barrieren nur im **inneren Bereich** (z.B. 2–28 Kacheln) generieren.
-2. **Chunk-übergreifende Barrieren:**
-   - Große Barrieren (z.B. Felsketten) können **mehrere Chunks überspannen**.
-3. **Biom-Übergänge:**
-   - Biome an Chunk-Grenzen **glätten** (z.B. mit Noise).
+### Solucion
+1. **No colocar barreras en el borde del chunk:**
+   - Generar barreras solo en el **area interna** (ej. 2-28 baldosas).
+2. **Barreras que abarcan multiples chunks:**
+   - Barreras grandes (ej. cadenas montañosas) pueden **abarcar varios chunks**.
+3. **Transiciones suaves de biomas:**
+   - Suavizar biomas en los limites de chunks (ej. con Noise).
 
 ```gdscript
 func smooth_chunk_transitions(level: Level) -> void:
@@ -364,7 +367,7 @@ func smooth_chunk_transitions(level: Level) -> void:
         for y in range(level.height):
             var chunk = level.chunks[x][y]
             
-            # Prüfe Nachbar-Chunks
+            # Verificar chunks vecinos
             for dx in [-1, 0, 1]:
                 for dy in [-1, 0, 1]:
                     if dx == 0 and dy == 0:
@@ -373,28 +376,28 @@ func smooth_chunk_transitions(level: Level) -> void:
                     var ny = y + dy
                     if nx >= 0 and nx < level.width and ny >= 0 and ny < level.height:
                         var neighbor = level.chunks[nx][ny]
-                        # Glätte Biom-Übergänge
+                        # Suavizar transiciones de bioma
                         smooth_biome_transition(chunk, neighbor)
 ```
 
 ---
 
-## Godot-Integration
+## Integracion con Godot
 
-### TileMap-Konfiguration
+### Configuracion de TileMap
 
-1. **TileSet erstellen:**
-   - Alle Kachel-Typen (Gras, Fels, Wasser, etc.) als **Tiles** im TileSet definieren.
-   - **Kollisionsformen** für Barrieren-Kacheln hinzufügen.
+1. **Crear TileSet:**
+   - Definir todos los tipos de baldosas (Grass, Rock, Water, etc.) como **Tiles** en el TileSet.
+   - Anadir **formas de colision** para las baldosas de barreras.
 
-2. **TileMap in der Szene:**
-   - Eine **TileMap** für die gesamte Level-Darstellung.
-   - **Kollisionslayer:**
-     - Barrieren-Kacheln: Layer `1` (Barrier)
-     - Öffnungen: Kein Layer (durchgängig)
-     - Wasser: Layer `2` (Wasser)
+2. **TileMap en la escena:**
+   - Un **TileMap** para toda la representacion del nivel.
+   - **Capas de colision:**
+     - Baldosas de barreras: Capa `1` (Barrier)
+     - Aperturas: Sin capa (transitable)
+     - Water: Capa `2` (Water)
 
-3. **Level in TileMap laden:**
+3. **Cargar nivel en TileMap:**
 
 ```gdscript
 func load_level_into_tilemap(level: Level, tile_map: TileMap) -> void:
@@ -409,11 +412,11 @@ func load_level_into_tilemap(level: Level, tile_map: TileMap) -> void:
                     var global_y = y * 32 + tile_y
                     var tile_type = chunk.tiles[tile_x][tile_y]
                     
-                    # Tile in TileMap platzieren
+                    # Colocar tile en el TileMap
                     tile_map.set_cell(0, Vector2i(global_x, global_y), get_tile_id(tile_type))
 ```
 
-### Spieler-Kollisionsabfrage
+### Consulta de Colision del Jugador
 
 ```gdscript
 func _physics_process(delta):
@@ -430,23 +433,23 @@ func _physics_process(delta):
     if velocity.length() > 0:
         velocity = velocity.normalized() * speed
     
-    # Kollisionsabfrage
+    # Consulta de colision
     var collision = move_and_collide(velocity * delta)
     if collision:
         if collision.collider.is_in_group("Barrier"):
-            # Spieler kann nicht durch Barrieren
+            # El jugador no puede pasar a traves de barreras
             velocity = Vector2.ZERO
         elif collision.collider.is_in_group("Interactive"):
-            # Interaktive Öffnung (z.B. Tür)
+            # Apertura interactiva (ej. puerta)
             if Input.is_action_just_pressed("interact"):
                 collision.collider.open()
 ```
 
 ---
 
-## Beispiele
+## Ejemplos
 
-### Beispiel 1: Einfaches Level generieren
+### Ejemplo 1: Generar un Nivel Simple
 
 ```gdscript
 func _ready():
@@ -454,7 +457,7 @@ func _ready():
     load_level_into_tilemap(level, $TileMap)
 ```
 
-### Beispiel 2: Chunk manuell abrufen
+### Ejemplo 2: Obtener Chunk Manual
 
 ```gdscript
 func get_chunk_at_position(world_x: int, world_y: int) -> Chunk:
@@ -463,7 +466,7 @@ func get_chunk_at_position(world_x: int, world_y: int) -> Chunk:
     return level.get_chunk(chunk_x, chunk_y)
 ```
 
-### Beispiel 3: Barriere an Position prüfen
+### Ejemplo 3: Verificar si una Posicion esta Bloqueada
 
 ```gdscript
 func is_position_blocked(world_x: int, world_y: int) -> bool:
@@ -475,27 +478,27 @@ func is_position_blocked(world_x: int, world_y: int) -> bool:
 
 ---
 
-## Erweiterungen
+## Extensiones
 
-### 1. Dynamisches Laden
-- **Lazy Loading:** Chunks nur generieren, wenn sie **im Sichtbereich der Kamera** sind.
-- **Caching:** Generierte Chunks zwischenspeichern, um Performance zu verbessern.
+### 1. Carga Dinamica
+- **Carga perezosa:** Generar chunks solo cuando esten en el **area visible de la camara**.
+- **Cache:** Almacenar chunks generados para mejorar el rendimiento.
 
-### 2. Level-Themen
-- **Spezielle Level:**
-  - **Tempel-Level:** Viele Türen und Rätsel.
-  - **Höhlen-Level:** Geschlossene Barrieren mit wenigen Öffnungen.
-  - **Insel-Level:** Wasser mit vielen Inseln.
+### 2. Temas de Nivel
+- **Niveles especiales:**
+  - **Nivel Templo:** Muchas puertas y rompecabezas.
+  - **Nivel Cueva:** Barreras cerradas con pocas aperturas.
+  - **Nivel Islas:** Water con muchas islas.
 
-### 3. Höhensystem
-- **2.5D-Effekte:**
-  - Kacheln mit **Höhenwerten** (z.B. für Berge).
-  - **Treppen** als Übergänge zwischen Höhen.
+### 3. Sistema de Alturas
+- **Efectos 2.5D:**
+  - Baldosas con **valores de altura** (ej. para montanas).
+  - **Steps** como transiciones entre alturas.
 
 ---
 
-## Links
+## Enlaces
 
-- [Godot TileMap Dokumentation](https://docs.godotengine.org/en/stable/tutorials/2d/procedural_geometry/tilemap.html)
-- [Godot Kollisionslayer](https://docs.godotengine.org/en/stable/tutorials/physics/physics_intro.html)
-- [Godot Klassen und Vererbung](https://docs.godotengine.org/en/stable/getting_started/scripting/gdscript/gdscript_basics.html)
+- [Documentacion de TileMap en Godot](https://docs.godotengine.org/en/stable/tutorials/2d/procedural_geometry/tilemap.html)
+- [Capas de Colision en Godot](https://docs.godotengine.org/en/stable/tutorials/physics/physics_intro.html)
+- [Godot Clases y Herencia](https://docs.godotengine.org/en/stable/getting_started/scripting/gdscript/gdscript_basics.html)

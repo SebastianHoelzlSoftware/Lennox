@@ -1,47 +1,47 @@
 # Lennox
 
-> *Un juego 2D móvil que enseña a los niños a leer en inglés y español. El enfoque está en la diversión y una educación profesional.*
+> *Un juego 2D movil que ensena a los ninos a leer en ingles y espanol. El enfoque esta en la diversion y una educacion profesional.*
 
 ---
 
-## 📖 Descripción
+## 📖 Descripcion
 
-**Lennox** es un juego educativo 2D desarrollado con **Godot Engine 4.x**, diseñado para ayudar a los niños a aprender a leer en **inglés y español** de manera interactiva y divertida. El proyecto combina mecánicas de juego atractivas con contenido pedagógico de alta calidad, priorizando siempre la experiencia del usuario y el aprendizaje efectivo.
+**Lennox** es un juego educativo 2D desarrollado con **Godot Engine 4.x**, disenado para ayudar a los ninos a aprender a leer en **ingles y espanol** de manera interactiva y divertida. El proyecto combina mecanicas de juego atractivas con contenido pedagogico de alta calidad, priorizando siempre la experiencia del usuario y el aprendizaje efectivo.
 
 ---
 
 ## 🎮 Estado Actual del Proyecto
 
-✅ **LEN-3: Generación de Niveles** – Finalizado
-- Sistema de generación procedural de niveles con semilla (*seed*) determinística
-- División en *chunks* para manejo eficiente de mundos grandes
-- Generación de biomas variados (Pradera, Bosque, Roca, Agua, Arena)
+✅ **LEN-3: Generacion de Niveles** – Finalizado
+- Sistema de generacion procedural de niveles con semilla (*seed*) deterministica
+- Division en *chunks* para manejo eficiente de mundos grandes
+- Generacion de biomas variados (Grassland, Wood, Rocks, Water, Sand)
 - Acceso a chunks mediante coordenadas `(x, y)`
 
-✅ **LEN-5: Sistema de barreras y obstáculos** – **¡NUEVO! Implementado**
-- Generación procedural de barreras por chunk (Convex Hull + Perturbation)
-- Tipos de barreras: Roca, Grupo de árboles, Duna, Isla, Pared
-- Aberturas: Escalera, Puerta (interactiva), Vado, Paso
-- Integración con el sistema de chunks y biomas
+✅ **LEN-5: Sistema de barreras y obstaculos** – **¡NUEVO! Implementado**
+- Generacion procedural de barreras por chunk (Convex Hull + Perturbation)
+- Tipos de barreras: Rocks, Tree groups, Dunes, Islands, Walls
+- Aperturas: Steps, Door (interactiva), Ford, Pass
+- Integracion con el sistema de chunks y biomas
 - Tests unitarios en `test/unit/test_barrier.gd`
 
-📋 **LEN-4: Mecanismo Snap-In con modo de sílabas** – **Documentación lista**
+📋 **LEN-4: Mecanismo Snap-In con modo de silabas** – **Documentacion lista**
 - Mecanismo de arrastrar y soltar (Drag & Drop)
 - Modo de letras: Puzzles con letras individuales
-- Modo de sílabas: Puzzles con sílabas (ej. "Ma" + "ma" = "Mama")
-- Soporte de audio para retroalimentación fonética
-- Documentación en `doc/snap-in-mechanism.md`
+- Modo de silabas: Puzzles con silabas (ej. "Ma" + "ma" = "Mama")
+- Soporte de audio para retroalimentacion fonetica
+- Documentacion en `doc/snap-in-mechanism.md`
 
-📌 **Próximos pasos** (Roadmap):
+📌 **Proximos pasos** (Roadmap):
 - [ ] LEN-4: Implementar mecanismo Snap-In (prioridad alta)
-- [ ] LEN-6: Sistema de progresión y recompensas
-- [ ] LEN-7: Integración de contenido educativo (vocabulario, frases)
-- [ ] LEN-8: Interfaz de usuario adaptada a niños
+- [ ] LEN-6: Sistema de progresion y recompensas
+- [ ] LEN-7: Integracion de contenido educativo (vocabulario, frases)
+- [ ] LEN-8: Interfaz de usuario adaptada a ninos
 - [ ] LEN-9: Personaje jugador + colisiones con barreras
 
 ---
 
-## 🛠 Tecnologías
+## 🛠 Tecnologias
 
 - **Motor**: [Godot Engine 4.x](https://godotengine.org/) (GDScript)
 - **Testing**: [GUT](https://github.com/bitwes/Gut) (Godot Unit Test)
@@ -50,22 +50,22 @@
   lennox/
   ├── src/
   │   └── core/
-  │       ├── level.gd      # Generación de niveles
+  │       ├── level.gd      # Generacion de niveles
   │       ├── chunk.gd      # Sistema de chunks
   │       ├── barrier.gd     # Barreras (LEN-5)
-  │       └── opening.gd     # Aberturas (LEN-5)
+  │       └── opening.gd     # Aperturas (LEN-5)
   ├── test/
   │   └── unit/             # Tests unitarios (GUT)
   ├── doc/
-  │   ├── map-generation.md # Documentación LEN-3
-  │   ├── barriers.md       # Documentación LEN-5
-  │   └── snap-in-mechanism.md # Documentación LEN-4
+  │   ├── map-generation.md # Documentacion LEN-3
+  │   ├── barriers.md       # Documentacion LEN-5
+  │   └── snap-in-mechanism.md # Documentacion LEN-4
   └── README.md
   ```
 
 ---
 
-## 🚀 Instalación y Ejecución
+## 🚀 Instalacion y Ejecucion
 
 ### Requisitos
 - [Godot Engine 4.x](https://godotengine.org/download) (recomendado: 4.2+)
@@ -82,50 +82,50 @@
 
 3. **Ejecutar pruebas** (opcional):
    - Abre el panel **GUT** en el editor de Godot
-   - Ejecuta los tests utilizando la interfaz gráfica de GUT
+   - Ejecuta los tests utilizando la interfaz grafica de GUT
 
 ---
 
 ## 🧪 Pruebas
 
-El proyecto incluye pruebas unitarias para garantizar la estabilidad del código. Usamos **GUT** (Godot Unit Test):
+El proyecto incluye pruebas unitarias para garantizar la estabilidad del codigo. Usamos **GUT** (Godot Unit Test):
 
-| Test | Descripción |
+| Test | Descripcion |
 |------|-------------|
-| `test_level_initialization` | Verifica la inicialización correcta de parámetros del nivel |
+| `test_level_initialization` | Verifica la inicializacion correcta de parametros del nivel |
 | `test_level_generates_chunks` | Confirma que los chunks se generan correctamente |
 | `test_chunk_generation_is_deterministic` | **Determinismo**: Same seed → mismos biomas |
-| `test_barrier_with_polygon` | Prueba de barreras con polígonos |
+| `test_barrier_with_polygon` | Prueba de barreras con poligonos |
 | `test_point_in_polygon_ray_casting` | Prueba de algoritmo Ray-Casting |
-| `test_barrier_with_opening` | Prueba de barreras con aberturas |
+| `test_barrier_with_opening` | Prueba de barreras con aperturas |
 
 **Ejecutar pruebas:**
-Busca el panel **GUT** en el editor y ejecuta los tests con la interfaz gráfica.
+Busca el panel **GUT** en el editor y ejecuta los tests con la interfaz grafica.
 
 ---
 
-## 🤝 Contribución
+## 🤝 Contribucion
 
 ¡Las contribuciones son bienvenidas! Si deseas colaborar:
 
 1. Haz un *fork* del repositorio
-2. Crea una rama con tu característica (*feature*):
+2. Crea una rama con tu caracteristica (*feature*):
    ```bash
    git checkout -b feature/nueva-funcionalidad
    ```
-3. Realiza tus cambios y añade pruebas si es relevante
-4. Envía un *Pull Request* con una descripción clara
+3. Realiza tus cambios y anade pruebas si es relevante
+4. Envia un *Pull Request* con una descripcion clara
 
 **Normas:**
-- Usa **GDScript** con tipado estático (`: int`, `: String`, etc.)
-- Sigue el estilo de código existente (nombres descriptivos, comentarios en docstrings)
-- Asegúrate de que todos los tests pasen antes de enviar un PR
+- Usa **GDScript** con tipado estatico (`: int`, `: String`, etc.)
+- Sigue el estilo de codigo existente (nombres descriptivos, comentarios en docstrings)
+- Asegurate de que todos los tests pasen antes de enviar un PR
 
 ---
 
 ## 📜 Licencia
 
-Este proyecto está bajo la licencia **MIT**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto esta bajo la licencia **MIT**. Consulta el archivo [LICENSE](LICENSE) para mas detalles.
 
 ---
 
@@ -137,4 +137,4 @@ Para preguntas o sugerencias:
 
 ---
 
-> *"La educación es el arma más poderosa para cambiar el mundo."* — Nelson Mandela
+> *"La educacion es el arma mas poderosa para cambiar el mundo."* — Nelson Mandela

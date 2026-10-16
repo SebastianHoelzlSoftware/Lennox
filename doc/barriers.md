@@ -1,63 +1,63 @@
-# Barrieren-System für Lennox
+# Sistema de Barreras para Lennox
 
-## 📌 Status: **Implementiert (LEN-5)** ✅
+## 📌 Estado: **Implementado (LEN-5)** ✅
 
-Barrieren sind **geschlossene Hindernisse** in der Spielwelt, die den Spieler am Durchkommen hindern, es sei denn, er nutzt eine **Öffnung** (z.B. Treppe, Tür, Furt). Barrieren können verschiedene Formen und Typen haben und sind **biom-abhängig**.
+Las barreras son **obstaculos cerrados** en el mundo del juego que impiden el paso del jugador a menos que utilice una **apertura** (por ejemplo, Steps, Door, Ford, Pass). Las barreras pueden tener varias formas y tipos y son **dependientes del bioma**.
 
-**Implementierung:**
-- `src/core/barrier.gd` - Barrieren-Klasse mit Polygon und Öffnungen
-- `src/core/opening.gd` - Öffnungs-Klasse (Typen: Treppe, Tür, Furt, Pass)
-- `src/core/level.gd` - Barrieren-Generierung pro Chunk
-- `src/core/chunk.gd` - Integration von Barrieren in Kacheln
-- `test/unit/test_barrier.gd` - Unit-Tests für Barrieren
-
----
-
-## Barrieren-Typen
-
-| Typ          | Beschreibung                                                                 | Kachel-Textur       | Kollisionsverhalten       | Innenfläche       |
-|--------------|-----------------------------------------------------------------------------|---------------------|---------------------------|-------------------|
-| Fels         | Natürliche Felsformationen (z.B. Berge, Klippen).                          | Fels-Texture        | Blockierend               | Fels              |
-| Baumgruppe   | Gruppe von Bäumen, die eine Barriere bilden.                              | Baum-Texture        | Blockierend               | Wald              |
-| Düne         | Sandhügel in Wüsten- oder Strandregionen.                                  | Sand-Texture        | Blockierend               | Sand              |
-| Insel        | Landmasse in Wasser-Biomen (umgekehrte Logik).                             | Gras/Fels-Texture   | Blockierend (Wasser)      | Gras/Fels         |
-| Wand         | Künstliche Barriere (z.B. für Gebäude oder Höhlen).                       | Stein-Texture       | Blockierend               | Innenraum         |
+**Implementacion:**
+- `src/core/barrier.gd` - Clase de barreras con poligono y aperturas
+- `src/core/opening.gd` - Clase de aperturas (Tipos: Steps, Door, Ford, Pass)
+- `src/core/level.gd` - Generacion de barreras por Chunk
+- `src/core/chunk.gd` - Integracion de barreras en las baldosas
+- `test/unit/test_barrier.gd` - Tests unitarios para barreras
 
 ---
 
-## Algorithmus: Barrieren-Generierung
+## Tipos de Barreras
+
+| Tipo | Descripcion | Textura de Baldosa | Comportamiento de Colision | Area Interna |
+|------|-------------|-------------------|----------------------------|--------------|
+| Rocks | Formaciones rocosas naturales (ej. montanas, acantilados). | Rock-Texture | Bloqueante | Rocks |
+| Tree groups | Grupo de arboles que forman una barrera. | Tree-Texture | Bloqueante | Wood |
+| Dunes | Colinas de arena en biomas de desierto o playa. | Sand-Texture | Bloqueante | Sand |
+| Islands | Masa de tierra en biomas de agua (logica inversa). | Grass/Rock-Texture | Bloqueante (agua) | Grass/Rocks |
+| Walls | Barrera artificial (ej. para edificios o cuevas). | Stone-Texture | Bloqueante | Interior |
+
+---
+
+## Algoritmo: Generacion de Barreras
 
 ### 1. Convex Hull + Perturbation
 
-#### Schritt 1: Zufallspunkte generieren
-- Pro Chunk: **5–15 Zufallspunkte** im **inneren Bereich** (nicht am Rand).
-- **Abstand:** Mindestens 2 Kacheln zwischen Punkten, um zu kleine Barrieren zu vermeiden.
-- **Biom-abhängige Anzahl:**
-  - Grasland: 5–8 Punkte
-  - Wald: 8–12 Punkte
-  - Fels: 10–15 Punkte
+#### Paso 1: Generar puntos aleatorios
+- Por Chunk: **5-15 puntos aleatorios** en el **area interna** (no en el borde).
+- **Distancia minima:** Al menos 2 baldosas entre puntos para evitar barreras demasiado pequenas.
+- **Cantidad dependiente del bioma:**
+  - Grassland: 5-8 puntos
+  - Wood: 8-12 puntos
+  - Rocks: 10-15 puntos
 
 ```gdscript
 func generate_random_points(chunk_x: int, chunk_y: int, biome: String, chunk_size: int = 32) -> Array[Vector2]:
     var points = []
     var num_points = 0
     
-    # Biom-abhängige Anzahl von Punkten
+    # Cantidad de puntos dependiente del bioma
     match biome:
-        "Grasland": num_points = randi_range(5, 8)
-        "Wald": num_points = randi_range(8, 12)
-        "Fels": num_points = randi_range(10, 15)
-        "Wasser": num_points = randi_range(5, 10)
+        "Grassland": num_points = randi_range(5, 8)
+        "Wood": num_points = randi_range(8, 12)
+        "Rocks": num_points = randi_range(10, 15)
+        "Water": num_points = randi_range(5, 10)
         "Sand": num_points = randi_range(5, 8)
         _: num_points = 8
     
-    # Punkte im inneren Bereich generieren (nicht am Rand)
-    var margin = 2  # 2 Kacheln Rand
+    # Generar puntos en el area interna (no en el borde)
+    var margin = 2
     for i in range(num_points):
         var x = randi_range(margin, chunk_size - margin - 1)
         var y = randi_range(margin, chunk_size - margin - 1)
         
-        # Mindestabstand zu anderen Punkten prüfen
+        # Verificar distancia minima a otros puntos
         var valid = true
         for point in points:
             if point.distance_to(Vector2(x, y)) < 2:
@@ -70,22 +70,22 @@ func generate_random_points(chunk_x: int, chunk_y: int, biome: String, chunk_siz
     return points
 ```
 
-#### Schritt 2: Convex Hull berechnen
-- **Ziel:** Kleinstes konvexes Polygon, das alle Punkte umschließt.
-- **Algorithmus:** Graham-Scan (einfach zu implementieren).
+#### Paso 2: Calcular Convex Hull
+- **Objetivo:** Poligono convexo mas pequeño que engloba todos los puntos.
+- **Algoritmo:** Graham-Scan (sencillo de implementar).
 
 ```gdscript
 func compute_convex_hull(points: Array[Vector2]) -> Array[Vector2]:
     if points.size() <= 2:
         return points.duplicate()
     
-    # 1. Finde den Punkt mit der niedrigsten y-Koordinate (und links bei Gleichstand)
+    # 1. Encuentra el punto con la coordenada y mas baja
     var p0 = points[0]
     for point in points:
         if point.y < p0.y or (point.y == p0.y and point.x < p0.x):
             p0 = point
     
-    # 2. Sortiere Punkte nach Polarwinkel zu p0
+    # 2. Ordena puntos por angulo polar respecto a p0
     var sorted_points = []
     for point in points:
         if point != p0:
@@ -110,9 +110,9 @@ func compute_convex_hull(points: Array[Vector2]) -> Array[Vector2]:
             var top = hull[-1]
             var next_to_top = hull[-2]
             
-            # Berechne den Winkel zwischen next_to_top -> top -> p
+            # Calcula el angulo entre next_to_top -> top -> p
             var cross = (top.x - next_to_top.x) * (p.y - top.y) - (top.y - next_to_top.y) * (p.x - top.x)
-            if cross > 0:  # Linkskurve (konvex)
+            if cross > 0:
                 break
             else:
                 hull.pop_back()
@@ -121,9 +121,9 @@ func compute_convex_hull(points: Array[Vector2]) -> Array[Vector2]:
     return hull
 ```
 
-#### Schritt 3: Perturbation für organische Formen
-- **Ziel:** Natürlichere, weniger geometrische Barrieren.
-- **Methode:** Jeden Punkt der Convex Hull leicht verschieben.
+#### Paso 3: Aplicar Perturbation para formas organicas
+- **Objetivo:** Formas mas naturales y menos geometricas.
+- **Metodo:** Mover cada punto del Convex Hull ligeramente.
 
 ```gdscript
 func perturb_hull(hull: Array[Vector2], perturbation: int = 1) -> Array[Vector2]:
@@ -135,9 +135,9 @@ func perturb_hull(hull: Array[Vector2], perturbation: int = 1) -> Array[Vector2]
     return perturbed_hull
 ```
 
-### 2. Barriere als Kacheln umsetzen
-- **Alle Kacheln innerhalb des Polygons** werden zu **Barrieren-Kacheln**.
-- **Methode:** Point-in-Polygon-Test für jede Kachel im Chunk.
+### 2. Convertir Barreras a Baldosas
+- **Todas las baldosas dentro del poligono** se convierten en **baldosas de barrera**.
+- **Metodo:** Prueba Point-in-Polygon para cada baldosa en el Chunk.
 
 ```gdscript
 func generate_barrier_tiles(hull: Array[Vector2], chunk_size: int = 32) -> Array:
@@ -145,11 +145,11 @@ func generate_barrier_tiles(hull: Array[Vector2], chunk_size: int = 32) -> Array
     for x in range(chunk_size):
         barrier_tiles.append([])
         for y in range(chunk_size):
-            # Point-in-Polygon-Test
+            # Prueba Point-in-Polygon
             if is_point_in_polygon(Vector2(x, y), hull):
-                barrier_tiles[x].append(true)  # Barriere-Kachel
+                barrier_tiles[x].append(true)
             else:
-                barrier_tiles[x].append(false) # Keine Barriere
+                barrier_tiles[x].append(false)
     return barrier_tiles
 
 func is_point_in_polygon(point: Vector2, polygon: Array[Vector2]) -> bool:
@@ -162,7 +162,7 @@ func is_point_in_polygon(point: Vector2, polygon: Array[Vector2]) -> bool:
         var xj = polygon[j].x
         var yj = polygon[j].y
         
-        # Ray-Casting-Algorithmus
+        # Algoritmo Ray-Casting
         var intersect = ((yi > point.y) != (yj > point.y)) and \
                         (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi)
         if intersect:
@@ -172,22 +172,22 @@ func is_point_in_polygon(point: Vector2, polygon: Array[Vector2]) -> bool:
 
 ---
 
-## Öffnungen in Barrieren
+## Aperturas en Barreras
 
-### Öffnungs-Typen
+### Tipos de Aperturas
 
-| Typ       | Breite (Kacheln) | Beschreibung                          | Passierbar | Interaktiv | Textur          |
-|-----------|------------------|---------------------------------------|------------|------------|-----------------|
-| Treppe    | 2–3              | Schräge Kacheln für Höhenunterschiede | Ja         | Nein       | Treppen-Texture |
-| Tür       | 1                | Einfache Lücke mit Tür-Objekt         | Ja         | **Ja**     | Tür-Texture     |
-| Furt      | 2–4              | Wasser-Kacheln in der Barriere        | Ja         | Nein       | Wasser-Texture  |
-| Pass      | 3–5              | Schmale Passage mit Fels-Kacheln      | Ja         | Nein       | Fels-Texture    |
+| Tipo | Ancho (baldosas) | Descripcion | Transitable | Interactiva | Textura |
+|------|-----------------|-------------|-------------|-------------|---------|
+| Steps | 2-3 | Baldosas inclinadas para diferencias de altura | Si | No | steps.png |
+| Door | 1 | Espacio simple con objeto de puerta | Si | **Si** | door.png |
+| Ford | 2-4 | Baldosas de agua en la barrera | Si | No | water_shallow.png |
+| Pass | 3-5 | Paso estrecho con baldosas de rocas | Si | No | pass.png |
 
-### Öffnungen platzieren
+### Colocar Aperturas
 
-#### Schritt 1: Öffnungs-Kandidaten finden
-- **Kanten des Polygons** identifizieren.
-- **Gültige Kanten:** Kanten, die **nicht an einer Chunk-Grenze** liegen.
+#### Paso 1: Encontrar candidatos para aperturas
+- Identificar **bordes del poligono**.
+- **Bordes validos:** Bordes que **no estan en un limite de Chunk**.
 
 ```gdscript
 func find_valid_edges(hull: Array[Vector2], chunk_size: int = 32) -> Array[Array]:
@@ -197,7 +197,7 @@ func find_valid_edges(hull: Array[Vector2], chunk_size: int = 32) -> Array[Array
         var j = (i + 1) % n
         var edge = [hull[i], hull[j]]
         
-        # Prüfe, ob die Kante an einer Chunk-Grenze liegt
+        # Verifica si el borde esta en un limite de Chunk
         var is_at_border = false
         for point in edge:
             if point.x == 0 or point.x == chunk_size - 1 or point.y == 0 or point.y == chunk_size - 1:
@@ -210,34 +210,34 @@ func find_valid_edges(hull: Array[Vector2], chunk_size: int = 32) -> Array[Array
     return valid_edges
 ```
 
-#### Schritt 2: Öffnung in Kante platzieren
-- **Zufällige Kante** auswählen.
-- **Mittelpunkt der Kante** berechnen.
-- **Lücke in der Barriere** erstellen (Breite = Öffnungsbreite).
+#### Paso 2: Colocar apertura en borde
+- Seleccionar borde **aleatorio**.
+- Calcular **punto medio del borde**.
+- Crear **espacio en la barrera** (ancho = ancho de la apertura).
 
 ```gdscript
 func place_opening(hull: Array[Vector2], opening_type: String, opening_width: int) -> Array[Vector2]:
     var valid_edges = find_valid_edges(hull)
     if valid_edges.size() == 0:
-        return hull  # Keine gültigen Kanten
+        return hull
     
-    # Zufällige Kante auswählen
+    # Seleccionar borde aleatorio
     var edge_idx = randi() % valid_edges.size()
     var edge = valid_edges[edge_idx]
     var p1 = edge[0]
     var p2 = edge[1]
     
-    # Mittelpunkt der Kante
+    # Punto medio del borde
     var midpoint = Vector2((p1.x + p2.x) / 2, (p1.y + p2.y) / 2)
     
-    # Richtung der Kante (senkrecht zur Kante)
+    # Direccion del borde (perpendicular al borde)
     var dx = p2.x - p1.x
     var dy = p2.y - p1.y
     var length = sqrt(dx * dx + dy * dy)
-    var nx = -dy / length  # Normale (senkrecht zur Kante)
+    var nx = -dy / length
     var ny = dx / length
     
-    # Öffnungs-Punkte generieren (Lücke in der Barriere)
+    # Generar puntos de apertura (espacio en la barrera)
     var opening_points = []
     for i in range(opening_width):
         var offset = i - (opening_width - 1) / 2.0
@@ -245,7 +245,7 @@ func place_opening(hull: Array[Vector2], opening_type: String, opening_width: in
         var y = midpoint.y + ny * offset
         opening_points.append(Vector2(round(x), round(y)))
     
-    # Öffnungs-Punkte aus der Hull entfernen (Lücke erstellen)
+    # Eliminar puntos de apertura del hull (crear espacio)
     var new_hull = []
     for point in hull:
         var is_in_opening = false
@@ -259,23 +259,23 @@ func place_opening(hull: Array[Vector2], opening_type: String, opening_width: in
     return new_hull
 ```
 
-#### Schritt 3: Öffnungs-Typ zufällig auswählen
-- **Biom-abhängige Wahrscheinlichkeiten** (siehe [Biome-Dokumentation](biomes.md)).
+#### Paso 3: Seleccionar tipo de apertura aleatoriamente
+- Probabilidades **dependientes del bioma** (ver documentacion de [biomas](biomes.md)).
 
 ```gdscript
 func get_random_opening_type(biome: String) -> String:
     var opening_types = []
     match biome:
-        "Grasland":
-            opening_types = ["Furt", "Furt", "Pass", "Pass", "Treppe"]  # 50% Furt, 30% Pass, 20% Treppe
-        "Wald":
-            opening_types = ["Pass", "Pass", "Pass", "Furt", "Tür"]  # 60% Pass, 20% Furt, 20% Tür
-        "Fels":
-            opening_types = ["Pass", "Pass", "Pass", "Treppe", "Treppe"]  # 60% Pass, 40% Treppe
-        "Wasser":
-            opening_types = ["Furt"]  # Nur Furten
+        "Grassland":
+            opening_types = ["Ford", "Ford", "Pass", "Pass", "Steps"]
+        "Wood":
+            opening_types = ["Pass", "Pass", "Pass", "Ford", "Door"]
+        "Rocks":
+            opening_types = ["Pass", "Pass", "Pass", "Steps", "Steps"]
+        "Water":
+            opening_types = ["Ford"]
         "Sand":
-            opening_types = ["Pass", "Pass", "Pass", "Pass", "Furt"]  # 80% Pass, 20% Furt
+            opening_types = ["Pass", "Pass", "Pass", "Pass", "Ford"]
         _:
             opening_types = ["Pass"]
     
@@ -284,9 +284,9 @@ func get_random_opening_type(biome: String) -> String:
 
 ---
 
-## Barrieren mit Öffnungen generieren
+## Generar Barreras con Aperturas
 
-### Vollständiger Algorithmus pro Chunk
+### Algoritmo Completo por Chunk
 
 ```gdscript
 func generate_barriers_for_chunk(chunk_x: int, chunk_y: int, biome: String, seed: int) -> Array[Barrier]:
@@ -294,16 +294,16 @@ func generate_barriers_for_chunk(chunk_x: int, chunk_y: int, biome: String, seed
     var num_barriers = get_biome_params(biome)["barrier_count"]
     
     for i in range(num_barriers):
-        # 1. Zufallspunkte generieren
+        # 1. Generar puntos aleatorios
         var points = generate_random_points(chunk_x, chunk_y, biome)
         
-        # 2. Convex Hull berechnen
+        # 2. Calcular Convex Hull
         var hull = compute_convex_hull(points)
         
-        # 3. Perturbation anwenden
+        # 3. Aplicar perturbation
         hull = perturb_hull(hull)
         
-        # 4. Öffnungen platzieren (falls gewünscht)
+        # 4. Colocar aperturas
         var num_openings = get_biome_params(biome)["opening_count"]
         var opening_types = get_biome_params(biome)["opening_types"]
         
@@ -311,18 +311,18 @@ func generate_barriers_for_chunk(chunk_x: int, chunk_y: int, biome: String, seed
             var opening_type = opening_types[randi() % opening_types.size()]
             var opening_width = 0
             match opening_type:
-                "Treppe": opening_width = randi_range(2, 3)
-                "Tür": opening_width = 1
-                "Furt": opening_width = randi_range(2, 4)
+                "Steps": opening_width = randi_range(2, 3)
+                "Door": opening_width = 1
+                "Ford": opening_width = randi_range(2, 4)
                 "Pass": opening_width = randi_range(3, 5)
             
             hull = place_opening(hull, opening_type, opening_width)
         
-        # 5. Barriere-Objekt erstellen
+        # 5. Crear objeto de barrera
         var barrier = Barrier.new()
         barrier.polygon = hull
         barrier.biome = biome
-        barrier.openings = []  # Wird später gefüllt
+        barrier.openings = []
         barriers.append(barrier)
     
     return barriers
@@ -330,22 +330,22 @@ func generate_barriers_for_chunk(chunk_x: int, chunk_y: int, biome: String, seed
 
 ---
 
-## 6. Implementierungsdetails (LEN-5)
+## 6. Detalles de Implementacion (LEN-5)
 
-### Klassenstruktur
+### Estructura de Clases
 
 #### Barrier (`src/core/barrier.gd`)
 ```gdscript
 class_name Barrier
-var polygon: Array[Vector2]  # Polygon-Punkte
-var biome: String             # Biom-Typ (für Textur)
-var openings: Array           # Liste von Öffnungen
+var polygon: Array[Vector2]  # Puntos del poligono
+var biome: String             # Tipo de bioma (para textura)
+var openings: Array           # Lista de aperturas
 ```
 
 #### Opening (`src/core/opening.gd`)
 ```gdscript
 class_name Opening
-enum OpeningType { TREPPE, TUER, FURT, PASS }
+enum OpeningType { STEPS, DOOR, FORD, PASS }
 var type: OpeningType
 var position: Vector2
 var width: int
@@ -353,123 +353,123 @@ var is_interactive: bool
 var biome: String
 ```
 
-### Algorithmus-Implementierung
+### Implementacion del Algoritmo
 
-Die Barrieren-Generierung in `level.gd` folgt diesem Ablauf:
+La generacion de barreras en `level.gd` sigue este flujo:
 
-1. **Zufallspunkte generieren** (`_generate_random_points`)
-   - Biom-abhängige Anzahl (Grasland: 5–8, Wald: 8–12, Fels: 10–15)
-   - Mindestabstand: 2 Kacheln
-   - Nur im inneren Bereich (Rand: 2 Kacheln)
+1. **Generar puntos aleatorios** (`_generate_random_points`)
+   - Cantidad dependiente del bioma (Grassland: 5-8, Wood: 8-12, Rocks: 10-15)
+   - Distancia minima: 2 baldosas
+   - Solo en el area interna (margen: 2 baldosas)
 
-2. **Convex Hull berechnen** (`_compute_convex_hull`)
-   - Graham-Scan-Algorithmus
-   - Erzeugt das kleinste konvexe Polygon um alle Punkte
+2. **Calcular Convex Hull** (`_compute_convex_hull`)
+   - Algoritmo Graham-Scan
+   - Crea el poligono convexo mas pequeño alrededor de todos los puntos
 
-3. **Perturbation anwenden** (`_perturb_hull`)
-   - Verschiebt Punkte um ±1 Kachel
-   - Erzeugt organischere, weniger geometrische Formen
+3. **Aplicar perturbation** (`_perturb_hull`)
+   - Mueve puntos +/- 1 baldosa
+   - Crea formas mas organicas y menos geometricas
 
-4. **Öffnungen platzieren** (`_place_opening_in_hull`)
-   - Biom-abhängige Anzahl und Typen
-   - Nur an gültigen Kanten (nicht an Chunk-Grenzen)
-   - Interaktive Öffnungen (Türen) für Rätsel
+4. **Colocar aperturas** (`_place_opening_in_hull`)
+   - Cantidad y tipos dependientes del bioma
+   - Solo en bordes validos (no en limites de Chunk)
+   - Aperturas interactivas (puertas) para rompecabezas
 
-### Integration in Chunks
+### Integracion en Chunks
 
-Die `Chunk`-Klasse wendet Barrieren auf Kacheln an:
-- `apply_barriers_to_tiles()` - Setzt Kacheln innerhalb von Barrieren-Polygonen
-- `is_barrier(x, y)` - Prüft, ob eine Kachel eine Barriere ist
+La clase `Chunk` aplica barreras a las baldosas:
+- `apply_barriers_to_tiles()` - Establece baldosas dentro de poligonos de barreras
+- `is_barrier(x, y)` - Verifica si una baldosa es una barrera
 
 ---
 
-## Kollisionsabfrage in Godot
+## Consulta de Colisiones en Godot
 
-### TileMap-Konfiguration
-- **Barrieren-Kacheln:**
-  - **Kollisionslayer:** `Barrier`
-  - **Kollisionsmask:** `Player`
-- **Öffnungen:**
-  - **Kein Kollisionslayer** (durchgängig).
-- **Interaktive Öffnungen (Türen):**
-  - **Kollisionslayer:** `Barrier` (standardmäßig gesperrt).
-  - **Bei Interaktion:** Kollisionslayer auf `Passable` ändern.
+### Configuracion de TileMap
+- **Baldosas de barreras:**
+  - **Capa de colision:** `Barrier`
+  - **Mascara de colision:** `Player`
+- **Aperturas:**
+  - **Sin capa de colision** (transitable).
+- **Aperturas interactivas (puertas):**
+  - **Capa de colision:** `Barrier` (bloqueado por defecto).
+  - **Al interactuar:** Cambiar capa de colision a `Passable`.
 
-### Beispiel: TileMap in Godot
+### Ejemplo: TileMap en Godot
 ```gdscript
-# In der _ready()-Funktion der TileMap:
+# En la funcion _ready() del TileMap:
 func _ready():
-    # Kollisionslayer für Barrieren-Kacheln setzen
-    set_collision_layer(1)  # Layer 1 = Barrier
-    set_collision_mask(1)   # Mask 1 = Player
+    # Establecer capa de colision para baldosas de barreras
+    set_collision_layer(1)
+    set_collision_mask(1)
     
-    # Barrieren-Kacheln haben Kollisionsform (z.B. RectangleShape2D)
-    # Öffnungen haben keine Kollisionsform
+    # Las baldosas de barreras tienen forma de colision (ej. RectangleShape2D)
+    # Las aperturas no tienen forma de colision
 ```
 
-### Spieler-Kollisionsabfrage
+### Consulta de Colision del Jugador
 ```gdscript
 func _physics_process(delta):
     var collision = move_and_collide(velocity * delta)
     if collision:
         if collision.collider.is_in_group("Barrier"):
-            # Spieler kann nicht durch Barrieren
+            # El jugador no puede pasar a traves de barreras
             velocity = Vector2.ZERO
         elif collision.collider.is_in_group("Interactive"):
-            # Interaktive Öffnung (z.B. Tür)
+            # Apertura interactiva (ej. puerta)
             if Input.is_action_just_pressed("interact"):
-                collision.collider.open()  # Tür öffnen
+                collision.collider.open()
 ```
 
 ---
 
-## Beispiele
+## Ejemplos
 
-### Beispiel 1: Fels-Barriere mit Pass
-- **Biom:** Fels
-- **Barrieren-Polygon:** 12 Punkte (Convex Hull + Perturbation).
-- **Öffnung:** 1 Pass (4 Kacheln breit).
-- **Kacheln:**
-  - Innerhalb des Polygons: Fels-Textur.
-  - An der Öffnung: Leere Kacheln (durchgängig).
+### Ejemplo 1: Barrera de Rocks con Pass
+- **Bioma:** Rocks
+- **Poligono de barrera:** 12 puntos (Convex Hull + Perturbation).
+- **Apertura:** 1 Pass (4 baldosas de ancho).
+- **Baldosas:**
+  - Dentro del poligono: Textura de Rocks.
+  - En la apertura: Baldosas vacias (transitables).
 
-### Beispiel 2: Wald-Barriere mit Tür
-- **Biom:** Wald
-- **Barrieren-Polygon:** 10 Punkte (Baumgruppe).
-- **Öffnung:** 1 Tür (1 Kachel breit, interaktiv).
-- **Kacheln:**
-  - Innerhalb des Polygons: Baum-Textur.
-  - An der Tür: Tür-Textur (blockierend, bis geöffnet).
+### Ejemplo 2: Barrera de Wood con Door
+- **Bioma:** Wood
+- **Poligono de barrera:** 10 puntos (grupo de arboles).
+- **Apertura:** 1 Door (1 baldosa de ancho, interactiva).
+- **Baldosas:**
+  - Dentro del poligono: Textura de Tree.
+  - En la puerta: Textura de puerta (bloqueante, hasta abrir).
 
-### Beispiel 3: Geschlossene Fels-Barriere
-- **Biom:** Fels
-- **Barrieren-Polygon:** 15 Punkte.
-- **Öffnungen:** 0 (geschlossene Barriere).
-- **Kacheln:**
-  - Innerhalb des Polygons: Fels-Textur.
-  - Keine Lücken (nicht passierbar).
-
----
-
-## Erweiterungen
-
-### 1. Komplexere Barrieren-Formen
-- **Nicht-konvexe Polygone:** Algorithmen wie **Alpha Shapes** oder **Concave Hull** für organischere Formen.
-- **Löcher in Barrieren:** Mehrere Polygone pro Barriere (z.B. eine Felsformation mit Höhle).
-
-### 2. Dynamische Barrieren
-- **Bewegliche Barrieren:** Z.B. rollende Felsbrocken oder schwingende Äste.
-- **Zerbrechliche Barrieren:** Barrieren, die durch Spieleraktionen zerstört werden können.
-
-### 3. Biom-spezifische Barrieren-Texturen
-- **Fels:** Verschiedene Fels-Texturen (hell, dunkel, schroff).
-- **Wald:** Verschiedene Baum-Typen (Eiche, Kiefer, etc.).
+### Ejemplo 3: Barrera de Rocks cerrada
+- **Bioma:** Rocks
+- **Poligono de barrera:** 15 puntos.
+- **Aperturas:** 0 (barrera cerrada).
+- **Baldosas:**
+  - Dentro del poligono: Textura de Rocks.
+  - Sin huecos (no transitable).
 
 ---
 
-## Links
+## Extensiones
 
-- [Convex Hull Algorithmen](https://en.wikipedia.org/wiki/Convex_hull_algorithms)
-- [Point-in-Polygon-Algorithmus](https://en.wikipedia.org/wiki/Point_in_polygon)
-- [Godot TileMap Tutorial](https://docs.godotengine.org/en/stable/tutorials/2d/procedural_geometry/tilemap.html)
-- [Godot Kollisionslayer](https://docs.godotengine.org/en/stable/tutorials/physics/physics_intro.html)
+### 1. Formas de Barreras mas Complejas
+- **Poligonos no convexos:** Algoritmos como **Alpha Shapes** o **Concave Hull** para formas mas organicas.
+- **Agujeros en barreras:** Multiples poligonos por barrera (ej. formacion rocosa con cueva).
+
+### 2. Barreras Dinamicas
+- **Barreras moviles:** Ej. rocas rodantes o ramas oscilantes.
+- **Barreras rompibles:** Barreras que pueden ser destruidas por acciones del jugador.
+
+### 3. Texturas de Barreras Especificas por Bioma
+- **Rocks:** Diferentes texturas de rocas (claras, oscuras, escarpadas).
+- **Wood:** Diferentes tipos de arboles (roble, pino, etc.).
+
+---
+
+## Enlaces
+
+- [Algoritmos de Convex Hull](https://en.wikipedia.org/wiki/Convex_hull_algorithms)
+- [Algoritmo Point-in-Polygon](https://en.wikipedia.org/wiki/Point_in_polygon)
+- [Tutorial de TileMap en Godot](https://docs.godotengine.org/en/stable/tutorials/2d/procedural_geometry/tilemap.html)
+- [Capas de Colision en Godot](https://docs.godotengine.org/en/stable/tutorials/physics/physics_intro.html)

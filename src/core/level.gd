@@ -53,7 +53,7 @@ func _get_biome_for_chunk(p_x: int, p_y: int) -> String:
 	# Deterministico basado en semilla + coordenadas
 	var hash_val := hash([p_x, p_y, world_seed])
 	var biome_index : int = abs(hash_val) % 5
-	var biomes := ["Grasland", "Wald", "Fels", "Wasser", "Sand"]
+	var biomes := ["Grassland", "Wood", "Rocks", "Water", "Sand"]
 	return biomes[biome_index]
 
 

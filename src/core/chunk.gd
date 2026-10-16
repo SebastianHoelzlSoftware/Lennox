@@ -69,8 +69,8 @@ func _get_barrier_tile_type(p_biome: String) -> String:
 	"""Devuelve el tipo de baldosa para una barrera basado en el bioma."""
 	match p_biome:
 		"Rocks": return "Rock"
-		"Wald": return "Tree"
-		"Wasser": return "Water"
+		"Wood": return "Tree"
+		"Water": return "Water"
 		"Sand": return "Sand"
 		_: return "Rock"
 
