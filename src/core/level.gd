@@ -6,24 +6,24 @@ var width: int
 var height: int
 var chunk_size: int
 var tile_size: int
-var seed: int
+var world_seed: int
 
 # Chunks (2D-Array)
 var chunks: Array = []
 
 # --- Initialisierung ---
-func _init(p_width: int, p_height: int, p_chunk_size: int, p_tile_size: int, p_seed: int):
+func _init(p_width: int, p_height: int, p_chunk_size: int, p_tile_size: int, p_world_seed: int):
     width = p_width
     height = p_height
     chunk_size = p_chunk_size
     tile_size = p_tile_size
-    seed = p_seed
+    world_seed = p_world_seed
 
 # --- Level generieren ---
 func generate() -> void:
     """Generiert alle Chunks für das Level."""
     # Seed für Determinismus setzen
-    seed_random(seed)
+    seed_random(world_seed)
 
     for x in range(width):
         chunks.append([])
@@ -67,5 +67,6 @@ func hash(arr: Array) -> int:
         result = (result * 31 + item) % 2147483647
     return result
 
-func seed_random(seed):
-    return seed
+func seed_random(p_world_seed: int) -> void:
+    randomize()
+    seed(p_world_seed)
