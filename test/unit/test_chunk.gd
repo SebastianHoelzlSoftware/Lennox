@@ -15,7 +15,7 @@ func test_chunk_initialization():
 func test_chunk_has_default_biome():
 	var chunk := Chunk.new(0, 0)
 
-	assert_eq(chunk.biome, "Grassland", "El bioma por defecto debe ser Grassland")
+	assert_eq(chunk.biome, Level.BiomeType.GRASSLAND, "El bioma por defecto debe ser GRASSLAND")
 
 
 func test_chunk_barriers_list_is_empty():
@@ -29,7 +29,7 @@ func test_chunk_tiles_are_empty():
 
 	for x in range(32):
 		for y in range(32):
-			assert_eq(chunk.tiles[x][y], "Grass", "La baldosa por defecto debe ser Grass")
+			assert_eq(chunk.tiles[x][y], Level.TileType.GRASS, "La baldosa por defecto debe ser GRASS")
 
 
 func test_chunk_add_barrier():

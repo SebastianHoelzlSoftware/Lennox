@@ -9,24 +9,15 @@ var type: OpeningType = OpeningType.PASS
 var position: Vector2 = Vector2.ZERO
 var width: int = 1
 var is_interactive: bool = false
-var biome: String = ""
+var biome: Level.BiomeType
 
-func _init(p_type: OpeningType, p_position: Vector2, p_width: int, p_is_interactive: bool = false, p_biome: String = ""):
+func _init(p_type: OpeningType, p_position: Vector2, p_width: int, p_is_interactive: bool = false, 
+		p_biome: Level.BiomeType = Level.BiomeType.GRASSLAND):
 	type = p_type
 	position = p_position
 	width = p_width
 	is_interactive = p_is_interactive
 	biome = p_biome
-
-
-func get_type_name() -> String:
-	"""Devuelve el nombre del tipo de apertura."""
-	match type:
-		OpeningType.STEPS: return "Steps"
-		OpeningType.DOOR: return "Door"
-		OpeningType.FORD: return "Ford"
-		OpeningType.PASS: return "Pass"
-	return "Unknown"
 
 
 func is_passable() -> bool:

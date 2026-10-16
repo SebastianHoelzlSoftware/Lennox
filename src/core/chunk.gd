@@ -3,13 +3,15 @@ class_name Chunk
 
 var x: int
 var y: int
-var biome: String = "Grassland"
+var biome: Level.BiomeType
 var tiles: Array = []
 var barriers: Array = []
+
 
 func _init(p_x: int, p_y: int):
 	x = p_x
 	y = p_y
+	biome = Level.BiomeType.GRASSLAND  # Default to GRASSLAND
 	_init_tiles()
 
 
@@ -19,27 +21,28 @@ func _init_tiles():
 	for i in range(32):
 		tiles.append([])
 		for j in range(32):
-			tiles[i].append("Grass")
+			tiles[i].append(0)  # Default to GRASS (0)
 
 
 func add_barrier(polygon: Array) -> void:
 	"""Agrega una nueva barrera."""
 	var barrier = Barrier.new()
 	barrier.polygon = polygon
+	barrier.biome = biome
 	barriers.append(barrier)
 
 
-func set_tile(p_x: int, p_y: int, tile_type: String) -> void:
+func set_tile(p_x: int, p_y: int, tile_type: int) -> void:
 	"""Establece una baldosa en la posicion (x, y)."""
 	if p_x >= 0 and p_x < 32 and p_y >= 0 and p_y < 32:
 		tiles[p_x][p_y] = tile_type
 
 
-func get_tile(p_x: int, p_y: int) -> String:
+func get_tile(p_x: int, p_y: int) -> int:
 	"""Devuelve el tipo de baldosa en la posicion (x, y)."""
 	if p_x >= 0 and p_x < 32 and p_y >= 0 and p_y < 32:
 		return tiles[p_x][p_y]
-	return ""
+	return 0  # Default to GRASS (0)
 
 
 func apply_barriers_to_tiles() -> void:
@@ -53,7 +56,21 @@ func apply_barriers_to_tiles() -> void:
 
 func _apply_barrier_to_tiles(p_barrier: Barrier) -> void:
 	"""Aplica una sola barrera a las baldosas."""
-	var barrier_tile_type := _get_barrier_tile_type(p_barrier.biome)
+	# Map biome to tile type directly (matching logic from Level.get_barrier_tile_type_from_biome)
+	var barrier_tile_type: int
+	match p_barrier.biome:
+		Level.BiomeType.GRASSLAND:
+			barrier_tile_type = Level.TileType.ROCK
+		Level.BiomeType.WOOD:
+			barrier_tile_type = Level.TileType.TREE
+		Level.BiomeType.ROCKS:
+			barrier_tile_type = Level.TileType.ROCK
+		Level.BiomeType.WATER:
+			barrier_tile_type = Level.TileType.WATER
+		Level.BiomeType.SAND:
+			barrier_tile_type = Level.TileType.SAND
+		_:
+			barrier_tile_type = Level.TileType.ROCK
 	
 	for _x in range(32):
 		for _y in range(32):
@@ -63,16 +80,6 @@ func _apply_barrier_to_tiles(p_barrier: Barrier) -> void:
 			if p_barrier.contains_point(point):
 				# Establece la baldosa al tipo de barrera
 				tiles[_x][_y] = barrier_tile_type
-
-
-func _get_barrier_tile_type(p_biome: String) -> String:
-	"""Devuelve el tipo de baldosa para una barrera basado en el bioma."""
-	match p_biome:
-		"Rocks": return "Rock"
-		"Wood": return "Tree"
-		"Water": return "Water"
-		"Sand": return "Sand"
-		_: return "Rock"
 
 
 func is_barrier(p_x: int, p_y: int) -> bool:

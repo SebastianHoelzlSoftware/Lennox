@@ -1,6 +1,12 @@
 # level.gd
 class_name Level
 
+# Tipos de bioma
+enum BiomeType { GRASSLAND, WOOD, ROCKS, WATER, SAND }
+
+# Tipos de baldosas
+enum TileType { GRASS, ROCK, TREE, SAND, WATER }
+
 # Parametros del nivel
 var width: int
 var height: int
@@ -35,10 +41,11 @@ func generate_chunk(p_x: int, p_y: int) -> Chunk:
 	var chunk := Chunk.new(p_x, p_y)
 
 	# Generar bioma para el chunk (simplificado para prototipo)
-	chunk.biome = _get_biome_for_chunk(p_x, p_y)
+	var biome_type := _get_biome_for_chunk(p_x, p_y)
+	chunk.biome = biome_type
 
 	# Generar barreras para el chunk
-	var barriers := generate_barriers_for_chunk(p_x, p_y, chunk.biome)
+	var barriers := generate_barriers_for_chunk(p_x, p_y, biome_type)
 	for barrier in barriers:
 		chunk.barriers.append(barrier)
 	
@@ -48,13 +55,18 @@ func generate_chunk(p_x: int, p_y: int) -> Chunk:
 	return chunk
 
 
-func _get_biome_for_chunk(p_x: int, p_y: int) -> String:
+func _get_biome_for_chunk(p_x: int, p_y: int) -> BiomeType:
 	"""Devuelve un bioma para el chunk (simplificado para prototipo)."""
 	# Deterministico basado en semilla + coordenadas
 	var hash_val := hash([p_x, p_y, world_seed])
 	var biome_index : int = abs(hash_val) % 5
-	var biomes := ["Grassland", "Wood", "Rocks", "Water", "Sand"]
-	return biomes[biome_index]
+	match biome_index:
+		0: return BiomeType.GRASSLAND
+		1: return BiomeType.WOOD
+		2: return BiomeType.ROCKS
+		3: return BiomeType.WATER
+		4: return BiomeType.SAND
+		_: return BiomeType.GRASSLAND
 
 
 func get_chunk(p_x: int, p_y: int) -> Chunk:
@@ -62,6 +74,27 @@ func get_chunk(p_x: int, p_y: int) -> Chunk:
 	if p_x >= 0 and p_x < width and p_y >= 0 and p_y < height:
 		return chunks[p_x][p_y]
 	return null
+
+
+func get_tile_type_from_biome(p_biome: BiomeType) -> TileType:
+	"""Devuelve el tipo de baldosa base para un bioma."""
+	match p_biome:
+		BiomeType.GRASSLAND: return TileType.GRASS
+		BiomeType.WOOD: return TileType.GRASS
+		BiomeType.ROCKS: return TileType.ROCK
+		BiomeType.WATER: return TileType.WATER
+		BiomeType.SAND: return TileType.SAND
+		_: return TileType.GRASS
+
+
+func get_barrier_tile_type_from_biome(p_biome: BiomeType) -> TileType:
+	"""Devuelve el tipo de baldosa para una barrera basado en el bioma."""
+	match p_biome:
+		BiomeType.ROCKS: return TileType.ROCK
+		BiomeType.WOOD: return TileType.TREE
+		BiomeType.WATER: return TileType.WATER
+		BiomeType.SAND: return TileType.SAND
+		_: return TileType.ROCK
 
 
 func hash(arr: Array) -> int:
@@ -77,7 +110,7 @@ func seed_random(p_world_seed: int) -> void:
 	seed(p_world_seed)
 
 
-func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: String) -> Array:
+func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType) -> Array:
 	"""Genera barreras para un chunk basado en bioma y semilla."""
 	var barriers := []
 	
@@ -125,48 +158,48 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: String) -> Array:
 	return barriers
 
 
-func _get_barrier_count_for_biome(p_biome: String) -> int:
+func _get_barrier_count_for_biome(p_biome: BiomeType) -> int:
 	"""Devuelve la cantidad de barreras para un bioma."""
 	match p_biome:
-		"Grassland": return randi_range(1, 2)
-		"Wood": return randi_range(3, 5)
-		"Rocks": return randi_range(5, 8)
-		"Water": return randi_range(0, 1)
-		"Sand": return randi_range(1, 2)
+		BiomeType.GRASSLAND: return randi_range(1, 2)
+		BiomeType.WOOD: return randi_range(3, 5)
+		BiomeType.ROCKS: return randi_range(5, 8)
+		BiomeType.WATER: return randi_range(0, 1)
+		BiomeType.SAND: return randi_range(1, 2)
 		_: return randi_range(1, 3)
 
 
-func _get_opening_count_for_biome(p_biome: String) -> int:
+func _get_opening_count_for_biome(p_biome: BiomeType) -> int:
 	"""Devuelve la cantidad de aperturas por barrera para un bioma."""
 	match p_biome:
-		"Grassland": return randi_range(1, 3)
-		"Wood": return randi_range(1, 2)
-		"Rocks": return randi_range(0, 1)
-		"Water": return 1
-		"Sand": return randi_range(1, 3)
+		BiomeType.GRASSLAND: return randi_range(1, 3)
+		BiomeType.WOOD: return randi_range(1, 2)
+		BiomeType.ROCKS: return randi_range(0, 1)
+		BiomeType.WATER: return 1
+		BiomeType.SAND: return randi_range(1, 3)
 		_: return randi_range(1, 2)
 
 
-func _get_random_opening_type(p_biome: String) -> int:
+func _get_random_opening_type(p_biome: BiomeType) -> int:
 	"""Devuelve un tipo de apertura aleatorio para un bioma."""
 	var opening_types := []
 	
 	match p_biome:
-		"Grassland":
+		BiomeType.GRASSLAND:
 			opening_types = [Opening.OpeningType.FORD, Opening.OpeningType.FORD, 
 						   Opening.OpeningType.PASS, Opening.OpeningType.PASS, 
 						   Opening.OpeningType.STEPS]
-		"Wood":
+		BiomeType.WOOD:
 			opening_types = [Opening.OpeningType.PASS, Opening.OpeningType.PASS, 
 						   Opening.OpeningType.PASS, Opening.OpeningType.FORD, 
 						   Opening.OpeningType.DOOR]
-		"Rocks":
+		BiomeType.ROCKS:
 			opening_types = [Opening.OpeningType.PASS, Opening.OpeningType.PASS, 
 						   Opening.OpeningType.PASS, Opening.OpeningType.STEPS, 
 						   Opening.OpeningType.STEPS]
-		"Water":
+		BiomeType.WATER:
 			opening_types = [Opening.OpeningType.FORD]
-		"Sand":
+		BiomeType.SAND:
 			opening_types = [Opening.OpeningType.PASS, Opening.OpeningType.PASS, 
 						   Opening.OpeningType.PASS, Opening.OpeningType.PASS, 
 						   Opening.OpeningType.FORD]
@@ -186,18 +219,18 @@ func _get_opening_width(p_opening_type: int) -> int:
 		_: return 1
 
 
-func _generate_random_points(p_biome: String, p_chunk_size: int = 32) -> Array:
+func _generate_random_points(p_biome: BiomeType, p_chunk_size: int = 32) -> Array:
 	"""Genera puntos aleatorios para la generacion de barreras."""
 	var points := []
 	var num_points := 0
 	
 	# Cantidad de puntos dependiente del bioma
 	match p_biome:
-		"Grassland": num_points = randi_range(5, 8)
-		"Wood": num_points = randi_range(8, 12)
-		"Rocks": num_points = randi_range(10, 15)
-		"Water": num_points = randi_range(5, 10)
-		"Sand": num_points = randi_range(5, 8)
+		BiomeType.GRASSLAND: num_points = randi_range(5, 8)
+		BiomeType.WOOD: num_points = randi_range(8, 12)
+		BiomeType.ROCKS: num_points = randi_range(10, 15)
+		BiomeType.WATER: num_points = randi_range(5, 10)
+		BiomeType.SAND: num_points = randi_range(5, 8)
 		_: num_points = randi_range(5, 10)
 	
 	# Generar puntos en el area interior (no en el borde)
