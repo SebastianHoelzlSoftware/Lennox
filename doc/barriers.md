@@ -1,8 +1,15 @@
 # Barrieren-System für Lennox
 
-## Übersicht
+## 📌 Status: **Implementiert (LEN-5)** ✅
 
 Barrieren sind **geschlossene Hindernisse** in der Spielwelt, die den Spieler am Durchkommen hindern, es sei denn, er nutzt eine **Öffnung** (z.B. Treppe, Tür, Furt). Barrieren können verschiedene Formen und Typen haben und sind **biom-abhängig**.
+
+**Implementierung:**
+- `src/core/barrier.gd` - Barrieren-Klasse mit Polygon und Öffnungen
+- `src/core/opening.gd` - Öffnungs-Klasse (Typen: Treppe, Tür, Furt, Pass)
+- `src/core/level.gd` - Barrieren-Generierung pro Chunk
+- `src/core/chunk.gd` - Integration von Barrieren in Kacheln
+- `test/unit/test_barrier.gd` - Unit-Tests für Barrieren
 
 ---
 
@@ -320,6 +327,59 @@ func generate_barriers_for_chunk(chunk_x: int, chunk_y: int, biome: String, seed
     
     return barriers
 ```
+
+---
+
+## 6. Implementierungsdetails (LEN-5)
+
+### Klassenstruktur
+
+#### Barrier (`src/core/barrier.gd`)
+```gdscript
+class_name Barrier
+var polygon: Array[Vector2]  # Polygon-Punkte
+var biome: String             # Biom-Typ (für Textur)
+var openings: Array           # Liste von Öffnungen
+```
+
+#### Opening (`src/core/opening.gd`)
+```gdscript
+class_name Opening
+enum OpeningType { TREPPE, TUER, FURT, PASS }
+var type: OpeningType
+var position: Vector2
+var width: int
+var is_interactive: bool
+var biome: String
+```
+
+### Algorithmus-Implementierung
+
+Die Barrieren-Generierung in `level.gd` folgt diesem Ablauf:
+
+1. **Zufallspunkte generieren** (`_generate_random_points`)
+   - Biom-abhängige Anzahl (Grasland: 5–8, Wald: 8–12, Fels: 10–15)
+   - Mindestabstand: 2 Kacheln
+   - Nur im inneren Bereich (Rand: 2 Kacheln)
+
+2. **Convex Hull berechnen** (`_compute_convex_hull`)
+   - Graham-Scan-Algorithmus
+   - Erzeugt das kleinste konvexe Polygon um alle Punkte
+
+3. **Perturbation anwenden** (`_perturb_hull`)
+   - Verschiebt Punkte um ±1 Kachel
+   - Erzeugt organischere, weniger geometrische Formen
+
+4. **Öffnungen platzieren** (`_place_opening_in_hull`)
+   - Biom-abhängige Anzahl und Typen
+   - Nur an gültigen Kanten (nicht an Chunk-Grenzen)
+   - Interaktive Öffnungen (Türen) für Rätsel
+
+### Integration in Chunks
+
+Die `Chunk`-Klasse wendet Barrieren auf Kacheln an:
+- `apply_barriers_to_tiles()` - Setzt Kacheln innerhalb von Barrieren-Polygonen
+- `is_barrier(x, y)` - Prüft, ob eine Kachel eine Barriere ist
 
 ---
 

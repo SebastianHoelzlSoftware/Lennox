@@ -14,15 +14,30 @@
 
 ✅ **LEN-3: Generación de Niveles** – Finalizado
 - Sistema de generación procedural de niveles con semilla (*seed*) determinística
-- Division en *chunks* para manejo eficiente de mundos grandes
+- División en *chunks* para manejo eficiente de mundos grandes
 - Generación de biomas variados (Grasland, Wald, Fels, Wasser, Sand)
 - Acceso a chunks mediante coordenadas `(x, y)`
 
-🔜 **Próximos pasos** (Roadmap):
-- [ ] LEN-5: Sistema de barreras y obstáculos
-- [ ] Sistema de progresión y recompensas
-- [ ] Integración de contenido educativo (vocabulario, frases)
-- [ ] Interfaz de usuario adaptada a niños
+✅ **LEN-5: Sistema de barreras y obstáculos** – **¡NUEVO! Implementado**
+- Generación procedural de barreras por chunk (Convex Hull + Perturbation)
+- Tipos de barreras: Fels, Baumgruppe, Düne, Insel, Wand
+- Aberturas: Treppe, Tür (interactiva), Furt, Pass
+- Integración con el sistema de chunks y biomas
+- Tests unitarios en `test/unit/test_barrier.gd`
+
+📋 **LEN-4: Mecanismo Snap-In con modo de sílabas** – **Documentación lista**
+- Mecanismo de arrastrar y soltar (Drag & Drop)
+- Modo de letras: Puzzles con letras individuales
+- Modo de sílabas: Puzzles con sílabas (ej. "Ma" + "ma" = "Mama")
+- Soporte de audio para retroalimentación fonética
+- Documentación en `doc/snap-in-mechanism.md`
+
+📌 **Próximos pasos** (Roadmap):
+- [ ] LEN-4: Implementar mecanismo Snap-In (prioridad alta)
+- [ ] LEN-6: Sistema de progresión y recompensas
+- [ ] LEN-7: Integración de contenido educativo (vocabulario, frases)
+- [ ] LEN-8: Interfaz de usuario adaptada a niños
+- [ ] LEN-9: Personaje jugador + colisiones con barreras
 
 ---
 
@@ -36,9 +51,15 @@
   ├── src/
   │   └── core/
   │       ├── level.gd      # Generación de niveles
-  │       └── chunk.gd      # Sistema de chunks
+  │       ├── chunk.gd      # Sistema de chunks
+  │       ├── barrier.gd     # Barrieren (LEN-5)
+  │       └── opening.gd     # Öffnungen (LEN-5)
   ├── test/
   │   └── unit/             # Tests unitarios (GUT)
+  ├── doc/
+  │   ├── map-generation.md # Dokumentation LEN-3
+  │   ├── barriers.md       # Dokumentation LEN-5
+  │   └── snap-in-mechanism.md # Dokumentation LEN-4
   └── README.md
   ```
 
@@ -60,7 +81,7 @@
    - O arrastra la carpeta del proyecto al editor
 
 3. **Ejecutar pruebas** (opcional):
-   - Abre la escena `test/unit/test_runner.tscn` en Godot
+   - Abre la escena `gut_main.tscn` en Godot
    - Ejecuta la escena para correr todos los tests con GUT
 
 ---
@@ -74,10 +95,12 @@ El proyecto incluye pruebas unitarias para garantizar la estabilidad del código
 | `test_level_initialization` | Verifica la inicialización correcta de parámetros del nivel |
 | `test_level_generates_chunks` | Confirma que los chunks se generan correctamente |
 | `test_chunk_generation_is_deterministic` | **Determinismo**: Same seed → mismos biomas |
-| `test_get_chunk_returns_correct_chunk` | Acceso correcto a chunks por coordenadas |
+| `test_barrier_with_polygon` | Prueba de barreras con polígonos |
+| `test_point_in_polygon_ray_casting` | Prueba de algoritmo Ray-Casting |
+| `test_barrier_with_opening` | Prueba de barreras con aberturas |
 
 **Ejecutar pruebas:**
-Abre `test/unit/test_runner.tscn` en Godot y corre la escena.
+Abre `gut_main.tscn` en Godot y corre la escena.
 
 ---
 
@@ -106,7 +129,7 @@ Este proyecto está bajo la licencia **MIT**. Consulta el archivo [LICENSE](LICE
 
 ---
 
-## 📬 Contacto
+## 📧 Contacto
 
 Para preguntas o sugerencias:
 - **Autor**: Sebastian Hoelzl
