@@ -41,3 +41,23 @@ func test_chunk_tiles_are_empty():
         for y in range(32):
             assert_eq(chunk.tiles[x][y], "Gras", "Standard-Kachel sollte Gras sein")
 
+# --- TEST 5: Barriere hinzufügen ---
+func test_chunk_add_barrier():
+    # Arrange
+    var chunk := Chunk.new(0, 0)
+    var polygon: Array[Vector2] = [
+        Vector2(0, 0),
+        Vector2(10, 0),
+        Vector2(10, 10),
+        Vector2(0, 10)
+    ]
+
+    # Act
+    chunk.add_barrier(polygon)
+
+    # Assert
+    assert_eq(chunk.barriers.size(), 1, "Barrieren-Liste sollte 1 Barriere enthalten")
+    assert_eq(chunk.barriers[0].polygon, polygon, "Polygon der Barriere sollte übereinstimmen")
+    assert_true(chunk.is_barrier(5, 5), "Punkt (5, 5) sollte als Barriere erkannt werden")
+    assert_false(chunk.is_barrier(20, 20), "Punkt (20, 20) sollte nicht als Barriere erkannt werden")
+
