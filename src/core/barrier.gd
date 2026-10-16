@@ -5,7 +5,7 @@ class_name Barrier
 var polygon: Array = []
 
 # Bioma de la barrera (usa BiomeType enum)
-var biome: Level.BiomeType = Level.BiomeType.GRASSLAND
+var biome: BiomeType.Type = BiomeType.GRASSLAND
 
 # Aperturas en esta barrera
 var openings: Array = []

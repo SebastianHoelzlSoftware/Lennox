@@ -1,11 +1,9 @@
 # level.gd
 class_name Level
 
-# Tipos de bioma
-enum BiomeType { GRASSLAND, WOOD, ROCKS, WATER, SAND }
-
-# Tipos de baldosas
-enum TileType { GRASS, ROCK, TREE, SAND, WATER }
+# Tipos de bioma y baldosas (referencias a clases globales para compatibilidad)
+const BiomeType = preload("res://src/core/biome_type.gd")
+const TileType = preload("res://src/core/tile_type.gd")
 
 # Parametros del nivel
 var width: int
@@ -55,7 +53,7 @@ func generate_chunk(p_x: int, p_y: int) -> Chunk:
 	return chunk
 
 
-func _get_biome_for_chunk(p_x: int, p_y: int) -> BiomeType:
+func _get_biome_for_chunk(p_x: int, p_y: int) -> BiomeType.Type:
 	"""Devuelve un bioma para el chunk (simplificado para prototipo)."""
 	# Deterministico basado en semilla + coordenadas
 	var hash_val := hash([p_x, p_y, world_seed])
@@ -76,7 +74,7 @@ func get_chunk(p_x: int, p_y: int) -> Chunk:
 	return null
 
 
-func get_tile_type_from_biome(p_biome: BiomeType) -> TileType:
+func get_tile_type_from_biome(p_biome: BiomeType.Type) -> TileType.Type:
 	"""Devuelve el tipo de baldosa base para un bioma."""
 	match p_biome:
 		BiomeType.GRASSLAND: return TileType.GRASS
@@ -87,7 +85,7 @@ func get_tile_type_from_biome(p_biome: BiomeType) -> TileType:
 		_: return TileType.GRASS
 
 
-func get_barrier_tile_type_from_biome(p_biome: BiomeType) -> TileType:
+func get_barrier_tile_type_from_biome(p_biome: BiomeType.Type) -> TileType.Type:
 	"""Devuelve el tipo de baldosa para una barrera basado en el bioma."""
 	match p_biome:
 		BiomeType.ROCKS: return TileType.ROCK
@@ -110,7 +108,7 @@ func seed_random(p_world_seed: int) -> void:
 	seed(p_world_seed)
 
 
-func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType) -> Array:
+func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) -> Array:
 	"""Genera barreras para un chunk basado en bioma y semilla."""
 	var barriers := []
 	
@@ -158,7 +156,7 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType) -> Arra
 	return barriers
 
 
-func _get_barrier_count_for_biome(p_biome: BiomeType) -> int:
+func _get_barrier_count_for_biome(p_biome: BiomeType.Type) -> int:
 	"""Devuelve la cantidad de barreras para un bioma."""
 	match p_biome:
 		BiomeType.GRASSLAND: return randi_range(1, 2)
@@ -169,7 +167,7 @@ func _get_barrier_count_for_biome(p_biome: BiomeType) -> int:
 		_: return randi_range(1, 3)
 
 
-func _get_opening_count_for_biome(p_biome: BiomeType) -> int:
+func _get_opening_count_for_biome(p_biome: BiomeType.Type) -> int:
 	"""Devuelve la cantidad de aperturas por barrera para un bioma."""
 	match p_biome:
 		BiomeType.GRASSLAND: return randi_range(1, 3)
@@ -180,7 +178,7 @@ func _get_opening_count_for_biome(p_biome: BiomeType) -> int:
 		_: return randi_range(1, 2)
 
 
-func _get_random_opening_type(p_biome: BiomeType) -> int:
+func _get_random_opening_type(p_biome: BiomeType.Type) -> int:
 	"""Devuelve un tipo de apertura aleatorio para un bioma."""
 	var opening_types := []
 	
@@ -219,7 +217,7 @@ func _get_opening_width(p_opening_type: int) -> int:
 		_: return 1
 
 
-func _generate_random_points(p_biome: BiomeType, p_chunk_size: int = 32) -> Array:
+func _generate_random_points(p_biome: BiomeType.Type, p_chunk_size: int = 32) -> Array:
 	"""Genera puntos aleatorios para la generacion de barreras."""
 	var points := []
 	var num_points := 0

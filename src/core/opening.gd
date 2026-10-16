@@ -9,10 +9,10 @@ var type: OpeningType = OpeningType.PASS
 var position: Vector2 = Vector2.ZERO
 var width: int = 1
 var is_interactive: bool = false
-var biome: Level.BiomeType
+var biome: BiomeType.Type
 
 func _init(p_type: OpeningType, p_position: Vector2, p_width: int, p_is_interactive: bool = false, 
-		p_biome: Level.BiomeType = Level.BiomeType.GRASSLAND):
+		p_biome: BiomeType.Type = BiomeType.GRASSLAND):
 	type = p_type
 	position = p_position
 	width = p_width

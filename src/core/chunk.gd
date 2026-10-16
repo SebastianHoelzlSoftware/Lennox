@@ -3,7 +3,7 @@ class_name Chunk
 
 var x: int
 var y: int
-var biome: Level.BiomeType
+var biome: BiomeType.Type
 var tiles: Array = []
 var barriers: Array = []
 
@@ -11,7 +11,7 @@ var barriers: Array = []
 func _init(p_x: int, p_y: int):
 	x = p_x
 	y = p_y
-	biome = Level.BiomeType.GRASSLAND  # Default to GRASSLAND
+	biome = BiomeType.GRASSLAND  # Default to GRASSLAND
 	_init_tiles()
 
 
@@ -59,18 +59,18 @@ func _apply_barrier_to_tiles(p_barrier: Barrier) -> void:
 	# Map biome to tile type directly (matching logic from Level.get_barrier_tile_type_from_biome)
 	var barrier_tile_type: int
 	match p_barrier.biome:
-		Level.BiomeType.GRASSLAND:
-			barrier_tile_type = Level.TileType.ROCK
-		Level.BiomeType.WOOD:
-			barrier_tile_type = Level.TileType.TREE
-		Level.BiomeType.ROCKS:
-			barrier_tile_type = Level.TileType.ROCK
-		Level.BiomeType.WATER:
-			barrier_tile_type = Level.TileType.WATER
-		Level.BiomeType.SAND:
-			barrier_tile_type = Level.TileType.SAND
+		BiomeType.GRASSLAND:
+			barrier_tile_type = TileType.ROCK
+		BiomeType.WOOD:
+			barrier_tile_type = TileType.TREE
+		BiomeType.ROCKS:
+			barrier_tile_type = TileType.ROCK
+		BiomeType.WATER:
+			barrier_tile_type = TileType.WATER
+		BiomeType.SAND:
+			barrier_tile_type = TileType.SAND
 		_:
-			barrier_tile_type = Level.TileType.ROCK
+			barrier_tile_type = TileType.ROCK
 	
 	for _x in range(32):
 		for _y in range(32):
