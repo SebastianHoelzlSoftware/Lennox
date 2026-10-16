@@ -47,7 +47,7 @@ func generate_chunk(p_x: int, p_y: int) -> Chunk:
 func _get_biome_for_chunk(p_x: int, p_y: int) -> String:
     """Gibt ein Biom für den Chunk zurück (vereinfacht für Prototyp)."""
     # Deterministisch basierend auf Seed + Koordinaten
-    var hash_val := hash([p_x, p_y, seed])
+    var hash_val := hash([p_x, p_y, world_seed])
     var biome_index : int = abs(hash_val) % 5  # 5 Biome
     var biomes := ["Grasland", "Wald", "Fels", "Wasser", "Sand"]
     return biomes[biome_index]
