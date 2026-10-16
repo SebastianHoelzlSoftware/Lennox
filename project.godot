@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Lennox"
+run/main_scene="uid://cjytfwk5v8era"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 

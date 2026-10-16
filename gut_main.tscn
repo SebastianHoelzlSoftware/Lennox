@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://cjytfwk5v8era"]
+
+[ext_resource type="Script" uid="uid://duvvxvj18c04d" path="res://addons/gut/gut.gd" id="1_0gj6j"]
+[ext_resource type="Script" uid="uid://cnup2nbj45r4s" path="res://addons/gut/test.gd" id="2_ki4ni"]
+
+[node name="GutMain" type="Node" unique_id=286640738]
+script = ExtResource("1_0gj6j")
+metadata/_custom_type_script = "uid://duvvxvj18c04d"
+
+[node name="GutTest" type="Node" parent="." unique_id=1488043666]
+script = ExtResource("2_ki4ni")
+metadata/_custom_type_script = "uid://cnup2nbj45r4s"
