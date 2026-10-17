@@ -18,26 +18,22 @@
 - Generacion de biomas variados (Grassland, Wood, Rocks, Water, Sand)
 - Acceso a chunks mediante coordenadas `(x, y)`
 
-✅ **LEN-5: Sistema de barreras y obstaculos** – **¡NUEVO! Implementado**
+✅ **LEN-5: Sistema de barreras y obstaculos** – Finalizado (LEN-17: 100% Test-Coverage)
 - Generacion procedural de barreras por chunk (Convex Hull + Perturbation)
 - Tipos de barreras: Rocks, Tree groups, Dunes, Islands, Walls
 - Aperturas: Steps, Door (interactiva), Ford, Pass
-- Integracion con el sistema de chunks y biomas
-- Tests unitarios en `test/unit/test_barrier.gd`
+- Integracion con el sistema de chunks y baldosas
+- 38 tests unitarios e integracion (33 unitarios + 5 integracion) pasando al 100%
 
-📋 **LEN-4: Mecanismo Snap-In con modo de silabas** – **Documentacion lista**
-- Mecanismo de arrastrar y soltar (Drag & Drop)
-- Modo de letras: Puzzles con letras individuales
-- Modo de silabas: Puzzles con silabas (ej. "Ma" + "ma" = "Mama")
-- Soporte de audio para retroalimentacion fonetica
-- Documentacion en `doc/snap-in-mechanism.md`
+📋 **LEN-4: Sistema de biomas** – En cola (siguiente paso)
+- Generacion con Voronoi + Perlin Noise para transiciones suaves
+- Parametros especificos por bioma (densidad de barreras y tipos)
+- Documentacion en `doc/biomes.md`
 
-📌 **Proximos pasos** (Roadmap):
-- [ ] LEN-4: Implementar mecanismo Snap-In (prioridad alta)
-- [ ] LEN-6: Sistema de progresion y recompensas
-- [ ] LEN-7: Integracion de contenido educativo (vocabulario, frases)
-- [ ] LEN-8: Interfaz de usuario adaptada a ninos
-- [ ] LEN-9: Personaje jugador + colisiones con barreras
+📌 **Proximos pasos** (Roadmap de Jira):
+- [ ] LEN-4: Implementar sistema de biomas (Voronoi + Noise)
+- [ ] LEN-6: Colocacion avanzada de aperturas en barreras
+- [ ] LEN-7: Integracion en Godot y nivel prototipo (TileMap, escena, jugador)
 
 ---
 
@@ -57,13 +53,14 @@
   │       ├── biome_type.gd   # Enum global de biomas (BiomeType)
   │       └── tile_type.gd    # Enum global de baldosas (TileType)
   ├── test/
-  │   └── unit/               # Tests unitarios (GUT)
+  │   ├── unit/               # Tests unitarios (GUT)
+  │   └── integration/        # Tests de integracion (GUT)
   ├── doc/
   │   ├── map-generation.md   # Documentacion LEN-3
   │   ├── barriers.md         # Documentacion LEN-5
-  │   ├── biomes.md           # Documentacion de biomas
+  │   ├── biomes.md           # Documentacion de biomas (LEN-4)
   │   ├── level-structure.md  # Estructura de chunks y niveles
-  │   └── snap-in-mechanism.md # Documentacion LEN-4
+  │   └── snap-in-mechanism.md # Documentacion de mecanismo educativo
   └── README.md
   ```
 
