@@ -10,30 +10,23 @@
 
 ---
 
-## 🎮 Estado Actual del Proyecto
+## 🎮 Estado del Proyecto & Jira Roadmap
 
-✅ **LEN-3: Generacion de Niveles** – Finalizado
-- Sistema de generacion procedural de niveles con semilla (*seed*) deterministica
-- Division en *chunks* para manejo eficiente de mundos grandes
-- Generacion de biomas variados (Grassland, Wood, Rocks, Water, Sand)
-- Acceso a chunks mediante coordenadas `(x, y)`
+Die Entwicklung von **Lennox** wird strukturiert über **Atlassian Jira** organisiert und nachverfolgt. Die Präfixe und Nummern (z. B. `LEN-3`, `LEN-5`) entsprechen den offiziellen Tickets / Aufgaben im Jira-Projekt:
 
-✅ **LEN-5: Sistema de barreras y obstaculos** – Finalizado (LEN-17: 100% Test-Coverage)
-- Generacion procedural de barreras por chunk (Convex Hull + Perturbation)
-- Tipos de barreras: Rocks, Tree groups, Dunes, Islands, Walls
-- Aperturas: Steps, Door (interactiva), Ford, Pass
-- Integracion con el sistema de chunks y baldosas
-- 38 tests unitarios e integracion (33 unitarios + 5 integracion) pasando al 100%
+- **Jira Workspace:** [devhoelzlsebastian.atlassian.net](https://devhoelzlsebastian.atlassian.net)
+- **Projekt-Key:** `LEN` (Lennox)
 
-📋 **LEN-4: Sistema de biomas** – En cola (siguiente paso)
-- Generacion con Voronoi + Perlin Noise para transiciones suaves
-- Parametros especificos por bioma (densidad de barreras y tipos)
-- Documentacion en `doc/biomes.md`
+### 📊 Aktueller Ticket- & Entwicklungsstand
 
-📌 **Proximos pasos** (Roadmap de Jira):
-- [ ] LEN-4: Implementar sistema de biomas (Voronoi + Noise)
-- [ ] LEN-6: Colocacion avanzada de aperturas en barreras
-- [ ] LEN-7: Integracion en Godot y nivel prototipo (TileMap, escena, jugador)
+| Ticket | Titel / Meilenstein | Status | Details |
+| :--- | :--- | :---: | :--- |
+| **LEN-3** | Level- und Chunk-Struktur definieren | ✅ Erledigt | Prozedurale Chunks, deterministischer Seed, Koordinatenzugriff `(x, y)` |
+| **LEN-5** | Barrieren-Generierungsalgorithmus umsetzen | ✅ Erledigt | Convex Hull + Perturbation, blockierende Kacheln, Aperturas |
+| **LEN-17** | [LEN-5] 100% Testabdeckung für Barrieren-Integration | ✅ Erledigt | 38 Tests (33 Unit + 5 Integration), 14.710 Asserts, 0 Fehler |
+| **LEN-4** | Biom-System implementieren (Voronoi + Perlin Noise) | 📋 Zu erledigen *(Nächster Schritt)* | Natürliche Biom-Übergänge, Dichte- und Typ-Parameter (`biomes.md`) |
+| **LEN-6** | Öffnungen in Barrieren platzieren | 📋 Zu erledigen | Erweiterte Platzierungsregeln für Durchgänge |
+| **LEN-7** | Godot-Integration & Prototyp-Level | 📋 Zu erledigen | TileMap-Visualisierung in Godot-Szene, Spieler-Kollisionen |
 
 ---
 
