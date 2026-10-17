@@ -1,10 +1,6 @@
 # level.gd
 class_name Level
 
-# Tipos de bioma y baldosas (referencias a clases globales para compatibilidad)
-const BiomeType = preload("res://src/core/biome_type.gd")
-const TileType = preload("res://src/core/tile_type.gd")
-
 # Parametros del nivel
 var width: int
 var height: int
