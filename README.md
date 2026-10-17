@@ -14,7 +14,7 @@
 
 Die Entwicklung von **Lennox** wird strukturiert über **Atlassian Jira** organisiert und nachverfolgt. Die Präfixe und Nummern (z. B. `LEN-3`, `LEN-5`) entsprechen den offiziellen Tickets / Aufgaben im Jira-Projekt:
 
-- **Jira Workspace:** [devhoelzlsebastian.atlassian.net](https://devhoelzlsebastian.atlassian.net)
+- **Jira Workspace:** [devhoelzlsebastian.atlassian.net](https://devhoelzlsebastian.atlassian.net/jira/software/projects/LEN/boards/35?filter=&groupBy=none)
 - **Projekt-Key:** `LEN` (Lennox)
 
 ### 📊 Aktueller Ticket- & Entwicklungsstand
