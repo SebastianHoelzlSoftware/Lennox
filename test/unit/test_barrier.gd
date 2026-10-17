@@ -153,3 +153,57 @@ func test_non_interactive_opening_always_passable():
 	
 	opening.open()
 	assert_true(opening.is_passable(), "La apertura no interactiva sigue siendo transitable")
+
+
+func test_get_passable_points_basic():
+	var barrier := Barrier.new()
+	var opening := Opening.new(Opening.OpeningType.PASS, Vector2(10, 5), 2, false, BiomeType.ROCKS)
+	barrier.add_opening(opening)
+	
+	var points := barrier.get_passable_points(32)
+	assert_eq(points.size(), 3, "Se deben generar 3 puntos transitables")
+	assert_has(points, Vector2(9, 5), "El punto (9, 5) debe estar incluido")
+	assert_has(points, Vector2(10, 5), "El punto (10, 5) debe estar incluido")
+	assert_has(points, Vector2(11, 5), "El punto (11, 5) debe estar incluido")
+
+
+func test_get_passable_points_with_chunk_size():
+	var barrier := Barrier.new()
+	var opening_left := Opening.new(Opening.OpeningType.PASS, Vector2(0, 5), 3, false, BiomeType.ROCKS)
+	barrier.add_opening(opening_left)
+	
+	var opening_right := Opening.new(Opening.OpeningType.PASS, Vector2(31, 5), 3, false, BiomeType.ROCKS)
+	barrier.add_opening(opening_right)
+	
+	var points := barrier.get_passable_points(32)
+	for pt in points:
+		assert_true(pt.x >= 0 and pt.x < 32, "El punto X debe estar dentro de [0, 31]")
+		assert_true(pt.y >= 0 and pt.y < 32, "El punto Y debe estar dentro de [0, 31]")
+	
+	var small_points := barrier.get_passable_points(10)
+	for pt in small_points:
+		assert_true(pt.x >= 0 and pt.x < 10, "El punto X debe estar dentro de [0, 9] con chunk_size=10")
+
+
+func test_point_in_interactive_opening_respects_open_state():
+	var barrier := Barrier.new()
+	barrier.polygon = [
+		Vector2(0, 0),
+		Vector2(10, 0),
+		Vector2(10, 10),
+		Vector2(0, 10)
+	]
+	var door := Opening.new(Opening.OpeningType.DOOR, Vector2(5, 5), 2, true, BiomeType.WOOD)
+	barrier.add_opening(door)
+	
+	assert_false(door.is_passable(), "La puerta cerrada no debe ser transitable")
+	assert_true(barrier.contains_point(Vector2(5, 5)), "Con la puerta cerrada el punto debe estar dentro de la barrera")
+	
+	door.open()
+	assert_true(door.is_passable(), "La puerta abierta debe ser transitable")
+	assert_false(barrier.contains_point(Vector2(5, 5)), "Con la puerta abierta el punto no debe estar dentro de la barrera")
+	
+	door.close()
+	assert_false(door.is_passable(), "La puerta cerrada de nuevo no debe ser transitable")
+	assert_true(barrier.contains_point(Vector2(5, 5)), "Despues de cerrar el punto debe volver a estar dentro de la barrera")
+

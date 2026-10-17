@@ -36,7 +36,7 @@ func has_interactive_openings() -> bool:
 
 func get_passable_points(chunk_size: int = 32) -> Array[Vector2]:
 	"""Devuelve todos los puntos transitables de la barrera (aperturas)."""
-	var passable_points := []
+	var passable_points: Array[Vector2] = []
 	
 	for opening_item in openings:
 		var opening: Opening = opening_item
