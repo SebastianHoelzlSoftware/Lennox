@@ -34,11 +34,13 @@ var chunks: Array = []  # Array 2D de chunks (chunks[x][y])
 
 # Funciones de ayuda
 func _init(p_width: int = 64, p_height: int = 64, p_chunk_size: int = 32, p_tile_size: int = 32, p_seed: int = 0):
+				# Inizializar parametros
     width = p_width
     height = p_height
     chunk_size = p_chunk_size
     tile_size = p_tile_size
     seed = p_seed
+				# Initializar almacen para los chunks
     chunks = []
     for x in range(width):
         chunks.append([])
