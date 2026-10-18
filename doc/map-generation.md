@@ -295,6 +295,7 @@ Para cada punto en el Convex Hull:
 func perlin_noise(x: float, y: float, seed: int) -> float:
     # Implementacion de un algoritmo de Perlin Noise sencillo
     # o uso de OpenSimplexNoise de Godot.
+	# hahaha @gemini/todo:"check if perlin noise is necessary or whats that OpenSimplexNoise thing
     pass
 ```
 
