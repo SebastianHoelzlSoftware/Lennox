@@ -4,6 +4,14 @@
 
 Los biomas definen la **estructura basica y la apariencia** del mundo del juego. Cada bioma tiene **caracteristicas especificas** como densidad de barreras, obstaculos tipicos y frecuencias de aperturas que afectan el flujo del juego.
 
+## Estado actual de la implementacion
+
+- `BiomeGenerator.generate_biome_map()` asigna un tipo de `BiomeType` a cada chunk usando puntos de Voronoi colocados en una cuadrícula cada 5 chunks.
+- Las asignaciones de bioma y las fronteras deformadas son deterministas para una misma semilla. `Level.generate()` usa este mapa para asignar el bioma a cada chunk.
+- Las fronteras se deforman mediante **domain warping con FastNoiseLite Simplex FBM**: dos muestras de ruido desplazan cada coordenada consultada hasta 2.5 chunks. Esto produce fronteras irregulares, pero **no mezcla biomas ni crea zonas de transición**. El ruido tampoco controla altura o densidad de vegetación.
+- `BiomeGenerator.get_biome_params()` proporciona parámetros por bioma. La generación de barreras usa la cantidad, el tamaño y los tipos/cantidad de aperturas configurados para recortar huecos en el polígono. Esos huecos todavía no se representan como objetos `Opening` adjuntos a las barreras; la integración de aperturas interactivas corresponde a LEN-15.
+- Los parámetros aleatorios usan un `RandomNumberGenerator` local cuando se proporciona; la generación de un mapa no cambia el estado aleatorio global.
+
 ---
 
 ## Biomas Base
@@ -110,27 +118,11 @@ const SAND: Type = Type.SAND
 
 ---
 
-## Transiciones entre Biomas
+## Fronteras entre Biomas (implementacion actual)
 
-### Reglas para transiciones suaves
-1. **Voronoi + Perlin Noise:**
-   - **Voronoi** define las regiones gruesas.
-   - **Perlin Noise** suaviza las transiciones entre regiones.
+Cada chunk recibe un único bioma: no hay mezcla ni zona de amortiguación. Voronoi define la región y Simplex FBM desplaza la posición usada para buscar el punto más cercano. La amplitud actual del desplazamiento es 2.5 chunks.
 
-2. **Zonas de amortiguacion:**
-   - En los limites entre biomas hay una **zona de amortiguacion de 2-4 tiles** donde se mezclan las propiedades de ambos biomas.
-   - **Ejemplo:** Grassland → Wood: La zona de amortiguacion contiene hierba y arboles aislados.
-
-3. **Dominancia de Bioma:**
-   - El **bioma dominante** en una celda esta determinado por el **punto Voronoi mas cercano**.
-   - El **valor de Noise** determina la **altura y densidad** dentro del bioma.
-
-### Ejemplo: Grassland → Wood
-| Distancia al limite del bosque | Mezcla de Biomas | Vegetacion |
-|--------------------------------|-----------------|------------|
-| 0-2 tiles | 70% Grassland, 30% Wood | Hierba + arboles aislados |
-| 2-4 tiles | 30% Grassland, 70% Wood | Hierba densa + muchos arboles |
-| >4 tiles | 100% Wood | Solo arboles y arbustos |
+Las zonas mezcladas, la altura y la densidad de vegetación son ideas de diseño futuro, no comportamiento implementado.
 
 ---
 
@@ -142,7 +134,7 @@ const SAND: Type = Type.SAND
 | Barreras por Chunk | 1-2 |
 | Tamano de Barreras | 5-10 tiles de diametro |
 | Aperturas por Barrera | 1-3 |
-| Tipos de Apertura tipicos | Ford (50%), Pass (30%), Steps (20%) |
+| Tipos de Apertura tipicos | Ford (33%), Pass (33%), Steps (33%) |
 
 ### Wood
 | Parametro | Valor |
@@ -150,7 +142,7 @@ const SAND: Type = Type.SAND
 | Barreras por Chunk | 3-5 |
 | Tamano de Barreras | 8-15 tiles de diametro |
 | Aperturas por Barrera | 1-2 |
-| Tipos de Apertura tipicos | Pass (60%), Ford (20%), Door (20%) |
+| Tipos de Apertura tipicos | Pass (33%), Ford (33%), Door (33%) |
 
 ### Rocks
 | Parametro | Valor |
@@ -158,7 +150,7 @@ const SAND: Type = Type.SAND
 | Barreras por Chunk | 5-8 |
 | Tamano de Barreras | 10-20 tiles de diametro |
 | Aperturas por Barrera | 0-1 |
-| Tipos de Apertura tipicos | Pass (70%), Steps (30%) |
+| Tipos de Apertura tipicos | Pass (50%), Steps (50%) |
 
 ### Water
 | Parametro | Valor |
@@ -178,104 +170,11 @@ const SAND: Type = Type.SAND
 
 ---
 
-## Implementacion en GDScript
+## Implementacion y parametros
 
-### Generar Mapa de Biomas
-```gdscript
-func generate_biome_map(seed: int, width: int, height: int) -> Array:
-    var biome_map = []
-    var noise = FastNoiseLite.new()
-    noise.seed = seed
-    noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
-    noise.fractal_type = FastNoiseLite.FRACTAL_FBM
-    noise.fractal_octaves = 4
-    noise.frequency = 1.0 / 20.0
-    noise.fractal_gain = 0.5
-    
-    # Generar puntos Voronoi (1 punto cada 5x5 chunks)
-    var voronoi_points = []
-    var step = 5
-    for x in range(0, width, step):
-        for y in range(0, height, step):
-            voronoi_points.append(Vector2(x, y))
-    
-    # Asignar tipos de bioma a puntos Voronoi
-    var biome_types = ["Grassland", "Wood", "Rocks", "Water", "Sand"]
-    var biome_assignments = []
-    for point in voronoi_points:
-        var biome_idx = randi() % biome_types.size()
-        biome_assignments.append(biome_types[biome_idx])
-    
-    # Crear mapa de biomas
-    for x in range(width):
-        biome_map.append([])
-        for y in range(height):
-            # Encontrar el punto Voronoi mas cercano
-            var min_dist = INF
-            var closest_idx = -1
-            for i in range(voronoi_points.size()):
-                var dist = voronoi_points[i].distance_to(Vector2(x, y))
-                if dist < min_dist:
-                    min_dist = dist
-                    closest_idx = i
-            
-            # Valor Noise para suavizar
-            var noise_val = noise.get_noise_2d(x * 0.1, y * 0.1)
-            
-            # Asignar bioma (con suavizacion por Noise)
-            var biome = biome_assignments[closest_idx]
-            biome_map[x].append(biome)
-    
-    return biome_map
-```
+La implementación fuente está en `src/core/biome_generator.gd`. `generate_biome_map(seed, width, height)` devuelve una matriz indexada como `[x][y]` con valores `BiomeType.Type`. `get_biome_params()` define los rangos de barreras y los tipos de apertura disponibles; cuando se llama con un RNG local, los valores aleatorios también son reproducibles.
 
-### Obtener Parametros Especificos del Bioma
-```gdscript
-func get_biome_params(biome: BiomeType.Type) -> Dictionary:
-    match biome:
-        BiomeType.GRASSLAND:
-            return {
-                "barrier_count": randi_range(1, 2),
-                "barrier_size": randi_range(5, 10),
-                "opening_count": randi_range(1, 3),
-                "opening_types": ["Ford", "Pass", "Steps"]
-            }
-        BiomeType.WOOD:
-            return {
-                "barrier_count": randi_range(3, 5),
-                "barrier_size": randi_range(8, 15),
-                "opening_count": randi_range(1, 2),
-                "opening_types": ["Pass", "Ford", "Door"]
-            }
-        BiomeType.ROCKS:
-            return {
-                "barrier_count": randi_range(5, 8),
-                "barrier_size": randi_range(10, 20),
-                "opening_count": randi_range(0, 1),
-                "opening_types": ["Pass", "Steps"]
-            }
-        BiomeType.WATER:
-            return {
-                "barrier_count": randi_range(0, 1),
-                "barrier_size": randi_range(15, 30),
-                "opening_count": randi_range(1, 2),
-                "opening_types": ["Ford"]
-            }
-        BiomeType.SAND:
-            return {
-                "barrier_count": randi_range(1, 2),
-                "barrier_size": randi_range(6, 12),
-                "opening_count": randi_range(1, 3),
-                "opening_types": ["Pass", "Ford"]
-            }
-        _:
-            return {
-                "barrier_count": 1,
-                "barrier_size": 8,
-                "opening_count": 1,
-                "opening_types": ["Pass"]
-            }
-```
+Los rangos de cantidad y tamaño indicados en las tablas anteriores describen los parámetros usados por la generación. El tamaño limita la dispersión de los puntos; la forma final también depende del hull, la perturbación y los límites del chunk.
 
 ---
 

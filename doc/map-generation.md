@@ -4,6 +4,16 @@
 
 Este documento describe el algoritmo y la implementacion de la **generacion procedural de mapas 2D** para Lennox. El objetivo es crear un mundo de juego dinamico y variado con biomas naturales, barreras cerradas y aperturas estrategicamente colocadas.
 
+## Estado actual del proyecto
+
+- `Level.generate()` crea el mapa de biomas con la semilla del mundo y genera cada chunk usando el bioma correspondiente.
+- `BiomeGenerator` usa puntos de Voronoi con asignaciones deterministas y FastNoiseLite Simplex FBM para hacer domain warping de las fronteras. No hay mezcla de biomas, zonas de amortiguación, alturas ni transiciones por Perlin Noise.
+- `Level` genera barreras por bioma, aplica los tipos de baldosa al chunk y usa RNG locales con semillas derivadas para mantener la generación determinista.
+- Los parámetros de cantidad, tamaño y aperturas se obtienen de `BiomeGenerator.get_biome_params()`. La generación recorta huecos en el polígono de la barrera, pero no adjunta objetos `Opening` para controlar el estado interactivo; consulta LEN-15.
+- La integración con un TileMap de Godot y la colisión física del jugador no forman parte del código actual. Las comprobaciones disponibles son de punto y baldosa.
+
+Las secciones de diseño y pseudocódigo que siguen describen objetivos o alternativas; cuando difieran, el código en `src/core/` representa el comportamiento implementado.
+
 ---
 
 ## Condiciones Tecnicas
@@ -23,10 +33,10 @@ Este documento describe el algoritmo y la implementacion de la **generacion proc
 
 El proceso de generacion de mapas sigue un **proceso de 4 etapas**:
 
-1. **Generacion de Biomas** (Voronoi + Perlin Noise)
+1. **Generacion de Biomas** (Voronoi + Simplex Domain Warping)
 2. **Generacion de Barreras** (Convex Hull + Perturbation)
 3. **Colocar Aperturas** (0-n por barrera)
-4. **Crear Baldosas** (TileMap en Godot)
+4. **Aplicar barreras a las baldosas del chunk**
 
 ---
 
@@ -39,27 +49,21 @@ El proceso de generacion de mapas sigue un **proceso de 4 etapas**:
 | Grassland | Baja (1-2) | Rocks, Tree groups | Alta (1-3) | Areas abiertas con obstaculos aislados |
 | Wood | Alta (3-5) | Tree groups, Rocks | Media (1-2) | Vegetacion densa con barreras naturales |
 | Rocks | Muy Alta (5-8) | Rock formations, Cliffs | Baja (0-1) | Regiones montañosas, dificilmente transitables |
-| Water | Ninguna | Islands | - | Lagos, rios, mares |
+| Water | Muy baja (0-1) | Islands | - | Lagos, rios, mares |
 | Sand | Baja (1-2) | Dunes, Rocks | Alta (1-3) | Desiertos o regiones costeras |
 
-### Proceso de Generacion
+### Proceso de Generacion (implementacion actual)
 
-1. **Diagrama de Voronoi:**
-   - Divide el nivel en **3-5 celdas de Voronoi** por grupo de chunks.
-   - Cada celda se asigna a un **tipo de bioma**.
-   - **Objetivo:** Crear regiones naturales y organicas.
+1. **Puntos de Voronoi:**
+   - Se coloca un punto cada 5 chunks en los ejes X e Y.
+   - Cada punto recibe uno de los cinco valores de `BiomeType`, usando un RNG local con la semilla del mundo.
 
-2. **Perlin Noise para transiciones:**
-   - Aplica **Perlin Noise** a los limites de Voronoi para crear **transiciones suaves** entre biomas.
-   - **Parametros:**
-     - Escalado: 0.05-0.1
-     - Octavas: 2-4
-     - Persistencia: 0.5
+2. **Domain warping:**
+   - FastNoiseLite Simplex FBM desplaza cada coordenada de consulta hasta 2.5 chunks antes de buscar el punto más cercano.
+   - Las fronteras resultan irregulares, pero los chunks mantienen un único bioma; no se mezclan propiedades.
 
-3. **Ajustes Especificos por Bioma:**
-   - **Water:** Solo en hundimientos (valores de Noise < 0.2).
-   - **Rocks:** En colinas (valores de Noise > 0.7).
-   - **Wood:** En altitudes medias (valores de Noise 0.4-0.7).
+3. **Asignación al nivel:**
+   - `Level.generate()` conserva el mapa en `biome_map` y asigna cada valor al chunk correspondiente.
 
 ---
 
@@ -79,9 +83,9 @@ El proceso de generacion de mapas sigue un **proceso de 4 etapas**:
    - Mueve cada punto del Convex Hull **aleatoriamente +/- 1-2 baldosas** hacia adentro o afuera.
    - **Objetivo:** Formas mas naturales y menos geometricas.
 
-4. **Convertir barrera a baldosas:**
+4. **Aplicar barrera a baldosas:**
    - Todas las baldosas **dentro del poligono** se convierten en **baldosas de barrera** (ej. texturas de Rocks o Tree).
-   - **Consulta de colision:** Estas baldosas bloquean al jugador.
+   - `Chunk.is_barrier()` y `Barrier.contains_point()` permiten consultar puntos; la integración con la física del jugador todavía no está implementada.
 
 ### Parametros Dependientes del Bioma
 

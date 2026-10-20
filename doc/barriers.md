@@ -1,8 +1,12 @@
 # Sistema de Barreras para Lennox
 
-## 📌 Estado: **Implementado (LEN-5)** ✅
+## 📌 Estado: Generacion y consultas de barreras implementadas
 
-Las barreras son **obstaculos cerrados** en el mundo del juego que impiden el paso del jugador a menos que utilice una **apertura** (por ejemplo, Steps, Door, Ford, Pass). Las barreras pueden tener varias formas y tipos y son **dependientes del bioma**.
+Las barreras son polígonos dependientes del bioma que se aplican a las baldosas del chunk y pueden consultarse mediante pruebas de punto. La integración con colisión física del jugador todavía no está implementada.
+
+`Level` obtiene la cantidad, el tamaño y las opciones de apertura de `BiomeGenerator.get_biome_params()` y genera las barreras de forma determinista mediante RNG locales. La generación crea huecos pasables al modificar el polígono, pero todavía no crea ni adjunta objetos `Opening` a las barreras generadas para controlar su estado interactivo. Esa integración está asignada a LEN-15.
+
+Los ejemplos de algoritmo y fragmentos de código de este documento son material de diseño; para el comportamiento actual, consulta `src/core/level.gd`, `src/core/chunk.gd`, `src/core/barrier.gd` y `src/core/opening.gd`.
 
 **Implementacion:**
 - `src/core/barrier.gd` - Clase de barreras con poligono y aperturas
