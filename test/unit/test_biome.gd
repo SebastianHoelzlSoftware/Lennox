@@ -71,11 +71,11 @@ func test_biome_params_are_deterministic_with_local_rng():
 
 func test_biome_params_stay_within_biome_ranges():
 	var cases := [
-		{"biome": BiomeType.GRASSLAND, "barriers": Vector2i(1, 2), "size": Vector2i(5, 10), "openings": Vector2i(1, 3)},
-		{"biome": BiomeType.WOOD, "barriers": Vector2i(3, 5), "size": Vector2i(8, 15), "openings": Vector2i(1, 2)},
-		{"biome": BiomeType.ROCKS, "barriers": Vector2i(5, 8), "size": Vector2i(10, 20), "openings": Vector2i(0, 1)},
-		{"biome": BiomeType.WATER, "barriers": Vector2i(0, 1), "size": Vector2i(15, 30), "openings": Vector2i(1, 2)},
-		{"biome": BiomeType.SAND, "barriers": Vector2i(1, 2), "size": Vector2i(6, 12), "openings": Vector2i(1, 3)}
+		{"biome": BiomeType.GRASSLAND, "barriers": Vector2i(1, 2), "size": Vector2i(4, 8), "openings": Vector2i(1, 2), "points": Vector2i(5, 8)},
+		{"biome": BiomeType.WOOD, "barriers": Vector2i(2, 4), "size": Vector2i(6, 10), "openings": Vector2i(1, 2), "points": Vector2i(8, 12)},
+		{"biome": BiomeType.ROCKS, "barriers": Vector2i(3, 5), "size": Vector2i(8, 14), "openings": Vector2i(0, 1), "points": Vector2i(10, 15)},
+		{"biome": BiomeType.WATER, "barriers": Vector2i(0, 1), "size": Vector2i(8, 14), "openings": Vector2i(1, 2), "points": Vector2i(5, 10)},
+		{"biome": BiomeType.SAND, "barriers": Vector2i(1, 2), "size": Vector2i(4, 8), "openings": Vector2i(1, 2), "points": Vector2i(5, 8)}
 	]
 
 	for index in range(cases.size()):
@@ -89,6 +89,26 @@ func test_biome_params_stay_within_biome_ranges():
 		assert_gte(params["opening_count"], cases[index]["openings"].x)
 		assert_lte(params["opening_count"], cases[index]["openings"].y)
 		assert_gt(params["opening_types"].size(), 0, "Jedes Biom muss mindestens einen Öffnungstyp konfigurieren")
+		var point_range: Vector2i = BiomeConfig.get_biome_profile(cases[index]["biome"])["point_count"]
+		assert_eq(point_range, cases[index]["points"], "La cantidad de puntos debe estar configurada por bioma")
+
+
+func test_opening_width_ranges_are_configured():
+	assert_eq(BiomeConfig.get_opening_width_range(Opening.OpeningType.STEPS), Vector2i(2, 3))
+	assert_eq(BiomeConfig.get_opening_width_range(Opening.OpeningType.DOOR), Vector2i(1, 1))
+	assert_eq(BiomeConfig.get_opening_width_range(Opening.OpeningType.FORD), Vector2i(2, 4))
+	assert_eq(BiomeConfig.get_opening_width_range(Opening.OpeningType.PASS), Vector2i(3, 5))
+
+
+func test_biome_config_returns_independent_profiles():
+	var profile := BiomeConfig.get_biome_profile(BiomeType.GRASSLAND)
+	profile["opening_types"].clear()
+
+	assert_eq(
+		BiomeConfig.get_biome_profile(BiomeType.GRASSLAND)["opening_types"].size(),
+		3,
+		"Änderungen an einem abgerufenen Profil dürfen die Konfiguration nicht verändern"
+	)
 
 
 func test_biome_barrier_density():

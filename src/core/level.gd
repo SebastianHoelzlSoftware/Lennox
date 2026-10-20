@@ -178,12 +178,8 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 
 func _get_opening_width(p_opening_type: int, p_rng: RandomNumberGenerator) -> int:
 	"""Devuelve el ancho de una apertura basado en el tipo."""
-	match p_opening_type:
-		Opening.OpeningType.STEPS: return p_rng.randi_range(2, 3)
-		Opening.OpeningType.DOOR: return 1
-		Opening.OpeningType.FORD: return p_rng.randi_range(2, 4)
-		Opening.OpeningType.PASS: return p_rng.randi_range(3, 5)
-		_: return 1
+	var width_range := BiomeConfig.get_opening_width_range(p_opening_type)
+	return p_rng.randi_range(width_range.x, width_range.y)
 
 
 func _generate_random_points(
@@ -194,16 +190,8 @@ func _generate_random_points(
 ) -> Array:
 	"""Genera puntos aleatorios para la generacion de barreras."""
 	var points := []
-	var num_points := 0
-	
-	# Cantidad de puntos dependiente del bioma
-	match p_biome:
-		BiomeType.GRASSLAND: num_points = p_rng.randi_range(5, 8)
-		BiomeType.WOOD: num_points = p_rng.randi_range(8, 12)
-		BiomeType.ROCKS: num_points = p_rng.randi_range(10, 15)
-		BiomeType.WATER: num_points = p_rng.randi_range(5, 10)
-		BiomeType.SAND: num_points = p_rng.randi_range(5, 8)
-		_: num_points = p_rng.randi_range(5, 10)
+	var point_count_range: Vector2i = BiomeConfig.get_biome_profile(p_biome)["point_count"]
+	var num_points := p_rng.randi_range(point_count_range.x, point_count_range.y)
 	
 	# Generar puntos en el area interior (no en el borde)
 	var margin := 2

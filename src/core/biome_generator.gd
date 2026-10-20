@@ -81,61 +81,15 @@ static func get_biome_params(
 		rng = RandomNumberGenerator.new()
 		rng.randomize()
 
-	# Cada bioma define sus límites de barreras y los tipos de apertura permitidos.
-	match p_biome:
-		BiomeType.GRASSLAND:
-			return {
-				"barrier_count": rng.randi_range(1, 2),
-				"barrier_size": rng.randi_range(5, 10),
-				"opening_count": rng.randi_range(1, 3),
-				"opening_types": [
-					Opening.OpeningType.FORD,
-					Opening.OpeningType.PASS,
-					Opening.OpeningType.STEPS
-				]
-			}
-		BiomeType.WOOD:
-			return {
-				"barrier_count": rng.randi_range(3, 5),
-				"barrier_size": rng.randi_range(8, 15),
-				"opening_count": rng.randi_range(1, 2),
-				"opening_types": [
-					Opening.OpeningType.PASS,
-					Opening.OpeningType.FORD,
-					Opening.OpeningType.DOOR
-				]
-			}
-		BiomeType.ROCKS:
-			return {
-				"barrier_count": rng.randi_range(5, 8),
-				"barrier_size": rng.randi_range(10, 20),
-				"opening_count": rng.randi_range(0, 1),
-				"opening_types": [
-					Opening.OpeningType.PASS,
-					Opening.OpeningType.STEPS
-				]
-			}
-		BiomeType.WATER:
-			return {
-				"barrier_count": rng.randi_range(0, 1),
-				"barrier_size": rng.randi_range(15, 30),
-				"opening_count": rng.randi_range(1, 2),
-				"opening_types": [Opening.OpeningType.FORD]
-			}
-		BiomeType.SAND:
-			return {
-				"barrier_count": rng.randi_range(1, 2),
-				"barrier_size": rng.randi_range(6, 12),
-				"opening_count": rng.randi_range(1, 3),
-				"opening_types": [
-					Opening.OpeningType.PASS,
-					Opening.OpeningType.FORD
-				]
-			}
-		_:
-			return {
-				"barrier_count": 1,
-				"barrier_size": 8,
-				"opening_count": 1,
-				"opening_types": [Opening.OpeningType.PASS]
-			}
+	# Los rangos y tipos permitidos se centralizan para facilitar el balanceo.
+	var profile := BiomeConfig.get_biome_profile(p_biome)
+	var barrier_count_range: Vector2i = profile["barrier_count"]
+	var barrier_size_range: Vector2i = profile["barrier_size"]
+	var opening_count_range: Vector2i = profile["opening_count"]
+
+	return {
+		"barrier_count": rng.randi_range(barrier_count_range.x, barrier_count_range.y),
+		"barrier_size": rng.randi_range(barrier_size_range.x, barrier_size_range.y),
+		"opening_count": rng.randi_range(opening_count_range.x, opening_count_range.y),
+		"opening_types": profile["opening_types"]
+	}

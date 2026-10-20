@@ -19,11 +19,11 @@ Los biomas definen la **estructura basica y la apariencia** del mundo del juego.
 
 | Bioma | Descripcion | Color (Hex) | Densidad de Barreras | Barreras Tipicas | Frecuencia de Aperturas |
 |-------|-------------|------------|---------------------|-------------------|------------------------|
-| Grassland | Areas abiertas y verdes con arboles o rocas aisladas. | `#7CF06B` | Baja (1-2) | Rocks, Tree groups | Alta (1-3) |
-| Wood | Vegetacion densa con muchos obstaculos naturales. | `#3A7D44` | Alta (3-5) | Tree groups, Rocks | Media (1-2) |
-| Rocks | Regiones montañosas y rocosas con acantilados pronunciados. | `#8B8B8B` | Muy alta (5-8) | Rock formations, Cliffs | Baja (0-1) |
-| Water | Lagos, rios o mares. Sin barreras, excepto islas. | `#4169E1` | Ninguna | Islands (logica inversa) | - |
-| Sand | Desiertos o regiones costeras con dunas y rocas aisladas. | `#F4A460` | Baja (1-2) | Dunes, Rocks | Alta (1-3) |
+| Grassland | Areas abiertas y verdes con arboles o rocas aisladas. | `#7CF06B` | Baja (1-2) | Rocks, Tree groups | Media (1-2) |
+| Wood | Vegetacion densa con muchos obstaculos naturales. | `#3A7D44` | Media-alta (2-4) | Tree groups, Rocks | Media (1-2) |
+| Rocks | Regiones montañosas y rocosas con acantilados pronunciados. | `#8B8B8B` | Alta (3-5) | Rock formations, Cliffs | Baja (0-1) |
+| Water | Lagos, rios o mares. Puede contener islas. | `#4169E1` | Muy baja (0-1) | Islands | Media (1-2) |
+| Sand | Desiertos o regiones costeras con dunas y rocas aisladas. | `#F4A460` | Baja (1-2) | Dunes, Rocks | Media (1-2) |
 
 ---
 
@@ -69,7 +69,7 @@ const SAND: Type = Type.SAND
 ### Grassland
 - **Vegetacion:** Hierba, arboles aislados, flores.
 - **Barreras:**
-  - **Rocks:** Pequeños grupos de rocas (5-8 tiles de diametro).
+  - **Rocks:** Grupos pequeños y aislados de rocas.
   - **Tree groups:** 3-5 arboles en grupo.
 - **Aperturas:**
   - **Ford:** Frecuente (si hay agua cerca).
@@ -124,45 +124,52 @@ Las zonas mezcladas, la altura y la densidad de vegetación son ideas de diseño
 
 ## Parametros Especificos de Barreras por Bioma
 
+Los valores siguientes son rangos iniciales de balance para chunks de 32 × 32 tiles. Se centralizan en `src/core/biome_config.gd` para poder ajustarlos sin modificar la lógica de generación. `barrier_size` limita la dispersión de los puntos que forman el polígono; no es un diámetro garantizado. La cantidad de puntos controla el detalle de la forma.
+
 ### Grassland
 | Parametro | Valor |
 |-----------|-------|
 | Barreras por Chunk | 1-2 |
-| Tamano de Barreras | 5-10 tiles de diametro |
-| Aperturas por Barrera | 1-3 |
-| Tipos de Apertura tipicos | Ford (33%), Pass (33%), Steps (33%) |
+| Rango de dispersión de la barrera | 4-8 tiles |
+| Puntos por barrera | 5-8 |
+| Aperturas intentadas por barrera | 1-2 |
+| Tipos de Apertura | Ford, Pass, Steps (probabilidad igual) |
 
 ### Wood
 | Parametro | Valor |
 |-----------|-------|
-| Barreras por Chunk | 3-5 |
-| Tamano de Barreras | 8-15 tiles de diametro |
+| Barreras por Chunk | 2-4 |
+| Rango de dispersión de la barrera | 6-10 tiles |
+| Puntos por barrera | 8-12 |
 | Aperturas por Barrera | 1-2 |
-| Tipos de Apertura tipicos | Pass (33%), Ford (33%), Door (33%) |
+| Tipos de Apertura | Pass, Ford, Door (probabilidad igual) |
 
 ### Rocks
 | Parametro | Valor |
 |-----------|-------|
-| Barreras por Chunk | 5-8 |
-| Tamano de Barreras | 10-20 tiles de diametro |
+| Barreras por Chunk | 3-5 |
+| Rango de dispersión de la barrera | 8-14 tiles |
+| Puntos por barrera | 10-15 |
 | Aperturas por Barrera | 0-1 |
-| Tipos de Apertura tipicos | Pass (50%), Steps (50%) |
+| Tipos de Apertura | Pass, Steps (probabilidad igual) |
 
 ### Water
 | Parametro | Valor |
 |-----------|-------|
-| Barreras por Chunk | 0-1 (Islands) |
-| Tamano de Barreras | 15-30 tiles de diametro |
+| Barreras por Chunk | 0-1 (islas) |
+| Rango de dispersión de la barrera | 8-14 tiles |
+| Puntos por barrera | 5-10 |
 | Aperturas por Barrera | 1-2 (Fords) |
-| Tipos de Apertura tipicos | Ford (100%) |
+| Tipos de Apertura | Ford |
 
 ### Sand
 | Parametro | Valor |
 |-----------|-------|
 | Barreras por Chunk | 1-2 |
-| Tamano de Barreras | 6-12 tiles de diametro |
-| Aperturas por Barrera | 1-3 |
-| Tipos de Apertura tipicos | Pass (80%), Ford (20%) |
+| Rango de dispersión de la barrera | 4-8 tiles |
+| Puntos por barrera | 5-8 |
+| Aperturas por Barrera | 1-2 |
+| Tipos de Apertura | Pass, Ford (probabilidad igual) |
 
 ---
 
