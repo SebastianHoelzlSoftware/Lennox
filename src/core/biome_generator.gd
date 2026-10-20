@@ -4,21 +4,23 @@ class_name BiomeGenerator
 static func generate_biome_map(p_seed: int, p_width: int, p_height: int) -> Array:
 	"""
 	Genera un mapa de biomas para un nivel.
-	Utiliza Voronoi con domain warping basado en ruido simplex para variar las fronteras.
+	Usa regiones de Voronoi y deforma sus coordenadas con ruido Simplex para que
+	las fronteras no formen una cuadrícula regular.
 	"""
 	var biome_map := []
 
+	# Esta semilla hace que tanto la asignación de biomas como el ruido sean reproducibles.
 	var rng := RandomNumberGenerator.new()
 	rng.seed = p_seed
 
-	# Voronoi-Punkte generieren (1 Punkt pro 5x5 Chunks)
+	# Crea una celda de Voronoi por cada bloque de 5 × 5 chunks.
 	var voronoi_points := []
 	var step := 5
 	for x in range(0, p_width, step):
 		for y in range(0, p_height, step):
 			voronoi_points.append(Vector2(x, y))
 
-	# Biom-Typen für Voronoi-Punkte zuweisen
+	# Define los biomas posibles y asigna uno aleatorio a cada centro de Voronoi.
 	var biome_types: Array[BiomeType.Type] = [
 		BiomeType.GRASSLAND,
 		BiomeType.WOOD,
@@ -31,7 +33,7 @@ static func generate_biome_map(p_seed: int, p_width: int, p_height: int) -> Arra
 		var biome_idx := rng.randi_range(0, biome_types.size() - 1)
 		biome_assignments.append(biome_types[biome_idx])
 
-	# Perlin Noise für Glättung
+	# El ruido Simplex fractal aporta variaciones suaves a las coordenadas consultadas.
 	var noise := FastNoiseLite.new()
 	noise.seed = p_seed
 	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
@@ -40,14 +42,14 @@ static func generate_biome_map(p_seed: int, p_width: int, p_height: int) -> Arra
 	noise.frequency = 1.0 / 20.0
 	noise.fractal_gain = 0.5
 
-	# Biom-Karte erstellen
+	# Para cada chunk, busca el centro de Voronoi más cercano a la posición deformada.
 	for x in range(p_width):
 		biome_map.append([])
 		for y in range(p_height):
-			# Domain warping verschiebt die Abfragekoordinate kontinuierlich und formt die Grenzen.
+			# La deformación desplaza la posición de consulta y da forma irregular a las fronteras.
 			var sample_position := _warp_position(noise, Vector2(x, y))
 
-			# Nächsten Voronoi-Punkt finden
+			# Conserva el índice del centro más cercano para recuperar el bioma asignado.
 			var min_dist := INF
 			var closest_idx := -1
 			for i in range(voronoi_points.size()):
@@ -63,6 +65,7 @@ static func generate_biome_map(p_seed: int, p_width: int, p_height: int) -> Arra
 	return biome_map
 
 static func _warp_position(p_noise: FastNoiseLite, p_position: Vector2) -> Vector2:
+	# Dos muestras con coordenadas desplazadas aportan el desplazamiento de cada eje.
 	var noise_x := p_noise.get_noise_2d(p_position.x, p_position.y)
 	var noise_y := p_noise.get_noise_2d(p_position.x + 1000.0, p_position.y + 1000.0)
 	return p_position + Vector2(noise_x, noise_y) * 2.5
@@ -71,11 +74,14 @@ static func get_biome_params(
 	p_biome: BiomeType.Type,
 	p_rng: RandomNumberGenerator = null
 ) -> Dictionary:
+	# Reutiliza el generador recibido para que quien llama pueda controlar la semilla.
+	# Si no se proporciona uno, crea una secuencia aleatoria independiente.
 	var rng := p_rng
 	if rng == null:
 		rng = RandomNumberGenerator.new()
 		rng.randomize()
 
+	# Cada bioma define sus límites de barreras y los tipos de apertura permitidos.
 	match p_biome:
 		BiomeType.GRASSLAND:
 			return {

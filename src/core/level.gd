@@ -111,16 +111,21 @@ func _get_biome_params_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 
 
 func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) -> Array:
-	"""Genera barreras para un chunk basado en bioma y semilla."""
+	"""Genera barreras reproducibles para un chunk según su bioma y sus coordenadas."""
 	var barriers := []
 	
+	# Los parámetros y la distribución usan secuencias distintas, pero ambas dependen
+	# de las coordenadas y de la semilla del mundo: regenerar el chunk da el mismo resultado.
 	var biome_params := _get_biome_params_for_chunk(p_x, p_y, p_biome)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = hash([p_x, p_y, world_seed, "barrier-layout"])
 	var num_barriers: int = biome_params["barrier_count"]
 	
+	# Cada barrera se construye a partir de puntos aleatorios y su envolvente convexa.
 	for i in range(num_barriers):
 		var hull := []
+		# Puede que los puntos no formen una envolvente válida; se vuelve a intentar
+		# hasta diez veces antes de recurrir a una forma triangular mínima.
 		for attempt in range(10):
 			var points := _generate_random_points(
 				p_biome,
@@ -134,6 +139,7 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 					break
 
 		if hull.size() < 3:
+			# Evita descartar la barrera si los intentos aleatorios no dieron una forma válida.
 			var fallback_center := Vector2(
 				rng.randi_range(3, chunk_size - 4),
 				rng.randi_range(3, chunk_size - 4)
@@ -144,14 +150,16 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 				fallback_center + Vector2(0, 1)
 			])
 
-		# 3. Perturbacion para formas organicas
+		# Desplaza ligeramente los vértices para evitar formas demasiado geométricas.
 		hull = _perturb_hull(hull, 1, rng)
 		
-		# 4. Colocar aperturas
+		# El bioma determina cuántas aperturas se intentan y qué tipos pueden aparecer.
 		var num_openings: int = biome_params["opening_count"]
 		var opening_types: Array = biome_params["opening_types"]
 		
 		for j in range(num_openings):
+			# Elige el tipo y el ancho de la apertura, busca un punto de inserción
+			# en la envolvente y modifica el polígono para representar el paso.
 			var opening_type: int = opening_types[rng.randi_range(0, opening_types.size() - 1)]
 			var opening_width := _get_opening_width(opening_type, rng)
 			
@@ -159,7 +167,7 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 			if opening_pos != null:
 				hull = _place_opening_in_hull(hull, opening_pos, opening_width)
 		
-		# 5. Crear barrera
+		# Guarda el polígono final junto con su bioma para que el chunk pueda aplicarlo.
 		var barrier := Barrier.new()
 		barrier.polygon = hull
 		barrier.biome = p_biome
