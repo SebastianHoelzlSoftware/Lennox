@@ -206,4 +206,3 @@ func test_point_in_interactive_opening_respects_open_state():
 	door.close()
 	assert_false(door.is_passable(), "La puerta cerrada de nuevo no debe ser transitable")
 	assert_true(barrier.contains_point(Vector2(5, 5)), "Despues de cerrar el punto debe volver a estar dentro de la barrera")
-

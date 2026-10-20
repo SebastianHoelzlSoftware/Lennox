@@ -58,6 +58,43 @@ func test_level_generates_with_barriers():
 	assert_gt(total_barriers, 0, "El nivel debe haber generado al menos una barrera entre los chunks")
 
 
+func test_convex_hull_contains_outer_points_and_excludes_inner_points():
+	var level := Level.new(1, 1, 32, 32, 12345)
+	var points := [
+		Vector2(0, 0),
+		Vector2(2, 0),
+		Vector2(1, 2),
+		Vector2(1, 1)
+	]
+
+	var hull := level._compute_convex_hull(points)
+
+	assert_eq(hull.size(), 3, "La envolvente convexa debe excluir el punto interior")
+	for point in [Vector2(0, 0), Vector2(2, 0), Vector2(1, 2)]:
+		assert_has(hull, point, "La envolvente convexa debe conservar los puntos exteriores")
+
+	var barrier := Barrier.new()
+	barrier.polygon = hull
+	assert_true(barrier.contains_point(Vector2(1, 1)), "La envolvente debe cerrar implicitamente el poligono")
+
+
+func test_perturb_hull_preserves_vertex_count_and_polygon():
+	var level := Level.new(1, 1, 32, 32, 12345)
+	var hull := [Vector2(0, 0), Vector2(20, 0), Vector2(10, 20)]
+
+	seed(12345)
+	var perturbed_hull := level._perturb_hull(hull, 1)
+
+	assert_eq(perturbed_hull.size(), hull.size(), "La perturbacion debe conservar la cantidad de vertices")
+	for index in range(hull.size()):
+		var offset: Vector2 = perturbed_hull[index] - hull[index]
+		assert_true(abs(offset.x) <= 1 and abs(offset.y) <= 1, "Cada vertice solo debe desplazarse dentro del limite configurado")
+
+	var barrier := Barrier.new()
+	barrier.polygon = perturbed_hull
+	assert_true(barrier.contains_point(Vector2(10, 10)), "El poligono perturbado debe seguir conteniendo su interior")
+
+
 func test_barriers_deterministic_with_seed():
 	var level1 := Level.new(2, 2, 32, 32, 424242)
 	var level2 := Level.new(2, 2, 32, 32, 424242)
@@ -91,5 +128,4 @@ func test_get_barrier_tile_type_from_biome():
 	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.WATER), TileType.WATER, "El bioma WATER debe mapear a baldosa de barrera WATER")
 	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.SAND), TileType.SAND, "El bioma SAND debe mapear a baldosa de barrera SAND")
 	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.GRASSLAND), TileType.ROCK, "El bioma GRASSLAND por defecto debe mapear a baldosa de barrera ROCK")
-
 
