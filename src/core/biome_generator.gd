@@ -4,7 +4,7 @@ class_name BiomeGenerator
 static func generate_biome_map(p_seed: int, p_width: int, p_height: int) -> Array:
 	"""
 	Genera un mapa de biomas para un nivel.
-	Utiliza un diagrama de Voronoi y ruido de Perlin para lograr transiciones naturales.
+	Utiliza Voronoi con domain warping basado en ruido simplex para variar las fronteras.
 	"""
 	var biome_map := []
 
@@ -45,24 +45,28 @@ static func generate_biome_map(p_seed: int, p_width: int, p_height: int) -> Arra
 	for x in range(p_width):
 		biome_map.append([])
 		for y in range(p_height):
+			# Domain warping verschiebt die Abfragekoordinate kontinuierlich und formt die Grenzen.
+			var sample_position := _warp_position(noise, Vector2(x, y))
+
 			# Nächsten Voronoi-Punkt finden
 			var min_dist := INF
 			var closest_idx := -1
 			for i in range(voronoi_points.size()):
 				var voronoi_point: Vector2 = voronoi_points[i]
-				var dist: float = voronoi_point.distance_to(Vector2(x, y))
+				var dist: float = voronoi_point.distance_to(sample_position)
 				if dist < min_dist:
 					min_dist = dist
 					closest_idx = i
 
-			# Noise-Wert für Glättung
-			var noise_val := noise.get_noise_2d(x * 0.1, y * 0.1)
-
-			# Biom zuweisen (mit Noise-Glättung)
 			var biome: BiomeType.Type = biome_assignments[closest_idx]
 			biome_map[x].append(biome)
 
 	return biome_map
+
+static func _warp_position(p_noise: FastNoiseLite, p_position: Vector2) -> Vector2:
+	var noise_x := p_noise.get_noise_2d(p_position.x, p_position.y)
+	var noise_y := p_noise.get_noise_2d(p_position.x + 1000.0, p_position.y + 1000.0)
+	return p_position + Vector2(noise_x, noise_y) * 2.5
 
 static func get_biome_params(p_biome: BiomeType.Type) -> Dictionary:
 	match p_biome:

@@ -20,6 +20,21 @@ func test_biome_generation_is_deterministic():
 		for y in range(3):
 			assert_eq(biome_map1[x][y], biome_map2[x][y], "El mapa de biomas debería ser determinista")
 
+func test_noise_warp_changes_voronoi_sample_position_within_strength():
+	var noise := FastNoiseLite.new()
+	noise.seed = 12345
+	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+	noise.fractal_type = FastNoiseLite.FRACTAL_FBM
+	noise.fractal_octaves = 4
+	noise.frequency = 1.0 / 20.0
+	noise.fractal_gain = 0.5
+
+	var original_position := Vector2(12, 17)
+	var warped_position := BiomeGenerator._warp_position(noise, original_position)
+
+	assert_ne(warped_position, original_position, "Der Noise-Warp muss die Sample-Position verschieben")
+	assert_lte(warped_position.distance_to(original_position), 2.5, "Der Warp muss innerhalb seiner festgelegten Stärke bleiben")
+
 func test_get_biome_params_returns_valid_values():
 	var params := BiomeGenerator.get_biome_params(BiomeType.GRASSLAND)
 	assert_true(params.has("barrier_count"), "Debe contener barrier_count")
