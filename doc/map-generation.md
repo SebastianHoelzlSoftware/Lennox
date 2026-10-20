@@ -294,8 +294,8 @@ Para cada punto en el Convex Hull:
 ```
 func perlin_noise(x: float, y: float, seed: int) -> float:
     # Implementacion de un algoritmo de Perlin Noise sencillo
-    # o uso de OpenSimplexNoise de Godot.
-	# hahaha @ai/todo:"check if perlin noise is necessary or whats that OpenSimplexNoise thing"
+    # o uso de FastNoiseLite de Godot.
+	# hahaha @ai/todo:"check if perlin noise is necessary or whats that noise thing"
     pass
 ```
 
@@ -304,5 +304,5 @@ func perlin_noise(x: float, y: float, seed: int) -> float:
 ## Enlaces
 
 - [Documentacion de TileMap en Godot](https://docs.godotengine.org/en/stable/tutorials/2d/procedural_geometry/tilemap.html)
-- [OpenSimplexNoise en Godot](https://docs.godotengine.org/en/stable/classes/class_opensimplexnoise.html)
+- [FastNoiseLite en Godot](https://docs.godotengine.org/en/stable/classes/class_fastnoiselite.html)
 - [Algoritmos de Convex Hull](https://en.wikipedia.org/wiki/Convex_hull_algorithms)

@@ -184,11 +184,13 @@ const SAND: Type = Type.SAND
 ```gdscript
 func generate_biome_map(seed: int, width: int, height: int) -> Array:
     var biome_map = []
-    var noise = OpenSimplexNoise.new()
+    var noise = FastNoiseLite.new()
     noise.seed = seed
-    noise.octaves = 4
-    noise.period = 20.0
-    noise.persistence = 0.5
+    noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+    noise.fractal_type = FastNoiseLite.FRACTAL_FBM
+    noise.fractal_octaves = 4
+    noise.frequency = 1.0 / 20.0
+    noise.fractal_gain = 0.5
     
     # Generar puntos Voronoi (1 punto cada 5x5 chunks)
     var voronoi_points = []
@@ -299,6 +301,6 @@ func get_biome_params(biome: BiomeType.Type) -> Dictionary:
 
 ## Enlaces
 
-- [Godot OpenSimplexNoise](https://docs.godotengine.org/en/stable/classes/class_opensimplexnoise.html)
+- [Godot FastNoiseLite](https://docs.godotengine.org/en/stable/classes/class_fastnoiselite.html)
 - [Diagrama de Voronoi](https://en.wikipedia.org/wiki/Voronoi_diagram)
 - [Explicacion de Perlin Noise](https://adrianb.io/2014/08/09/perlinnoise.html)
