@@ -12,3 +12,6 @@
 
 # Ignore test output xml
 latest_test_output.xml
+
+# Executable folder
+/bin/
