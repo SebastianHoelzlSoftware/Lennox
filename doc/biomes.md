@@ -8,7 +8,8 @@ Los biomas definen la **estructura basica y la apariencia** del mundo del juego.
 
 - `BiomeGenerator.generate_biome_map()` asigna un tipo de `BiomeType` a cada chunk usando puntos de Voronoi colocados en una cuadrícula cada 5 chunks.
 - Las asignaciones de bioma y las fronteras deformadas son deterministas para una misma semilla. `Level.generate()` usa este mapa para asignar el bioma a cada chunk.
-- Las fronteras se deforman mediante **domain warping con FastNoiseLite Simplex FBM**: dos muestras de ruido desplazan cada coordenada consultada hasta 2.5 chunks. Esto produce fronteras irregulares, pero **no mezcla biomas ni crea zonas de transición**. El ruido tampoco controla altura o densidad de vegetación.
+- Las fronteras se deforman mediante **domain warping con FastNoiseLite Simplex FBM**. La configuración común a todos los biomas usa 4 octavas, una frecuencia de `0.05` (`1.0 / 20.0`) y una ganancia fractal de `0.5`. Dos muestras de ruido desplazan cada eje de la posición consultada hasta `2.5` chunks. Esto produce fronteras irregulares, pero **no mezcla biomas ni crea zonas de transición**. El ruido tampoco controla altura o densidad de vegetación.
+- No hay parámetros de ruido específicos por bioma en la implementación actual. Los perfiles de altura Perlin que aparecían en las descripciones siguientes eran propuestas de diseño y se omiten porque todavía no existe generación de altura.
 - `BiomeGenerator.get_biome_params()` proporciona parámetros por bioma. La generación de barreras usa la cantidad, el tamaño y los tipos/cantidad de aperturas configurados para recortar huecos en el polígono. Esos huecos todavía no se representan como objetos `Opening` adjuntos a las barreras; la integración de aperturas interactivas corresponde a LEN-15.
 - Los parámetros aleatorios usan un `RandomNumberGenerator` local cuando se proporciona; la generación de un mapa no cambia el estado aleatorio global.
 
@@ -66,7 +67,6 @@ const SAND: Type = Type.SAND
 ## Parametros por Bioma
 
 ### Grassland
-- **Perfil de Altura:** Plano o ligeramente ondulado (Perlin Noise: 0.3-0.6).
 - **Vegetacion:** Hierba, arboles aislados, flores.
 - **Barreras:**
   - **Rocks:** Pequeños grupos de rocas (5-8 tiles de diametro).
@@ -77,7 +77,6 @@ const SAND: Type = Type.SAND
   - **Steps:** Poco frecuente.
 
 ### Wood
-- **Perfil de Altura:** Ligeramente ondulado (Perlin Noise: 0.4-0.7).
 - **Vegetacion:** Arboles densos, arbustos, musgo.
 - **Barreras:**
   - **Tree groups:** 5-10 arboles en grupo (10-15 tiles de diametro).
@@ -88,7 +87,6 @@ const SAND: Type = Type.SAND
   - **Door:** Poco frecuente (ej. para cuevas o areas especiales).
 
 ### Rocks
-- **Perfil de Altura:** Muy ondulado a montañoso (Perlin Noise: 0.7-1.0).
 - **Vegetacion:** Casi ninguna, líquenes aislados.
 - **Barreras:**
   - **Rock formations:** 10-20 tiles de diametro, a menudo poligonos cerrados.
@@ -99,7 +97,6 @@ const SAND: Type = Type.SAND
   - **Door:** Muy poco frecuente (ej. entradas a cuevas).
 
 ### Water
-- **Perfil de Altura:** Plano (Perlin Noise: 0.0-0.2).
 - **Vegetacion:** Ninguna (excepto en islas).
 - **Barreras:**
   - **Islands:** 15-30 tiles de diametro (Rocks o Sand).
@@ -107,7 +104,6 @@ const SAND: Type = Type.SAND
   - **Ford:** Siempre (si la isla limite con tierra).
 
 ### Sand
-- **Perfil de Altura:** Plano o ligeramente ondulado (Perlin Noise: 0.2-0.5).
 - **Vegetacion:** Casi ninguna, cactus aislados (para desiertos).
 - **Barreras:**
   - **Dunes:** 6-12 tiles de diametro (colinas de arena).
@@ -202,4 +198,3 @@ Los rangos de cantidad y tamaño indicados en las tablas anteriores describen lo
 
 - [Godot FastNoiseLite](https://docs.godotengine.org/en/stable/classes/class_fastnoiselite.html)
 - [Diagrama de Voronoi](https://en.wikipedia.org/wiki/Voronoi_diagram)
-- [Explicacion de Perlin Noise](https://adrianb.io/2014/08/09/perlinnoise.html)
