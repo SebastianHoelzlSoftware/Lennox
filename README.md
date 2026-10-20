@@ -21,12 +21,16 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 
 | Ticket | Titulo / Hito | Estado | Detalles |
 | :--- | :--- | :---: | :--- |
-| **LEN-3** | Definir estructura de niveles y chunks | ✅ Completado | Chunks procedurales, semilla deterministica, acceso por coordenadas `(x, y)` |
-| **LEN-5** | Implementar algoritmo de generacion de barreras | ✅ Completado | Convex Hull + Perturbation, baldosas bloqueantes, aperturas |
-| **LEN-17** | [LEN-5] Cobertura de pruebas al 100% para integracion de barreras | ✅ Completado | 38 pruebas (33 unitarias + 5 de integracion), 14.710 aserciones, 0 errores |
-| **LEN-4** | Implementar sistema de biomas (Voronoi + Perlin Noise) | 📋 Por hacer *(Siguiente paso)* | Transiciones naturales entre biomas, parametros de densidad y tipos (`biomes.md`) |
-| **LEN-6** | Colocar aperturas en barreras | 📋 Por hacer | Reglas avanzadas de colocacion para pasos y accesos |
-| **LEN-7** | Integracion en Godot y nivel prototipo | 📋 Por hacer | Visualizacion con TileMap en escena de Godot, colisiones con el jugador |
+| **LEN-3** | Definir la estructura de niveles y chunks | ✅ Completado | Estructura del nivel y acceso a chunks por coordenadas |
+| **LEN-8** | Documentar el algoritmo de generación del mapa | 📋 Por hacer | Documentación del algoritmo de generación |
+| **LEN-10** | Configurar el entorno de pruebas TDD | ✅ Completado | Godot, VS Code y GUT |
+| **LEN-11** | Implementar las clases Level y Chunk con TDD | ✅ Completado | Clases principales de nivel y chunks |
+| **LEN-13** | Implementar el sistema de biomas | ✅ Completado | Mapa de biomas determinista, Voronoi con domain warping y parámetros por bioma |
+| **LEN-14** | Implementar el algoritmo de generación de barreras | ✅ Completado | Barreras por bioma, convex hull, perturbación y aplicación a las baldosas |
+| **LEN-15** | Colocar aperturas en las barreras | 📋 Por hacer | Generación e integración de aperturas en las barreras |
+| **LEN-16** | Integrar Godot y crear un nivel prototipo | 📋 Por hacer | Integración del mapa y prototipo dentro del motor |
+| **LEN-17** | Pruebas de integración de barreras (LEN-5) | ✅ Completado | Pruebas unitarias y de integración para la generación y aplicación de barreras |
+| **LEN-20** | Añadir características de mundo entre chunks | 📋 Por hacer | Soporte para elementos que atraviesan los límites entre chunks |
 
 ---
 

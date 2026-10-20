@@ -8,9 +8,8 @@ static func generate_biome_map(p_seed: int, p_width: int, p_height: int) -> Arra
 	"""
 	var biome_map := []
 
-	# Seed für Determinismus setzen
-	randomize()
-	seed(p_seed)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = p_seed
 
 	# Voronoi-Punkte generieren (1 Punkt pro 5x5 Chunks)
 	var voronoi_points := []
@@ -29,7 +28,7 @@ static func generate_biome_map(p_seed: int, p_width: int, p_height: int) -> Arra
 	]
 	var biome_assignments: Array[BiomeType.Type] = []
 	for point in voronoi_points:
-		var biome_idx := randi() % biome_types.size()
+		var biome_idx := rng.randi_range(0, biome_types.size() - 1)
 		biome_assignments.append(biome_types[biome_idx])
 
 	# Perlin Noise für Glättung
@@ -68,42 +67,64 @@ static func _warp_position(p_noise: FastNoiseLite, p_position: Vector2) -> Vecto
 	var noise_y := p_noise.get_noise_2d(p_position.x + 1000.0, p_position.y + 1000.0)
 	return p_position + Vector2(noise_x, noise_y) * 2.5
 
-static func get_biome_params(p_biome: BiomeType.Type) -> Dictionary:
+static func get_biome_params(
+	p_biome: BiomeType.Type,
+	p_rng: RandomNumberGenerator = null
+) -> Dictionary:
+	var rng := p_rng
+	if rng == null:
+		rng = RandomNumberGenerator.new()
+		rng.randomize()
+
 	match p_biome:
 		BiomeType.GRASSLAND:
 			return {
-				"barrier_count": randi_range(1, 2),
-				"barrier_size": randi_range(5, 10),
-				"opening_count": randi_range(1, 3),
-				"opening_types": [Opening.OpeningType.FORD, Opening.OpeningType.PASS, Opening.OpeningType.STEPS]
+				"barrier_count": rng.randi_range(1, 2),
+				"barrier_size": rng.randi_range(5, 10),
+				"opening_count": rng.randi_range(1, 3),
+				"opening_types": [
+					Opening.OpeningType.FORD,
+					Opening.OpeningType.PASS,
+					Opening.OpeningType.STEPS
+				]
 			}
 		BiomeType.WOOD:
 			return {
-				"barrier_count": randi_range(3, 5),
-				"barrier_size": randi_range(8, 15),
-				"opening_count": randi_range(1, 2),
-				"opening_types": [Opening.OpeningType.PASS, Opening.OpeningType.FORD, Opening.OpeningType.DOOR]
+				"barrier_count": rng.randi_range(3, 5),
+				"barrier_size": rng.randi_range(8, 15),
+				"opening_count": rng.randi_range(1, 2),
+				"opening_types": [
+					Opening.OpeningType.PASS,
+					Opening.OpeningType.FORD,
+					Opening.OpeningType.DOOR
+				]
 			}
 		BiomeType.ROCKS:
 			return {
-				"barrier_count": randi_range(5, 8),
-				"barrier_size": randi_range(10, 20),
-				"opening_count": randi_range(0, 1),
-				"opening_types": [Opening.OpeningType.PASS, Opening.OpeningType.STEPS]
+				"barrier_count": rng.randi_range(5, 8),
+				"barrier_size": rng.randi_range(10, 20),
+				"opening_count": rng.randi_range(0, 1),
+				"opening_types": [
+					Opening.OpeningType.PASS,
+					Opening.OpeningType.STEPS
+				]
 			}
 		BiomeType.WATER:
 			return {
-				"barrier_count": randi_range(0, 1),
-				"barrier_size": randi_range(15, 30),
-				"opening_count": randi_range(1, 2),
+				"barrier_count": rng.randi_range(0, 1),
+				"barrier_size": rng.randi_range(15, 30),
+				"opening_count": rng.randi_range(1, 2),
 				"opening_types": [Opening.OpeningType.FORD]
 			}
 		BiomeType.SAND:
 			return {
-				"barrier_count": randi_range(1, 2),
-				"barrier_size": randi_range(6, 12),
-				"opening_count": randi_range(1, 3),
-				"opening_types": [Opening.OpeningType.PASS, Opening.OpeningType.FORD]
+				"barrier_count": rng.randi_range(1, 2),
+				"barrier_size": rng.randi_range(6, 12),
+				"opening_count": rng.randi_range(1, 3),
+				"opening_types": [
+					Opening.OpeningType.PASS,
+					Opening.OpeningType.FORD
+				]
 			}
 		_:
 			return {

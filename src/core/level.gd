@@ -10,6 +10,7 @@ var world_seed: int
 
 # Chunks (array 2D)
 var chunks: Array = []
+var biome_map: Array = []
 
 func _init(p_width: int, p_height: int, p_chunk_size: int, p_tile_size: int, p_world_seed: int):
 	width = p_width
@@ -21,8 +22,8 @@ func _init(p_width: int, p_height: int, p_chunk_size: int, p_tile_size: int, p_w
 
 func generate() -> void:
 	"""Genera todos los chunks del nivel."""
-	# Establecer semilla para determinismo
-	seed_random(world_seed)
+	chunks.clear()
+	biome_map = BiomeGenerator.generate_biome_map(world_seed, width, height)
 
 	for x in range(width):
 		chunks.append([])
@@ -50,7 +51,10 @@ func generate_chunk(p_x: int, p_y: int) -> Chunk:
 
 
 func _get_biome_for_chunk(p_x: int, p_y: int) -> BiomeType.Type:
-	"""Devuelve un bioma para el chunk (simplificado para prototipo)."""
+	"""Devuelve el bioma de la tarjeta generada, o un fallback determinista."""
+	if p_x >= 0 and p_x < biome_map.size() and p_y >= 0 and p_y < biome_map[p_x].size():
+		return biome_map[p_x][p_y]
+
 	# Deterministico basado en semilla + coordenadas
 	var hash_val := hash([p_x, p_y, world_seed])
 	var biome_index : int = abs(hash_val) % 5
@@ -95,51 +99,63 @@ func hash(arr: Array) -> int:
 	"""Funcion hash simple para determinismo."""
 	var result := 0
 	for item in arr:
-		result = (result * 31 + item) % 2147483647
+		var item_hash := int(item) if typeof(item) != TYPE_STRING else String(item).hash()
+		result = (result * 31 + item_hash) % 2147483647
 	return result
 
 
-func seed_random(p_world_seed: int) -> void:
-	randomize()
-	seed(p_world_seed)
+func _get_biome_params_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) -> Dictionary:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash([p_x, p_y, world_seed, "barriers"])
+	return BiomeGenerator.get_biome_params(p_biome, rng)
 
 
 func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) -> Array:
 	"""Genera barreras para un chunk basado en bioma y semilla."""
 	var barriers := []
 	
-	# Establecer semilla para este chunk (deterministico)
-	var chunk_seed := hash([p_x, p_y, world_seed, "barriers"])
-	seed_random(chunk_seed)
-	
-	# Cantidad de barreras por bioma
-	var num_barriers := _get_barrier_count_for_biome(p_biome)
+	var biome_params := _get_biome_params_for_chunk(p_x, p_y, p_biome)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash([p_x, p_y, world_seed, "barrier-layout"])
+	var num_barriers: int = biome_params["barrier_count"]
 	
 	for i in range(num_barriers):
-		# 1. Generar puntos aleatorios
-		var points := _generate_random_points(p_biome, self.chunk_size)
-		
-		if points.size() < 3:
-			continue
-		
-		# 2. Calcular Convex Hull
-		var hull := _compute_convex_hull(points)
-		
+		var hull := []
+		for attempt in range(10):
+			var points := _generate_random_points(
+				p_biome,
+				chunk_size,
+				int(biome_params["barrier_size"]),
+				rng
+			)
+			if points.size() >= 3:
+				hull = _compute_convex_hull(points)
+				if hull.size() >= 3:
+					break
+
 		if hull.size() < 3:
-			continue
-		
+			var fallback_center := Vector2(
+				rng.randi_range(3, chunk_size - 4),
+				rng.randi_range(3, chunk_size - 4)
+			)
+			hull = _compute_convex_hull([
+				fallback_center + Vector2(-1, -1),
+				fallback_center + Vector2(1, -1),
+				fallback_center + Vector2(0, 1)
+			])
+
 		# 3. Perturbacion para formas organicas
-		hull = _perturb_hull(hull)
+		hull = _perturb_hull(hull, 1, rng)
 		
 		# 4. Colocar aperturas
-		var num_openings := _get_opening_count_for_biome(p_biome)
+		var num_openings: int = biome_params["opening_count"]
+		var opening_types: Array = biome_params["opening_types"]
 		
 		for j in range(num_openings):
-			var opening_type := _get_random_opening_type(p_biome)
-			var opening_width := _get_opening_width(opening_type)
-			var _is_interactive := opening_type == Opening.OpeningType.DOOR
+			var opening_type: int = opening_types[rng.randi_range(0, opening_types.size() - 1)]
+			var opening_width := _get_opening_width(opening_type, rng)
 			
-			var opening_pos := _find_opening_position(hull)
+			var opening_pos := _find_opening_position(hull, rng)
 			if opening_pos != null:
 				hull = _place_opening_in_hull(hull, opening_pos, opening_width)
 		
@@ -152,87 +168,44 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 	return barriers
 
 
-func _get_barrier_count_for_biome(p_biome: BiomeType.Type) -> int:
-	"""Devuelve la cantidad de barreras para un bioma."""
-	match p_biome:
-		BiomeType.GRASSLAND: return randi_range(1, 2)
-		BiomeType.WOOD: return randi_range(3, 5)
-		BiomeType.ROCKS: return randi_range(5, 8)
-		BiomeType.WATER: return randi_range(0, 1)
-		BiomeType.SAND: return randi_range(1, 2)
-		_: return randi_range(1, 3)
-
-
-func _get_opening_count_for_biome(p_biome: BiomeType.Type) -> int:
-	"""Devuelve la cantidad de aperturas por barrera para un bioma."""
-	match p_biome:
-		BiomeType.GRASSLAND: return randi_range(1, 3)
-		BiomeType.WOOD: return randi_range(1, 2)
-		BiomeType.ROCKS: return randi_range(0, 1)
-		BiomeType.WATER: return 1
-		BiomeType.SAND: return randi_range(1, 3)
-		_: return randi_range(1, 2)
-
-
-func _get_random_opening_type(p_biome: BiomeType.Type) -> int:
-	"""Devuelve un tipo de apertura aleatorio para un bioma."""
-	var opening_types := []
-	
-	match p_biome:
-		BiomeType.GRASSLAND:
-			opening_types = [Opening.OpeningType.FORD, Opening.OpeningType.FORD, 
-						   Opening.OpeningType.PASS, Opening.OpeningType.PASS, 
-						   Opening.OpeningType.STEPS]
-		BiomeType.WOOD:
-			opening_types = [Opening.OpeningType.PASS, Opening.OpeningType.PASS, 
-						   Opening.OpeningType.PASS, Opening.OpeningType.FORD, 
-						   Opening.OpeningType.DOOR]
-		BiomeType.ROCKS:
-			opening_types = [Opening.OpeningType.PASS, Opening.OpeningType.PASS, 
-						   Opening.OpeningType.PASS, Opening.OpeningType.STEPS, 
-						   Opening.OpeningType.STEPS]
-		BiomeType.WATER:
-			opening_types = [Opening.OpeningType.FORD]
-		BiomeType.SAND:
-			opening_types = [Opening.OpeningType.PASS, Opening.OpeningType.PASS, 
-						   Opening.OpeningType.PASS, Opening.OpeningType.PASS, 
-						   Opening.OpeningType.FORD]
-		_:
-			opening_types = [Opening.OpeningType.PASS]
-	
-	return opening_types[randi() % opening_types.size()]
-
-
-func _get_opening_width(p_opening_type: int) -> int:
+func _get_opening_width(p_opening_type: int, p_rng: RandomNumberGenerator) -> int:
 	"""Devuelve el ancho de una apertura basado en el tipo."""
 	match p_opening_type:
-		Opening.OpeningType.STEPS: return randi_range(2, 3)
+		Opening.OpeningType.STEPS: return p_rng.randi_range(2, 3)
 		Opening.OpeningType.DOOR: return 1
-		Opening.OpeningType.FORD: return randi_range(2, 4)
-		Opening.OpeningType.PASS: return randi_range(3, 5)
+		Opening.OpeningType.FORD: return p_rng.randi_range(2, 4)
+		Opening.OpeningType.PASS: return p_rng.randi_range(3, 5)
 		_: return 1
 
 
-func _generate_random_points(p_biome: BiomeType.Type, p_chunk_size: int = 32) -> Array:
+func _generate_random_points(
+	p_biome: BiomeType.Type,
+	p_chunk_size: int,
+	p_barrier_size: int,
+	p_rng: RandomNumberGenerator
+) -> Array:
 	"""Genera puntos aleatorios para la generacion de barreras."""
 	var points := []
 	var num_points := 0
 	
 	# Cantidad de puntos dependiente del bioma
 	match p_biome:
-		BiomeType.GRASSLAND: num_points = randi_range(5, 8)
-		BiomeType.WOOD: num_points = randi_range(8, 12)
-		BiomeType.ROCKS: num_points = randi_range(10, 15)
-		BiomeType.WATER: num_points = randi_range(5, 10)
-		BiomeType.SAND: num_points = randi_range(5, 8)
-		_: num_points = randi_range(5, 10)
+		BiomeType.GRASSLAND: num_points = p_rng.randi_range(5, 8)
+		BiomeType.WOOD: num_points = p_rng.randi_range(8, 12)
+		BiomeType.ROCKS: num_points = p_rng.randi_range(10, 15)
+		BiomeType.WATER: num_points = p_rng.randi_range(5, 10)
+		BiomeType.SAND: num_points = p_rng.randi_range(5, 8)
+		_: num_points = p_rng.randi_range(5, 10)
 	
 	# Generar puntos en el area interior (no en el borde)
 	var margin := 2
+	var radius := maxi(2, int(p_barrier_size / 2.0))
+	var center_x := p_rng.randi_range(margin, p_chunk_size - margin - 1)
+	var center_y := p_rng.randi_range(margin, p_chunk_size - margin - 1)
 	
 	for i in range(num_points):
-		var x := randi_range(margin, p_chunk_size - margin - 1)
-		var y := randi_range(margin, p_chunk_size - margin - 1)
+		var x := p_rng.randi_range(maxi(margin, center_x - radius), mini(p_chunk_size - margin - 1, center_x + radius))
+		var y := p_rng.randi_range(maxi(margin, center_y - radius), mini(p_chunk_size - margin - 1, center_y + radius))
 		
 		# Verificar distancia minima a otros puntos
 		var valid := true
@@ -295,19 +268,28 @@ func _compute_convex_hull(p_points: Array) -> Array:
 	return hull
 
 
-func _perturb_hull(p_hull: Array, p_perturbation: int = 1) -> Array:
+func _perturb_hull(
+	p_hull: Array,
+	p_perturbation: int = 1,
+	p_rng: RandomNumberGenerator = null
+) -> Array:
 	"""Desplaza ligeramente los puntos de la envolvente convexa para formas mas organicas."""
+	var rng := p_rng
+	if rng == null:
+		rng = RandomNumberGenerator.new()
+		rng.randomize()
+
 	var perturbed_hull := []
 	
 	for point in p_hull:
-		var x_offset := randi_range(-p_perturbation, p_perturbation)
-		var y_offset := randi_range(-p_perturbation, p_perturbation)
+		var x_offset := rng.randi_range(-p_perturbation, p_perturbation)
+		var y_offset := rng.randi_range(-p_perturbation, p_perturbation)
 		perturbed_hull.append(Vector2(point.x + x_offset, point.y + y_offset))
 	
 	return perturbed_hull
 
 
-func _find_opening_position(p_hull: Array) -> Vector2:
+func _find_opening_position(p_hull: Array, p_rng: RandomNumberGenerator) -> Vector2:
 	"""Encuentra una posicion valida para una apertura en la barrera."""
 	var valid_edges := _find_valid_edges(p_hull)
 	
@@ -315,7 +297,7 @@ func _find_opening_position(p_hull: Array) -> Vector2:
 		return Vector2.ZERO
 	
 	# Seleccionar borde aleatorio
-	var edge_idx := randi() % valid_edges.size()
+	var edge_idx := p_rng.randi_range(0, valid_edges.size() - 1)
 	var edge = valid_edges[edge_idx]
 	var p1 = edge[0]
 	var p2 = edge[1]

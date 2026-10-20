@@ -42,7 +42,15 @@ func test_get_chunk_returns_correct_chunk():
 
 
 func test_level_generates_with_barriers():
-	var level := Level.new(2, 2, 32, 32, 12345)
+	var world_seed := -1
+	for candidate_seed in range(100):
+		var candidate_map := BiomeGenerator.generate_biome_map(candidate_seed, 2, 2)
+		if candidate_map[0][0] == BiomeType.ROCKS:
+			world_seed = candidate_seed
+			break
+	assert_gte(world_seed, 0, "Es sollte ein Seed mit Felsbiom gefunden werden")
+
+	var level := Level.new(2, 2, 32, 32, world_seed)
 	level.generate()
 	
 	var total_barriers := 0
@@ -56,6 +64,51 @@ func test_level_generates_with_barriers():
 				assert_eq(barrier.biome, chunk.biome, "El bioma de la barrera debe coincidir con el bioma del chunk")
 	
 	assert_gt(total_barriers, 0, "El nivel debe haber generado al menos una barrera entre los chunks")
+
+
+func test_level_uses_seeded_biome_map():
+	var world_seed := 24680
+	var expected_biome_map := BiomeGenerator.generate_biome_map(world_seed, 12, 12)
+	var level := Level.new(12, 12, 32, 32, world_seed)
+	level.generate()
+
+	assert_eq(level.biome_map, expected_biome_map, "El nivel debe conservar el mapa de biomas generado")
+	for x in range(level.width):
+		for y in range(level.height):
+			assert_eq(
+				level.get_chunk(x, y).biome,
+				expected_biome_map[x][y],
+				"Cada chunk debe usar el bioma de la tarjeta"
+			)
+
+
+func test_hash_supports_string_seed_components():
+	var level := Level.new(1, 1, 32, 32, 13579)
+	var values := [1, 1, level.world_seed, "barriers"]
+
+	assert_eq(level.hash(values), level.hash(values), "Der Hash mit einem String-Seedbestandteil muss deterministisch sein")
+
+
+func test_barrier_generation_uses_biome_parameters():
+	var level := Level.new(2, 2, 32, 32, 13579)
+	var params := level._get_biome_params_for_chunk(1, 1, BiomeType.ROCKS)
+
+	var barriers := level.generate_barriers_for_chunk(1, 1, BiomeType.ROCKS)
+
+	assert_eq(barriers.size(), params["barrier_count"], "Die Barrierenanzahl muss aus den Biome-Parametern stammen")
+	for barrier: Barrier in barriers:
+		var min_x := INF
+		var max_x := -INF
+		var min_y := INF
+		var max_y := -INF
+		for vertex: Vector2 in barrier.polygon:
+			min_x = minf(min_x, vertex.x)
+			max_x = maxf(max_x, vertex.x)
+			min_y = minf(min_y, vertex.y)
+			max_y = maxf(max_y, vertex.y)
+		var max_expected_size := float(params["barrier_size"] + 2)
+		assert_lte(max_x - min_x, max_expected_size, "Die Barrierengröße muss die Biome-Parameter berücksichtigen")
+		assert_lte(max_y - min_y, max_expected_size, "Die Barrierengröße muss die Biome-Parameter berücksichtigen")
 
 
 func test_convex_hull_contains_outer_points_and_excludes_inner_points():
@@ -128,4 +181,3 @@ func test_get_barrier_tile_type_from_biome():
 	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.WATER), TileType.WATER, "El bioma WATER debe mapear a baldosa de barrera WATER")
 	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.SAND), TileType.SAND, "El bioma SAND debe mapear a baldosa de barrera SAND")
 	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.GRASSLAND), TileType.ROCK, "El bioma GRASSLAND por defecto debe mapear a baldosa de barrera ROCK")
-
