@@ -1,7 +1,7 @@
 extends GutTest
 
 # test_barrier_chunk_integration.gd
-# Tests de integracion para el sistema de barreras con chunks y niveles (LEN-5 / LEN-17)
+# Tests de integracion para el sistema de barreras con chunks y niveles (LEN-5 / LEN-15 / LEN-17)
 
 func test_level_generation_creates_barriers_across_chunks():
 	var level := Level.new(2, 2, 32, 32, 12345)
@@ -154,3 +154,144 @@ func test_multi_chunk_coexistence_and_determinism():
 	var c3 := level3.get_chunk(0, 0)
 	assert_not_null(c3, "El chunk de level3 debe ser valido")
 	assert_eq(c3.tiles.size(), 32, "El chunk debe tener dimensiones de 32x32")
+
+
+func test_generated_barriers_store_openings_deterministically():
+	var level := Level.new(1, 1, 32, 32, 12345)
+	var params := level._get_biome_params_for_chunk(0, 0, BiomeType.WOOD)
+	var first_generation: Array = level.generate_barriers_for_chunk(0, 0, BiomeType.WOOD)
+	var second_generation: Array = level.generate_barriers_for_chunk(0, 0, BiomeType.WOOD)
+
+	assert_gt(first_generation.size(), 0, "Se deben generar barreras de madera")
+	assert_eq(first_generation.size(), second_generation.size(), "La cantidad de barreras debe ser determinista")
+
+	var generated_openings := 0
+	var allowed_types: Array = BiomeConfig.get_biome_profile(BiomeType.WOOD)["opening_types"]
+	for barrier_index in range(first_generation.size()):
+		var first_barrier: Barrier = first_generation[barrier_index]
+		var second_barrier: Barrier = second_generation[barrier_index]
+		assert_eq(
+			first_barrier.openings.size(),
+			params["opening_count"],
+			"Cada barrera debe conservar la cantidad de aperturas configurada"
+		)
+		assert_eq(
+			first_barrier.openings.size(),
+			second_barrier.openings.size(),
+			"La cantidad de aperturas debe repetirse con la misma semilla"
+		)
+
+		for opening_index in range(first_barrier.openings.size()):
+			var opening: Opening = first_barrier.openings[opening_index]
+			var matching_opening: Opening = second_barrier.openings[opening_index]
+			var width_range := BiomeConfig.get_opening_width_range(opening.type)
+			assert_has(allowed_types, opening.type, "El tipo de apertura debe estar permitido por el bioma")
+			assert_eq(opening.biome, BiomeType.WOOD, "La apertura debe conservar el bioma de la barrera")
+			assert_true(opening.width >= width_range.x and opening.width <= width_range.y, "El ancho debe respetar el rango de su tipo")
+			assert_true(opening.position.x >= 0 and opening.position.x < 32, "La posicion X debe estar dentro del chunk")
+			assert_true(opening.position.y >= 0 and opening.position.y < 32, "La posicion Y debe estar dentro del chunk")
+			assert_eq(opening.is_interactive, opening.type == Opening.OpeningType.DOOR, "Solo las puertas deben ser interactivas")
+			assert_false(opening.is_open, "Una apertura generada debe empezar cerrada")
+			assert_eq(opening.type, matching_opening.type, "El tipo de apertura debe ser determinista")
+			assert_eq(opening.position, matching_opening.position, "La posicion de apertura debe ser determinista")
+			assert_eq(opening.width, matching_opening.width, "El ancho de apertura debe ser determinista")
+			assert_eq(opening.biome, matching_opening.biome, "El bioma de apertura debe ser determinista")
+			assert_eq(opening.is_interactive, matching_opening.is_interactive, "La interactividad debe ser determinista")
+			assert_eq(opening.is_open, matching_opening.is_open, "El estado inicial debe ser determinista")
+			generated_openings += 1
+
+	assert_gt(generated_openings, 0, "Las barreras generadas deben almacenar objetos Opening")
+
+
+func test_generated_passable_openings_update_chunk_passability_and_tiles():
+	var level := Level.new(1, 1, 32, 32, 24680)
+	level.biome_map = [[BiomeType.GRASSLAND]]
+	var chunk := level.generate_chunk(0, 0)
+	var expected_tile := level.get_tile_type_from_biome(BiomeType.GRASSLAND)
+	var passable_opening_count := 0
+
+	for barrier_item in chunk.barriers:
+		var barrier: Barrier = barrier_item
+		for opening_item in barrier.openings:
+			var opening: Opening = opening_item
+			assert_false(opening.is_interactive, "Las aperturas de pradera deben ser no interactivas")
+			assert_true(opening.is_passable(), "Una apertura no interactiva generada debe ser transitable")
+			var passable_points := barrier.get_passable_points(32)
+			var opening_points: Array[Vector2] = []
+			for point in passable_points:
+				if point.y == int(opening.position.y) and point.x >= int(opening.position.x - opening.width / 2.0) and point.x <= int(opening.position.x + opening.width / 2.0):
+					opening_points.append(point)
+
+			assert_gt(opening_points.size(), 0, "La apertura debe exponer puntos transitables")
+			for point in opening_points:
+				assert_false(chunk.is_barrier(int(point.x), int(point.y)), "Los puntos transitables no deben quedar bloqueados")
+				assert_eq(chunk.get_tile(int(point.x), int(point.y)), expected_tile, "Las baldosas de la apertura deben conservar el terreno transitable")
+				assert_true(point.x >= 0 and point.x < 32 and point.y >= 0 and point.y < 32, "Los puntos de apertura deben estar dentro del chunk")
+			passable_opening_count += 1
+
+	assert_gt(passable_opening_count, 0, "El chunk generado debe contener aperturas transitables")
+
+
+func test_generated_door_open_and_close_updates_chunk_tiles():
+	var generated_door_barrier: Barrier
+	for world_seed in range(128):
+		var level := Level.new(1, 1, 32, 32, world_seed)
+		var barriers := level.generate_barriers_for_chunk(0, 0, BiomeType.WOOD)
+		for barrier_item in barriers:
+			var barrier: Barrier = barrier_item
+			for opening_item in barrier.openings:
+				var opening: Opening = opening_item
+				if opening.type == Opening.OpeningType.DOOR:
+					generated_door_barrier = barrier
+					break
+			if generated_door_barrier != null:
+				break
+		if generated_door_barrier != null:
+			break
+
+	assert_not_null(generated_door_barrier, "Las semillas probadas deben producir una puerta generada")
+	if generated_door_barrier == null:
+		return
+
+	var door: Opening
+	for opening_item in generated_door_barrier.openings:
+		var opening: Opening = opening_item
+		if opening.type == Opening.OpeningType.DOOR:
+			door = opening
+			break
+
+	var chunk := Chunk.new(0, 0)
+	chunk.biome = BiomeType.WOOD
+	chunk.barriers.append(generated_door_barrier)
+	chunk.apply_barriers_to_tiles()
+
+	assert_false(door.is_open, "La puerta generada debe empezar cerrada")
+	assert_false(door.is_passable(), "La puerta cerrada no debe ser transitable")
+	door.open()
+	assert_true(door.is_passable(), "La puerta abierta debe ser transitable")
+	var door_points := generated_door_barrier.get_passable_points(32)
+	assert_gt(door_points.size(), 0, "La puerta abierta debe exponer puntos transitables")
+	door.close()
+	for point in door_points:
+		var x := int(point.x)
+		var y := int(point.y)
+		assert_true(chunk.is_barrier(x, y), "La puerta cerrada debe bloquear sus puntos")
+		assert_eq(chunk.get_tile(x, y), TileType.TREE, "La puerta cerrada debe tener la baldosa de barrera")
+
+	door.open()
+	assert_true(door.is_passable(), "La puerta debe volver a ser transitable")
+	for point in door_points:
+		var x := int(point.x)
+		var y := int(point.y)
+		chunk.set_tile(x, y, TileType.GRASS)
+		assert_false(chunk.is_barrier(x, y), "La puerta abierta no debe bloquear sus puntos")
+	chunk.apply_barriers_to_tiles()
+	for point in door_points:
+		assert_eq(chunk.get_tile(int(point.x), int(point.y)), TileType.GRASS, "La puerta abierta debe conservar las baldosas transitables")
+
+	door.close()
+	assert_false(door.is_passable(), "La puerta cerrada de nuevo no debe ser transitable")
+	chunk.apply_barriers_to_tiles()
+	for point in door_points:
+		assert_true(chunk.is_barrier(int(point.x), int(point.y)), "La puerta cerrada de nuevo debe bloquear sus puntos")
+		assert_eq(chunk.get_tile(int(point.x), int(point.y)), TileType.TREE, "La puerta cerrada de nuevo debe restaurar las baldosas de barrera")
