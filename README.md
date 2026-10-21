@@ -27,7 +27,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 | **LEN-11** | Implementar las clases Level y Chunk con TDD | ✅ Completado | Clases principales de nivel y chunks |
 | **LEN-13** | Implementar el sistema de biomas | ✅ Completado | Mapa de biomas determinista, Voronoi con domain warping y parámetros por bioma |
 | **LEN-14** | Implementar el algoritmo de generación de barreras | ✅ Completado | Barreras por bioma, convex hull, perturbación y aplicación a las baldosas |
-| **LEN-15** | Colocar aperturas en las barreras | 📋 Por hacer | Generación e integración de aperturas en las barreras |
+| **LEN-15** | Colocar aperturas en las barreras | ✅ Completado | Aperturas generadas asociadas a barreras; puertas cerradas bloquean y otras aperturas son transitables |
 | **LEN-16** | Integrar Godot y crear un nivel prototipo | 📋 Por hacer | Integración del mapa y prototipo dentro del motor |
 | **LEN-17** | Pruebas de integración de barreras (LEN-5) | ✅ Completado | Pruebas unitarias y de integración para la generación y aplicación de barreras |
 | **LEN-20** | Añadir características de mundo entre chunks | 📋 Por hacer | Soporte para elementos que atraviesan los límites entre chunks |
@@ -45,8 +45,8 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   │   └── core/
   │       ├── level.gd        # Generacion de niveles
   │       ├── chunk.gd        # Sistema de chunks
-  │       ├── barrier.gd      # Barreras (LEN-5)
-  │       ├── opening.gd      # Aperturas (LEN-5)
+  │       ├── barrier.gd      # Barreras y consulta de aperturas (LEN-5 / LEN-15)
+  │       ├── opening.gd      # Aperturas generadas e interactivas (LEN-15)
   │       ├── biome_type.gd   # Enum global de biomas (BiomeType)
   │       └── tile_type.gd    # Enum global de baldosas (TileType)
   ├── test/
@@ -96,6 +96,9 @@ El proyecto incluye pruebas unitarias para garantizar la estabilidad del codigo.
 | `test_barrier_with_polygon` | Prueba de barreras con poligonos |
 | `test_point_in_polygon_ray_casting` | Prueba de algoritmo Ray-Casting |
 | `test_barrier_with_opening` | Prueba de barreras con aperturas |
+| `test_generated_barriers_store_openings_deterministically` | Comprueba datos, bioma y determinismo de aperturas generadas |
+| `test_generated_passable_openings_update_chunk_passability_and_tiles` | Comprueba la transitabilidad de aperturas generadas en el chunk |
+| `test_generated_door_open_and_close_updates_chunk_tiles` | Comprueba bloqueo y actualización de baldosas para puertas generadas |
 
 **Ejecutar pruebas:**
 Busca el panel **GUT** en el editor y ejecuta los tests con la interfaz grafica.

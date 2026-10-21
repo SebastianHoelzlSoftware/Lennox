@@ -1,10 +1,10 @@
 # Sistema de Barreras para Lennox
 
-## 📌 Estado: Generacion y consultas de barreras implementadas
+## 📌 Estado: Generacion, aperturas y consultas implementadas
 
 Las barreras son polígonos dependientes del bioma que se aplican a las baldosas del chunk y pueden consultarse mediante pruebas de punto. La integración con colisión física del jugador todavía no está implementada.
 
-`Level` obtiene la cantidad, el tamaño y las opciones de apertura de `BiomeGenerator.get_biome_params()` y genera las barreras de forma determinista mediante RNG locales. La generación crea huecos pasables al modificar el polígono, pero todavía no crea ni adjunta objetos `Opening` a las barreras generadas para controlar su estado interactivo. Esa integración está asignada a LEN-15.
+`Level` obtiene la cantidad, el tamaño y las opciones de apertura de `BiomeGenerator.get_biome_params()` y genera barreras y aperturas de forma determinista mediante RNG locales. Cada apertura generada se guarda en `Barrier.openings` con su tipo, posición, ancho y bioma. Las puertas son interactivas y empiezan cerradas; los demás tipos generados son no interactivos y pasables. `Barrier.contains_point()` considera el estado de las aperturas y `get_passable_points()` devuelve las baldosas dentro del chunk que están abiertas actualmente. LEN-15 está completado.
 
 Los ejemplos de algoritmo y fragmentos de código de este documento son material de diseño; para el comportamiento actual, consulta `src/core/level.gd`, `src/core/chunk.gd`, `src/core/barrier.gd` y `src/core/opening.gd`.
 
@@ -15,7 +15,8 @@ Los ejemplos de algoritmo y fragmentos de código de este documento son material
 - `src/core/tile_type.gd` - Enum global para tipos de baldosas (`TileType`)
 - `src/core/level.gd` - Generacion de barreras por Chunk
 - `src/core/chunk.gd` - Integracion de barreras en las baldosas
-- `test/unit/test_barrier.gd` - Tests unitarios para barreras
+- `test/unit/test_barrier.gd` - Tests unitarios para barreras y aperturas
+- `test/integration/test_barrier_chunk_integration.gd` - Pruebas de apertura, estado de puerta y baldosas de chunk
 
 ---
 
@@ -379,7 +380,8 @@ La generacion de barreras en `level.gd` sigue este flujo:
 4. **Colocar aperturas** (`_place_opening_in_hull`)
    - Cantidad y tipos dependientes del bioma
    - Solo en bordes validos (no en limites de Chunk)
-   - Aperturas interactivas (puertas) para rompecabezas
+   - Se conserva cada apertura como `Opening` asociada a la barrera
+   - Las puertas son interactivas y empiezan cerradas; las demás aperturas son pasables
 
 ### Integracion en Chunks
 

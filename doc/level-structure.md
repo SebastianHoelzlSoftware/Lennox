@@ -4,6 +4,16 @@
 
 Este documento describe las **estructuras de datos y la organizacion** de los niveles y chunks en Lennox. El mapa se genera **proceduralmente** y consiste en **chunks**, cada uno de los cuales contiene **biomas, barreras y aperturas**.
 
+## Comportamiento implementado para aperturas (LEN-15)
+
+- La generación de barreras crea un objeto `Opening` para cada apertura válida y lo guarda en `Barrier.openings`.
+- Cada apertura conserva su tipo, punto medio, ancho y bioma. Las posiciones están expresadas en coordenadas locales del chunk.
+- Las aperturas `DOOR` son interactivas y empiezan cerradas. `open()` y `close()` modifican su transitabilidad. Los demás tipos generados son no interactivos y pasables.
+- `Barrier.contains_point()` incluye en la barrera los puntos de una puerta cerrada y excluye los puntos de aperturas pasables. `get_passable_points()` lista los puntos pasables que están dentro del chunk.
+- `Chunk.apply_barriers_to_tiles()` usa esa consulta para aplicar las baldosas; la colisión física de jugador y TileMap aún no está integrada.
+
+Los fragmentos de código siguientes son esquemas de diseño y pueden diferir de la implementación actual en `src/core/`.
+
 ---
 
 ## Estructura del Nivel
@@ -234,7 +244,7 @@ enum OpeningType { STEPS, DOOR, FORD, PASS }
 
 var type: OpeningType  # STEPS, DOOR, FORD, PASS
 
-# Posicion (baldosa inicial de la apertura)
+# Posicion (punto medio de la apertura, en coordenadas locales del chunk)
 var position: Vector2
 
 # Ancho en baldosas

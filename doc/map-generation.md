@@ -9,7 +9,7 @@ Este documento describe el algoritmo y la implementacion de la **generacion proc
 - `Level.generate()` crea el mapa de biomas con la semilla del mundo y genera cada chunk usando el bioma correspondiente.
 - `BiomeGenerator` usa puntos de Voronoi con asignaciones deterministas y FastNoiseLite Simplex FBM para hacer domain warping de las fronteras. No hay mezcla de biomas, zonas de amortiguación, alturas ni transiciones por Perlin Noise.
 - `Level` genera barreras por bioma, aplica los tipos de baldosa al chunk y usa RNG locales con semillas derivadas para mantener la generación determinista.
-- Los parámetros de cantidad, tamaño y aperturas se obtienen de `BiomeGenerator.get_biome_params()`. La generación recorta huecos en el polígono de la barrera, pero no adjunta objetos `Opening` para controlar el estado interactivo; consulta LEN-15.
+- Los parámetros de cantidad, tamaño y aperturas se obtienen de `BiomeGenerator.get_biome_params()`. Cada apertura generada se guarda como `Opening` en la barrera correspondiente. Las puertas son interactivas y empiezan cerradas; las demás aperturas son pasables. La generación de aperturas y su integración con las consultas de barrera están implementadas (LEN-15).
 - La integración con un TileMap de Godot y la colisión física del jugador no forman parte del código actual. Las comprobaciones disponibles son de punto y baldosa.
 
 Las secciones de diseño y pseudocódigo que siguen describen objetivos o alternativas; cuando difieran, el código en `src/core/` representa el comportamiento implementado.
@@ -37,6 +37,8 @@ El proceso de generacion de mapas sigue un **proceso de 4 etapas**:
 2. **Generacion de Barreras** (Convex Hull + Perturbation)
 3. **Colocar Aperturas** (0-n por barrera)
 4. **Aplicar barreras a las baldosas del chunk**
+
+Las aperturas generadas conservan tipo, posición, ancho y bioma en `Barrier.openings`. `Barrier.contains_point()` permite el paso por aperturas pasables y bloquea las puertas cerradas. La física del jugador y su colisión en una escena de Godot siguen fuera del alcance implementado y corresponden a la integración posterior.
 
 ---
 
@@ -121,10 +123,12 @@ El proceso de generacion de mapas sigue un **proceso de 4 etapas**:
    - Selecciona **un borde aleatorio** del poligono de la barrera.
    - Reemplaza el borde con un **espacio** (ancho = ancho de la apertura).
    - **Restriccion:** La apertura no debe estar en un **limite de Chunk**.
+   - Guarda el tipo, punto medio, ancho y bioma en un `Opening` asociado a la barrera.
 
 3. **Aperturas interactivas:**
-   - Las **puertas** estan **bloqueadas por defecto** y deben abrirse resolviendo rompecabezas.
-   - **Marcador:** Baldosa especial (ej. textura de puerta) para aperturas interactivas.
+   - Las **puertas** se generan interactivas y **cerradas por defecto**; abrirlas las hace pasables.
+   - Los tipos no interactivos, como **Ford**, **Pass** y **Steps**, son pasables por defecto.
+   - La representación visual y las colisiones físicas de las puertas requieren la integración posterior con la escena de Godot.
 
 ---
 
