@@ -57,7 +57,19 @@ func contains_point(p_point: Vector2) -> bool:
 	
 	Tambien considera aperturas - los puntos en aperturas NO se consideran dentro de la barrera.
 	"""
-	# Primero comprueba si el punto esta en una apertura
+	# Una puerta cerrada bloquea su huella incluso cuando coincide con el borde del poligono.
+	for opening_item in openings:
+		var opening: Opening = opening_item
+		if not opening.is_interactive or opening.is_passable():
+			continue
+
+		var start_x := int(opening.position.x - opening.width / 2.0)
+		var end_x := int(opening.position.x + opening.width / 2.0)
+		var y := int(opening.position.y)
+		if p_point.x >= start_x and p_point.x <= end_x and p_point.y >= y - 0.5 and p_point.y <= y + 0.5:
+			return true
+
+	# Los puntos de aperturas transitables no se consideran dentro de la barrera.
 	for opening_item in openings:
 		var opening: Opening = opening_item
 		if opening.is_passable():

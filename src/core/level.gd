@@ -154,6 +154,7 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 		hull = _perturb_hull(hull, 1, rng)
 		
 		# El bioma determina cuántas aperturas se intentan y qué tipos pueden aparecer.
+		var barrier_openings: Array[Opening] = []
 		var num_openings: int = biome_params["opening_count"]
 		var opening_types: Array = biome_params["opening_types"]
 		
@@ -163,14 +164,26 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 			var opening_type: int = opening_types[rng.randi_range(0, opening_types.size() - 1)]
 			var opening_width := _get_opening_width(opening_type, rng)
 			
-			var opening_pos := _find_opening_position(hull, rng)
-			if opening_pos != null:
-				hull = _place_opening_in_hull(hull, opening_pos, opening_width)
+			var opening_pos: Variant = _find_opening_position(hull, rng)
+			if opening_pos == null:
+				continue
+
+			hull = _place_opening_in_hull(hull, opening_pos, opening_width)
+			var opening := Opening.new(
+				opening_type,
+				opening_pos,
+				opening_width,
+				opening_type == Opening.OpeningType.DOOR,
+				p_biome
+			)
+			barrier_openings.append(opening)
 		
 		# Guarda el polígono final junto con su bioma para que el chunk pueda aplicarlo.
 		var barrier := Barrier.new()
 		barrier.polygon = hull
 		barrier.biome = p_biome
+		for opening: Opening in barrier_openings:
+			barrier.add_opening(opening)
 		barriers.append(barrier)
 	
 	return barriers
@@ -285,12 +298,12 @@ func _perturb_hull(
 	return perturbed_hull
 
 
-func _find_opening_position(p_hull: Array, p_rng: RandomNumberGenerator) -> Vector2:
+func _find_opening_position(p_hull: Array, p_rng: RandomNumberGenerator) -> Variant:
 	"""Encuentra una posicion valida para una apertura en la barrera."""
 	var valid_edges := _find_valid_edges(p_hull)
 	
 	if valid_edges.size() == 0:
-		return Vector2.ZERO
+		return null
 	
 	# Seleccionar borde aleatorio
 	var edge_idx := p_rng.randi_range(0, valid_edges.size() - 1)

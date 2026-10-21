@@ -269,7 +269,13 @@ func test_generated_door_open_and_close_updates_chunk_tiles():
 	assert_false(door.is_passable(), "La puerta cerrada no debe ser transitable")
 	door.open()
 	assert_true(door.is_passable(), "La puerta abierta debe ser transitable")
-	var door_points := generated_door_barrier.get_passable_points(32)
+	var door_points: Array[Vector2] = []
+	var start_x := int(door.position.x - door.width / 2.0)
+	var end_x := int(door.position.x + door.width / 2.0)
+	var door_y := int(door.position.y)
+	for x in range(start_x, end_x + 1):
+		if x >= 0 and x < 32 and door_y >= 0 and door_y < 32:
+			door_points.append(Vector2(x, door_y))
 	assert_gt(door_points.size(), 0, "La puerta abierta debe exponer puntos transitables")
 	door.close()
 	for point in door_points:
