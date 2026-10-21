@@ -8,6 +8,12 @@
 
 **Lennox** es un juego educativo 2D desarrollado con **Godot Engine 4.x**, disenado para ayudar a los ninos a aprender a leer en **ingles y espanol** de manera interactiva y divertida. El proyecto combina mecanicas de juego atractivas con contenido pedagogico de alta calidad, priorizando siempre la experiencia del usuario y el aprendizaje efectivo.
 
+## 🌟 Vision de Lennox
+
+<p align="center">
+  <img src="doc/images/lennox_project_vision.jpg" alt="Vision del juego educativo Lennox con biomas, exploracion y aprendizaje de lectura" width="100%">
+</p>
+
 ---
 
 ## 🎮 Estado del Proyecto y Hoja de Ruta de Jira
@@ -30,6 +36,14 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 | **LEN-17** | Pruebas de integración de barreras (LEN-5) | ✅ Completado | Pruebas unitarias y de integración para la generación y aplicación de barreras |
 | **LEN-16** | Integrar Godot y crear un nivel prototipo | 📋 Por hacer | Integración del mapa y prototipo dentro del motor |
 | **LEN-20** | Añadir características de mundo entre chunks | 📋 Por hacer | Soporte para elementos que atraviesan los límites entre chunks |
+
+---
+
+## 🗺️ Generacion procedural del mapa
+
+<p align="center">
+  <img src="doc/images/procedual_map_generation.jpg" alt="Diagrama de generacion procedural del mapa, biomas, barreras y aperturas" width="100%">
+</p>
 
 ---
 
@@ -56,6 +70,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   │   ├── barriers.md         # Documentacion LEN-5
   │   ├── biomes.md           # Documentacion de biomas (LEN-4)
   │   ├── level-structure.md  # Estructura de chunks y niveles
+  │   ├── images/             # Diagramas y vision del proyecto
   │   └── snap-in-mechanism.md # Documentacion de mecanismo educativo
   └── README.md
   ```
