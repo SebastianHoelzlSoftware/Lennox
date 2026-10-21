@@ -111,7 +111,12 @@ El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit T
 | [`test_barrier_chunk_integration.gd`](test/integration/test_barrier_chunk_integration.gd) | 8 | Integracion de barreras y aperturas generadas con chunks, puertas y baldosas |
 
 **Ejecutar pruebas:**
-Busca el panel **GUT** en el editor y ejecuta los tests con la interfaz grafica.
+Busca el panel **GUT** en el editor y ejecuta los tests con la interfaz grafica:
+
+
+<p align="center">
+  <img src="doc/images/screenshot_GUT.png" alt="GUT Interfaz" width="100%">
+</p>
 
 ---
 
