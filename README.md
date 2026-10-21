@@ -86,19 +86,15 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 
 ## 🧪 Pruebas
 
-El proyecto incluye pruebas unitarias para garantizar la estabilidad del codigo. Usamos **GUT** (Godot Unit Test):
+El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 49 pruebas unitarias y 8 de integracion.
 
-| Test | Descripcion |
-|------|-------------|
-| `test_level_initialization` | Verifica la inicializacion correcta de parametros del nivel |
-| `test_level_generates_chunks` | Confirma que los chunks se generan correctamente |
-| `test_chunk_generation_is_deterministic` | **Determinismo**: Same seed → mismos biomas |
-| `test_barrier_with_polygon` | Prueba de barreras con poligonos |
-| `test_point_in_polygon_ray_casting` | Prueba de algoritmo Ray-Casting |
-| `test_barrier_with_opening` | Prueba de barreras con aperturas |
-| `test_generated_barriers_store_openings_deterministically` | Comprueba datos, bioma y determinismo de aperturas generadas |
-| `test_generated_passable_openings_update_chunk_passability_and_tiles` | Comprueba la transitabilidad de aperturas generadas en el chunk |
-| `test_generated_door_open_and_close_updates_chunk_tiles` | Comprueba bloqueo y actualización de baldosas para puertas generadas |
+| Suite | Cantidad | Cobertura |
+|-------|---------:|-----------|
+| [`test_barrier.gd`](test/unit/test_barrier.gd) | 15 | Poligonos, consultas de puntos, aperturas pasables y estados de puertas |
+| [`test_biome.gd`](test/unit/test_biome.gd) | 11 | Generacion de biomas, determinismo, parametros y perfiles |
+| [`test_chunk.gd`](test/unit/test_chunk.gd) | 11 | Inicializacion de chunks, barreras y aplicacion de baldosas |
+| [`test_level.gd`](test/unit/test_level.gd) | 12 | Generacion de niveles, biomas, barreras y determinismo |
+| [`test_barrier_chunk_integration.gd`](test/integration/test_barrier_chunk_integration.gd) | 8 | Integracion de barreras y aperturas generadas con chunks, puertas y baldosas |
 
 **Ejecutar pruebas:**
 Busca el panel **GUT** en el editor y ejecuta los tests con la interfaz grafica.
