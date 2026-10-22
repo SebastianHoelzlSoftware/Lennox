@@ -1,6 +1,6 @@
 {
-  "godotTools.editorPath.godot4": "c:\\Users\\sebas\\Godot\\Godot_v4.6.3-stable_win64.exe",
-  "godot-tools.executablePath": "c:\\Users\\sebas\\Godot\\Godot_v4.6.3-stable_win64.exe",
+  "godotTools.editorPath.godot4": "..\\bin\\Godot_v4.6.3-stable_win64.exe",
+  "godot-tools.executablePath": "..\\bin\\Godot_v4.6.3-stable_win64.exe",
   "editor.tabSize": 4,
   "editor.insertSpaces": true,
   "[gdscript]": {

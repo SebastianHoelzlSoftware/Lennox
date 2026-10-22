@@ -111,7 +111,7 @@ El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit T
 | [`test_level_tilemap.gd`](test/unit/test_level_tilemap.gd) | 2 | Renderizado de tiles y limpieza al cargar un nivel nuevo |
 | [`test_barrier_chunk_integration.gd`](test/integration/test_barrier_chunk_integration.gd) | 8 | Integracion de barreras y aperturas generadas con chunks, puertas y baldosas |
 
-**Ejecutar pruebas:**
+### Ejecutar pruebas:
 Busca el panel **GUT** en el editor y ejecuta los tests con la interfaz grafica:
 
 
