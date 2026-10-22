@@ -6,7 +6,7 @@ extends Node2D
 
 func _ready() -> void:
 	# Level generieren
-	var level := Level.new(64, 64, 32, 32, 12345)
+	var level := Level.new(12, 12, 32, 32, 12345)
 	level.generate()
 
 	# Level in tilemap laden
