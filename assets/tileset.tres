@@ -34,18 +34,21 @@ resource_name = "rock_01"
 texture = ExtResource("3_beawo")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ol6ym"]
 resource_name = "rock_02"
 texture = ExtResource("4_fk0lh")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_g8n3q"]
 resource_name = "tree_01"
 texture = ExtResource("5_155r3")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_uqla6"]
 resource_name = "sand_01"
@@ -79,6 +82,7 @@ texture_region_size = Vector2i(32, 32)
 
 [resource]
 tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 1
 sources/2 = SubResource("TileSetAtlasSource_lgcvb")
 sources/3 = SubResource("TileSetAtlasSource_ol6ym")
 sources/4 = SubResource("TileSetAtlasSource_g8n3q")
