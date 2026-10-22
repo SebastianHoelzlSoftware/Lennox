@@ -100,7 +100,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 
 ## 🧪 Pruebas
 
-El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 49 pruebas unitarias y 8 de integracion.
+El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 51 pruebas unitarias y 8 de integracion.
 
 | Suite | Cantidad | Cobertura |
 |-------|---------:|-----------|
@@ -108,6 +108,7 @@ El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit T
 | [`test_biome.gd`](test/unit/test_biome.gd) | 11 | Generacion de biomas, determinismo, parametros y perfiles |
 | [`test_chunk.gd`](test/unit/test_chunk.gd) | 11 | Inicializacion de chunks, barreras y aplicacion de baldosas |
 | [`test_level.gd`](test/unit/test_level.gd) | 12 | Generacion de niveles, biomas, barreras y determinismo |
+| [`test_level_tilemap.gd`](test/unit/test_level_tilemap.gd) | 2 | Renderizado de tiles y limpieza al cargar un nivel nuevo |
 | [`test_barrier_chunk_integration.gd`](test/integration/test_barrier_chunk_integration.gd) | 8 | Integracion de barreras y aperturas generadas con chunks, puertas y baldosas |
 
 **Ejecutar pruebas:**

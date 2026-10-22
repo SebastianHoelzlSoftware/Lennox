@@ -21,7 +21,7 @@ func _init_tiles():
 	for i in range(32):
 		tiles.append([])
 		for j in range(32):
-			tiles[i].append(0)  # Default to GRASS (0)
+			tiles[i].append(TileType.GRASS)
 
 
 func add_barrier(polygon: Array) -> void:
@@ -32,17 +32,17 @@ func add_barrier(polygon: Array) -> void:
 	barriers.append(barrier)
 
 
-func set_tile(p_x: int, p_y: int, tile_type: int) -> void:
+func set_tile(p_x: int, p_y: int, tile_type: TileType.Type) -> void:
 	"""Establece una baldosa en la posicion (x, y)."""
 	if p_x >= 0 and p_x < 32 and p_y >= 0 and p_y < 32:
 		tiles[p_x][p_y] = tile_type
 
 
-func get_tile(p_x: int, p_y: int) -> int:
+func get_tile(p_x: int, p_y: int) -> TileType.Type:
 	"""Devuelve el tipo de baldosa en la posicion (x, y)."""
 	if p_x >= 0 and p_x < 32 and p_y >= 0 and p_y < 32:
 		return tiles[p_x][p_y]
-	return 0  # Default to GRASS (0)
+	return TileType.GRASS
 
 
 func apply_barriers_to_tiles() -> void:
@@ -57,7 +57,7 @@ func apply_barriers_to_tiles() -> void:
 func _apply_barrier_to_tiles(p_barrier: Barrier) -> void:
 	"""Aplica una sola barrera a las baldosas."""
 	# Map biome to tile type directly (matching logic from Level.get_barrier_tile_type_from_biome)
-	var barrier_tile_type: int
+	var barrier_tile_type: TileType.Type
 	match p_barrier.biome:
 		BiomeType.GRASSLAND:
 			barrier_tile_type = TileType.ROCK

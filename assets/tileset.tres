@@ -13,56 +13,67 @@
 [ext_resource type="Texture2D" uid="uid://b037pryom78yv" path="res://assets/tiles/pass_01.png" id="11_g8n3q"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7lii3"]
+resource_name = "gras_01"
 texture = ExtResource("1_ylah7")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_uyjym"]
+resource_name = "gras_02"
 texture = ExtResource("2_fcvr3")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xcxv2"]
+resource_name = "ford_01"
 texture = ExtResource("3_qscaq")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lgcvb"]
+resource_name = "rock_01"
 texture = ExtResource("3_beawo")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ol6ym"]
+resource_name = "rock_02"
 texture = ExtResource("4_fk0lh")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_g8n3q"]
+resource_name = "tree_01"
 texture = ExtResource("5_155r3")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_uqla6"]
+resource_name = "sand_01"
 texture = ExtResource("6_ls0l7")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yqrcl"]
+resource_name = "water_01"
 texture = ExtResource("7_qscaq")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ww03b"]
+resource_name = "door_01"
 texture = ExtResource("9_lgcvb")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qg7by"]
+resource_name = "steps_01"
 texture = ExtResource("10_ol6ym")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_20ewd"]
+resource_name = "pass_01"
 texture = ExtResource("11_g8n3q")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
