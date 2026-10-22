@@ -14,4 +14,3 @@ const ROCK: Type = Type.ROCK
 const TREE: Type = Type.TREE
 const SAND: Type = Type.SAND
 const WATER: Type = Type.WATER
-
