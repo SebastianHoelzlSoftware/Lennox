@@ -1,6 +1,8 @@
 # biome_generator.gd
 class_name BiomeGenerator
 
+const BIOME_REGION_SIZE_CHUNKS := 4
+
 static func generate_biome_map(p_seed: int, p_width: int, p_height: int) -> Array:
 	"""
 	Genera un mapa de biomas para un nivel.
@@ -13,9 +15,9 @@ static func generate_biome_map(p_seed: int, p_width: int, p_height: int) -> Arra
 	var rng := RandomNumberGenerator.new()
 	rng.seed = p_seed
 
-	# Crea una celda de Voronoi por cada bloque de 5 × 5 chunks.
+	# Un espaciado menor entre centros crea regiones de bioma más pequeñas.
 	var voronoi_points := []
-	var step := 5
+	var step := BIOME_REGION_SIZE_CHUNKS
 	for x in range(0, p_width, step):
 		for y in range(0, p_height, step):
 			voronoi_points.append(Vector2(x, y))

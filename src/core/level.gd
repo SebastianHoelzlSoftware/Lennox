@@ -38,6 +38,7 @@ func generate_chunk(p_x: int, p_y: int) -> Chunk:
 	# Generar bioma para el chunk (simplificado para prototipo)
 	var biome_type := _get_biome_for_chunk(p_x, p_y)
 	chunk.biome = biome_type
+	chunk.fill_tiles(get_tile_type_from_biome(biome_type))
 
 	# Generar barreras para el chunk
 	var barriers := generate_barriers_for_chunk(p_x, p_y, biome_type)

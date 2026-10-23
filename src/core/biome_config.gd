@@ -13,8 +13,8 @@ const DEFAULT_PROFILE := {
 # barrier_size limita la dispersion de los puntos que forman cada barrera.
 const BIOME_PROFILES := {
 	BiomeType.GRASSLAND: {
-		"barrier_count": Vector2i(1, 2),
-		"barrier_size": Vector2i(4, 8),
+		"barrier_count": Vector2i(4, 6),
+		"barrier_size": Vector2i(8, 14),
 		"opening_count": Vector2i(1, 2),
 		"point_count": Vector2i(5, 8),
 		"opening_types": [
@@ -24,8 +24,8 @@ const BIOME_PROFILES := {
 		]
 	},
 	BiomeType.WOOD: {
-		"barrier_count": Vector2i(2, 4),
-		"barrier_size": Vector2i(6, 10),
+		"barrier_count": Vector2i(7, 10),
+		"barrier_size": Vector2i(10, 16),
 		"opening_count": Vector2i(1, 2),
 		"point_count": Vector2i(8, 12),
 		"opening_types": [
@@ -35,8 +35,8 @@ const BIOME_PROFILES := {
 		]
 	},
 	BiomeType.ROCKS: {
-		"barrier_count": Vector2i(3, 5),
-		"barrier_size": Vector2i(8, 14),
+		"barrier_count": Vector2i(8, 12),
+		"barrier_size": Vector2i(12, 18),
 		"opening_count": Vector2i(0, 1),
 		"point_count": Vector2i(10, 15),
 		"opening_types": [
@@ -52,8 +52,8 @@ const BIOME_PROFILES := {
 		"opening_types": [Opening.OpeningType.FORD]
 	},
 	BiomeType.SAND: {
-		"barrier_count": Vector2i(1, 2),
-		"barrier_size": Vector2i(4, 8),
+		"barrier_count": Vector2i(4, 6),
+		"barrier_size": Vector2i(8, 14),
 		"opening_count": Vector2i(1, 2),
 		"point_count": Vector2i(5, 8),
 		"opening_types": [

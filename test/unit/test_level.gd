@@ -82,6 +82,23 @@ func test_level_uses_seeded_biome_map():
 			)
 
 
+func test_generated_chunks_use_biome_terrain_as_base():
+	for biome: BiomeType.Type in BiomeType.Type.values():
+		var level := Level.new(1, 1, 32, 32, 12345)
+		level.biome_map = [[biome]]
+		var chunk := level.generate_chunk(0, 0)
+		var expected_tile := level.get_tile_type_from_biome(biome)
+		var found_base_tile := false
+
+		for tile_x in range(32):
+			for tile_y in range(32):
+				if not chunk.is_barrier(tile_x, tile_y):
+					assert_eq(chunk.get_tile(tile_x, tile_y), expected_tile)
+					found_base_tile = true
+
+		assert_true(found_base_tile, "Cada chunk debe conservar baldosa de terreno fuera de sus barreras")
+
+
 func test_hash_supports_string_seed_components():
 	var level := Level.new(1, 1, 32, 32, 13579)
 	var values := [1, 1, level.world_seed, "barriers"]

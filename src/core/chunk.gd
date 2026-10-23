@@ -38,6 +38,12 @@ func set_tile(p_x: int, p_y: int, tile_type: TileType.Type) -> void:
 		tiles[p_x][p_y] = tile_type
 
 
+func fill_tiles(p_tile_type: TileType.Type) -> void:
+	for tile_x in range(tiles.size()):
+		for tile_y in range(tiles[tile_x].size()):
+			tiles[tile_x][tile_y] = p_tile_type
+
+
 func get_tile(p_x: int, p_y: int) -> TileType.Type:
 	"""Devuelve el tipo de baldosa en la posicion (x, y)."""
 	if p_x >= 0 and p_x < 32 and p_y >= 0 and p_y < 32:

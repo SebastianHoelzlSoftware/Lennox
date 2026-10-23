@@ -57,7 +57,7 @@ Las aperturas generadas conservan tipo, posición, ancho y bioma en `Barrier.ope
 ### Proceso de Generacion (implementacion actual)
 
 1. **Puntos de Voronoi:**
-   - Se coloca un punto cada 5 chunks en los ejes X e Y.
+   - Se coloca un punto cada 4 chunks en los ejes X e Y.
    - Cada punto recibe uno de los cinco valores de `BiomeType`, usando un RNG local con la semilla del mundo.
 
 2. **Domain warping:**
@@ -93,11 +93,11 @@ Las aperturas generadas conservan tipo, posición, ancho y bioma en `Barrier.ope
 
 | Bioma | Barreras por Chunk | Tamano Tipico de Barreras | Superficie Interna |
 |-------|---------------------|--------------------------|-------------------|
-| Grassland | 1-2 | 5-10 baldosas de diametro | Grass |
-| Wood | 3-5 | 8-15 baldosas de diametro | Wood |
-| Rocks | 5-8 | 10-20 baldosas de diametro | Rocks |
+| Grassland | 4-6 | 8-14 baldosas de dispersion | Grass |
+| Wood | 7-10 | 10-16 baldosas de dispersion | Wood |
+| Rocks | 8-12 | 12-18 baldosas de dispersion | Rocks |
 | Water | 0-1 (Islands) | 15-30 baldosas de diametro | Water (Island) |
-| Sand | 1-2 | 6-12 baldosas de diametro | Sand |
+| Sand | 4-6 | 8-14 baldosas de dispersion | Sand |
 
 ---
 

@@ -6,8 +6,9 @@ Los biomas definen la **estructura basica y la apariencia** del mundo del juego.
 
 ## Estado actual de la implementacion
 
-- `BiomeGenerator.generate_biome_map()` asigna un tipo de `BiomeType` a cada chunk usando puntos de Voronoi colocados en una cuadrícula cada 5 chunks.
+- `BiomeGenerator.generate_biome_map()` asigna un tipo de `BiomeType` a cada chunk usando puntos de Voronoi colocados en una cuadrícula cada 4 chunks.
 - Las asignaciones de bioma y las fronteras deformadas son deterministas para una misma semilla. `Level.generate()` usa este mapa para asignar el bioma a cada chunk.
+- Cada chunk se rellena con la baldosa base de su bioma antes de aplicar barreras; por eso las regiones de roca, agua y arena también se distinguen visualmente del terreno verde.
 - Las fronteras se deforman mediante **domain warping con FastNoiseLite Simplex FBM**. La configuración común a todos los biomas usa 4 octavas, una frecuencia de `0.05` (`1.0 / 20.0`) y una ganancia fractal de `0.5`. Dos muestras de ruido desplazan cada eje de la posición consultada hasta `2.5` chunks. Esto produce fronteras irregulares, pero **no mezcla biomas ni crea zonas de transición**. El ruido tampoco controla altura o densidad de vegetación.
 - No hay parámetros de ruido específicos por bioma en la implementación actual. Los perfiles de altura Perlin que aparecían en las descripciones siguientes eran propuestas de diseño y se omiten porque todavía no existe generación de altura.
 - `BiomeGenerator.get_biome_params()` proporciona parámetros por bioma. La generación de barreras usa la cantidad, el tamaño y los tipos/cantidad de aperturas configurados para recortar huecos en el polígono. Esos huecos todavía no se representan como objetos `Opening` adjuntos a las barreras; la integración de aperturas interactivas corresponde a LEN-15.
@@ -19,11 +20,11 @@ Los biomas definen la **estructura basica y la apariencia** del mundo del juego.
 
 | Bioma | Descripcion | Color (Hex) | Densidad de Barreras | Barreras Tipicas | Frecuencia de Aperturas |
 |-------|-------------|------------|---------------------|-------------------|------------------------|
-| Grassland | Areas abiertas y verdes con arboles o rocas aisladas. | `#7CF06B` | Baja (1-2) | Rocks, Tree groups | Media (1-2) |
-| Wood | Vegetacion densa con muchos obstaculos naturales. | `#3A7D44` | Media-alta (2-4) | Tree groups, Rocks | Media (1-2) |
-| Rocks | Regiones montañosas y rocosas con acantilados pronunciados. | `#8B8B8B` | Alta (3-5) | Rock formations, Cliffs | Baja (0-1) |
+| Grassland | Areas abiertas y verdes con arboles o rocas aisladas. | `#7CF06B` | Alta (4-6) | Rocks, Tree groups | Media (1-2) |
+| Wood | Vegetacion densa con muchos obstaculos naturales. | `#3A7D44` | Muy alta (7-10) | Tree groups, Rocks | Media (1-2) |
+| Rocks | Regiones montañosas y rocosas con acantilados pronunciados. | `#8B8B8B` | Extrema (8-12) | Rock formations, Cliffs | Baja (0-1) |
 | Water | Lagos, rios o mares. Puede contener islas. | `#4169E1` | Muy baja (0-1) | Islands | Media (1-2) |
-| Sand | Desiertos o regiones costeras con dunas y rocas aisladas. | `#F4A460` | Baja (1-2) | Dunes, Rocks | Media (1-2) |
+| Sand | Desiertos o regiones costeras con dunas y rocas aisladas. | `#F4A460` | Alta (4-6) | Dunes, Rocks | Media (1-2) |
 
 ---
 
@@ -116,7 +117,7 @@ const SAND: Type = Type.SAND
 
 ## Fronteras entre Biomas (implementacion actual)
 
-Cada chunk recibe un único bioma: no hay mezcla ni zona de amortiguación. Voronoi define la región y Simplex FBM desplaza la posición usada para buscar el punto más cercano. La amplitud actual del desplazamiento es 2.5 chunks.
+Cada chunk recibe un único bioma: no hay mezcla ni zona de amortiguación. Los centros de Voronoi están separados 4 chunks; Simplex FBM desplaza la posición usada para buscar el punto más cercano. La amplitud actual del desplazamiento es 2.5 chunks.
 
 Las zonas mezcladas, la altura y la densidad de vegetación son ideas de diseño futuro, no comportamiento implementado.
 
@@ -129,8 +130,8 @@ Los valores siguientes son rangos iniciales de balance para chunks de 32 × 32 t
 ### Grassland
 | Parametro | Valor |
 |-----------|-------|
-| Barreras por Chunk | 1-2 |
-| Rango de dispersión de la barrera | 4-8 tiles |
+| Barreras por Chunk | 4-6 |
+| Rango de dispersión de la barrera | 8-14 tiles |
 | Puntos por barrera | 5-8 |
 | Aperturas intentadas por barrera | 1-2 |
 | Tipos de Apertura | Ford, Pass, Steps (probabilidad igual) |
@@ -138,8 +139,8 @@ Los valores siguientes son rangos iniciales de balance para chunks de 32 × 32 t
 ### Wood
 | Parametro | Valor |
 |-----------|-------|
-| Barreras por Chunk | 2-4 |
-| Rango de dispersión de la barrera | 6-10 tiles |
+| Barreras por Chunk | 7-10 |
+| Rango de dispersión de la barrera | 10-16 tiles |
 | Puntos por barrera | 8-12 |
 | Aperturas por Barrera | 1-2 |
 | Tipos de Apertura | Pass, Ford, Door (probabilidad igual) |
@@ -147,8 +148,8 @@ Los valores siguientes son rangos iniciales de balance para chunks de 32 × 32 t
 ### Rocks
 | Parametro | Valor |
 |-----------|-------|
-| Barreras por Chunk | 3-5 |
-| Rango de dispersión de la barrera | 8-14 tiles |
+| Barreras por Chunk | 8-12 |
+| Rango de dispersión de la barrera | 12-18 tiles |
 | Puntos por barrera | 10-15 |
 | Aperturas por Barrera | 0-1 |
 | Tipos de Apertura | Pass, Steps (probabilidad igual) |
@@ -165,8 +166,8 @@ Los valores siguientes son rangos iniciales de balance para chunks de 32 × 32 t
 ### Sand
 | Parametro | Valor |
 |-----------|-------|
-| Barreras por Chunk | 1-2 |
-| Rango de dispersión de la barrera | 4-8 tiles |
+| Barreras por Chunk | 4-6 |
+| Rango de dispersión de la barrera | 8-14 tiles |
 | Puntos por barrera | 5-8 |
 | Aperturas por Barrera | 1-2 |
 | Tipos de Apertura | Pass, Ford (probabilidad igual) |
