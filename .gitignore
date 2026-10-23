@@ -16,5 +16,3 @@ latest_test_output.xml
 # Executable folder
 /bin/
 
-# Ingore png.import files created by godot editor
-*.png.import
