@@ -57,3 +57,4 @@ sprite_frames = SubResource("SpriteFrames_eb6dy")
 animation = &"right"
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=275283869]
+position_smoothing_enabled = true
