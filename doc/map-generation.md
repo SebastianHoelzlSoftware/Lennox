@@ -10,7 +10,7 @@ Este documento describe el algoritmo y la implementacion de la **generacion proc
 - `BiomeGenerator` usa puntos de Voronoi con asignaciones deterministas y FastNoiseLite Simplex FBM para hacer domain warping de las fronteras. No hay mezcla de biomas, zonas de amortiguación, alturas ni transiciones por Perlin Noise.
 - `Level` genera barreras por bioma, aplica los tipos de baldosa al chunk y usa RNG locales con semillas derivadas para mantener la generación determinista.
 - Los parámetros de cantidad, tamaño y aperturas se obtienen de `BiomeGenerator.get_biome_params()`. Cada apertura generada se guarda como `Opening` en la barrera correspondiente. Las puertas son interactivas y empiezan cerradas; las demás aperturas son pasables. La generación de aperturas y su integración con las consultas de barrera están implementadas (LEN-15).
-- La integración con un TileMap de Godot y la colisión física del jugador no forman parte del código actual. Las comprobaciones disponibles son de punto y baldosa.
+- La escena principal muestra el nivel con el atlas de rocas 16x16. Todos los biomas usan suelo rocoso y las barreras se muestran como paredes de roca con colisión de TileSet.
 
 Las secciones de diseño y pseudocódigo que siguen describen objetivos o alternativas; cuando difieran, el código en `src/core/` representa el comportamiento implementado.
 
@@ -22,8 +22,8 @@ Las secciones de diseño y pseudocódigo que siguen describen objetivos o altern
 |-----------|-------|---------------|
 | **Tamano del Nivel** | 64x64 chunks | Suficientemente grande para prototipos |
 | **Tamano del Chunk** | 32x32 baldosas | Balance entre detalle y rendimiento |
-| **Tamano de Baldosa** | 32x32 pixeles | Optimo para rendimiento en movil |
-| **Tamano Total** | 2048x2048 pixeles | 64 Chunks x 32 Baldosas x 32 Pixeles |
+| **Tamano de Baldosa** | 16x16 pixeles | Tamano del atlas de rocas en Godot |
+| **Tamano Total** | 1024x1024 pixeles | 64 Chunks x 32 Baldosas x 16 Pixeles |
 | **Implementacion** | GDScript | Facil integracion en Godot |
 | **Determinismo** | Por Chunk | Misma semilla = mismo chunk |
 
@@ -38,7 +38,7 @@ El proceso de generacion de mapas sigue un **proceso de 4 etapas**:
 3. **Colocar Aperturas** (0-n por barrera)
 4. **Aplicar barreras a las baldosas del chunk**
 
-Las aperturas generadas conservan tipo, posición, ancho y bioma en `Barrier.openings`. `Barrier.contains_point()` permite el paso por aperturas pasables y bloquea las puertas cerradas. La física del jugador y su colisión en una escena de Godot siguen fuera del alcance implementado y corresponden a la integración posterior.
+Las aperturas generadas conservan tipo, posición, ancho y bioma en `Barrier.openings`. `Barrier.contains_point()` permite el paso por aperturas pasables y bloquea las puertas cerradas. Las paredes del TileMap usan colisión; la lógica de tránsito por puertas sigue gestionada por los datos de barrera.
 
 ---
 

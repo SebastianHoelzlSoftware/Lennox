@@ -10,7 +10,7 @@ Este documento describe las **estructuras de datos y la organizacion** de los ni
 - Cada apertura conserva su tipo, punto medio, ancho y bioma. Las posiciones están expresadas en coordenadas locales del chunk.
 - Las aperturas `DOOR` son interactivas y empiezan cerradas. `open()` y `close()` modifican su transitabilidad. Los demás tipos generados son no interactivos y pasables.
 - `Barrier.contains_point()` incluye en la barrera los puntos de una puerta cerrada y excluye los puntos de aperturas pasables. `get_passable_points()` lista los puntos pasables que están dentro del chunk.
-- `Chunk.apply_barriers_to_tiles()` usa esa consulta para aplicar las baldosas; la colisión física de jugador y TileMap aún no está integrada.
+- `Chunk.apply_barriers_to_tiles()` usa esa consulta para aplicar las baldosas. El TileMap de la escena principal usa un atlas rocoso 16x16 con colisión en las paredes.
 
 Los fragmentos de código siguientes son esquemas de diseño y pueden diferir de la implementación actual en `src/core/`.
 
@@ -24,8 +24,8 @@ Los fragmentos de código siguientes son esquemas de diseño y pueden diferir de
 |-----------|-------|-------------|
 | **Tamano del Nivel** | 64x64 chunks | Tamano total de un nivel |
 | **Tamano del Chunk** | 32x32 baldosas | Numero de baldosas por chunk |
-| **Tamano de Baldosa** | 32x32 pixeles | Tamano de una baldosa en pixeles |
-| **Tamano Total** | 2048x2048 pixeles | 64 x 32 x 32 = 2048 pixeles por eje |
+| **Tamano de Baldosa** | 16x16 pixeles | Tamano del atlas de rocas en Godot |
+| **Tamano Total** | 1024x1024 pixeles | 64 x 32 x 16 = 1024 pixeles por eje |
 
 ### Clase Level (GDScript)
 
@@ -36,14 +36,14 @@ class_name Level
 var width: int          # Numero de chunks en direccion x (64)
 var height: int         # Numero de chunks en direccion y (64)
 var chunk_size: int     # Baldosas por chunk (32)
-var tile_size: int      # Pixeles por baldosa (32)
+var tile_size: int      # Pixeles por baldosa (16)
 var seed: int           # Semilla base para determinismo
 
 # Chunks
 var chunks: Array = []  # Array 2D de chunks (chunks[x][y])
 
 # Funciones de ayuda
-func _init(p_width: int = 64, p_height: int = 64, p_chunk_size: int = 32, p_tile_size: int = 32, p_seed: int = 0):
+func _init(p_width: int = 64, p_height: int = 64, p_chunk_size: int = 32, p_tile_size: int = 16, p_seed: int = 0):
 				# Inizializar parametros
     width = p_width
     height = p_height

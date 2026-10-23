@@ -4,7 +4,7 @@ func test_level_initialization():
 	var width := 64
 	var height := 64
 	var chunk_size := 32
-	var tile_size := 32
+	var tile_size := 16
 	var world_seed := 12345
 
 	var level := Level.new(width, height, chunk_size, tile_size, world_seed)
@@ -12,7 +12,7 @@ func test_level_initialization():
 	assert_eq(level.width, width, "El ancho del nivel debe ser 64")
 	assert_eq(level.height, height, "La altura del nivel debe ser 64")
 	assert_eq(level.chunk_size, chunk_size, "El tamano del chunk debe ser 32")
-	assert_eq(level.tile_size, tile_size, "El tamano de la baldosa debe ser 32")
+	assert_eq(level.tile_size, tile_size, "El tamano de la baldosa debe ser 16")
 	assert_eq(level.world_seed, world_seed, "La semilla del mundo debe ser 12345")
 
 
