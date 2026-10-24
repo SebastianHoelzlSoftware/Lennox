@@ -1,19 +1,18 @@
-[gd_resource type="TileSet" format=3]
+[gd_resource type="TileSet" format=3 uid="uid://efvdtmq4xa5v"]
 
-[ext_resource type="Texture2D" path="res://assets/tiles/rocks/details.png" id="RockTexture0"]
-[ext_resource type="Texture2D" path="res://assets/tiles/rocks/Ground_rocks.png" id="RockTexture1"]
-[ext_resource type="Texture2D" path="res://assets/tiles/rocks/Objects.png" id="RockTexture2"]
-[ext_resource type="Texture2D" path="res://assets/tiles/rocks/Objects_animated.png" id="RockTexture3"]
-[ext_resource type="Texture2D" path="res://assets/tiles/rocks/Objects_animated2.png" id="RockTexture4"]
-[ext_resource type="Texture2D" path="res://assets/tiles/rocks/Objects_animated3.png" id="RockTexture5"]
-[ext_resource type="Texture2D" path="res://assets/tiles/rocks/water_coasts.png" id="RockTexture6"]
-[ext_resource type="Texture2D" path="res://assets/tiles/rocks/water_detilazation.png" id="RockTexture7"]
-[ext_resource type="Texture2D" path="res://assets/tiles/rocks/water_detilazation_v2.png" id="RockTexture8"]
+[ext_resource type="Texture2D" uid="uid://skd0lss2v4vp" path="res://assets/tiles/rocks/details.png" id="RockTexture0"]
+[ext_resource type="Texture2D" uid="uid://d10w6hyoiigru" path="res://assets/tiles/rocks/Ground_rocks.png" id="RockTexture1"]
+[ext_resource type="Texture2D" uid="uid://bsve2mvtwqymr" path="res://assets/tiles/rocks/Objects.png" id="RockTexture2"]
+[ext_resource type="Texture2D" uid="uid://b71pmufckcctg" path="res://assets/tiles/rocks/Objects_animated.png" id="RockTexture3"]
+[ext_resource type="Texture2D" uid="uid://kmuhnhtvi86b" path="res://assets/tiles/rocks/Objects_animated2.png" id="RockTexture4"]
+[ext_resource type="Texture2D" uid="uid://chhg7gkfddh6f" path="res://assets/tiles/rocks/Objects_animated3.png" id="RockTexture5"]
+[ext_resource type="Texture2D" uid="uid://dfnnyjmjbgpe2" path="res://assets/tiles/rocks/water_coasts.png" id="RockTexture6"]
+[ext_resource type="Texture2D" uid="uid://daa87f0trfrd7" path="res://assets/tiles/rocks/water_detilazation.png" id="RockTexture7"]
+[ext_resource type="Texture2D" uid="uid://nckyaeon1rgp" path="res://assets/tiles/rocks/water_detilazation_v2.png" id="RockTexture8"]
 
 [sub_resource type="TileSetAtlasSource" id="RockAtlas0"]
 resource_name = "details"
 texture = ExtResource("RockTexture0")
-texture_region_size = Vector2i(16, 16)
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -578,7 +577,6 @@ texture_region_size = Vector2i(16, 16)
 [sub_resource type="TileSetAtlasSource" id="RockAtlas1"]
 resource_name = "Ground_rocks"
 texture = ExtResource("RockTexture1")
-texture_region_size = Vector2i(16, 16)
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -666,11 +664,17 @@ texture_region_size = Vector2i(16, 16)
 6:3/0 = 0
 7:3/0 = 0
 8:3/0 = 0
+8:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 9:3/0 = 0
+9:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 10:3/0 = 0
+10:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 11:3/0 = 0
+11:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 12:3/0 = 0
+12:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 13:3/0 = 0
+13:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 14:3/0 = 0
 15:3/0 = 0
 16:3/0 = 0
@@ -2841,17 +2845,10 @@ texture_region_size = Vector2i(16, 16)
 23:86/0 = 0
 24:86/0 = 0
 25:86/0 = 0
-8:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
-9:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
-10:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
-11:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
-12:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
-13:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
 [sub_resource type="TileSetAtlasSource" id="RockAtlas2"]
 resource_name = "Objects"
 texture = ExtResource("RockTexture2")
-texture_region_size = Vector2i(16, 16)
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -3467,8 +3464,11 @@ texture_region_size = Vector2i(16, 16)
 12:8/0 = 0
 13:8/0 = 0
 14:8/0 = 0
+15:8/next_alternative_id = 2
 15:8/0 = 0
+16:8/next_alternative_id = 2
 16:8/0 = 0
+17:8/next_alternative_id = 2
 17:8/0 = 0
 18:8/0 = 0
 19:8/0 = 0
@@ -3542,8 +3542,11 @@ texture_region_size = Vector2i(16, 16)
 12:9/0 = 0
 13:9/0 = 0
 14:9/0 = 0
+15:9/next_alternative_id = 2
 15:9/0 = 0
+16:9/next_alternative_id = 2
 16:9/0 = 0
+17:9/next_alternative_id = 2
 17:9/0 = 0
 18:9/0 = 0
 19:9/0 = 0
@@ -3617,8 +3620,11 @@ texture_region_size = Vector2i(16, 16)
 12:10/0 = 0
 13:10/0 = 0
 14:10/0 = 0
+15:10/next_alternative_id = 2
 15:10/0 = 0
+16:10/next_alternative_id = 2
 16:10/0 = 0
+17:10/next_alternative_id = 2
 17:10/0 = 0
 18:10/0 = 0
 19:10/0 = 0
@@ -3692,8 +3698,11 @@ texture_region_size = Vector2i(16, 16)
 12:11/0 = 0
 13:11/0 = 0
 14:11/0 = 0
+15:11/next_alternative_id = 2
 15:11/0 = 0
+16:11/next_alternative_id = 2
 16:11/0 = 0
+17:11/next_alternative_id = 3
 17:11/0 = 0
 18:11/0 = 0
 19:11/0 = 0
@@ -6456,7 +6465,6 @@ texture_region_size = Vector2i(16, 16)
 [sub_resource type="TileSetAtlasSource" id="RockAtlas3"]
 resource_name = "Objects_animated"
 texture = ExtResource("RockTexture3")
-texture_region_size = Vector2i(16, 16)
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -8177,7 +8185,6 @@ texture_region_size = Vector2i(16, 16)
 [sub_resource type="TileSetAtlasSource" id="RockAtlas4"]
 resource_name = "Objects_animated2"
 texture = ExtResource("RockTexture4")
-texture_region_size = Vector2i(16, 16)
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -9898,7 +9905,6 @@ texture_region_size = Vector2i(16, 16)
 [sub_resource type="TileSetAtlasSource" id="RockAtlas5"]
 resource_name = "Objects_animated3"
 texture = ExtResource("RockTexture5")
-texture_region_size = Vector2i(16, 16)
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -11619,7 +11625,6 @@ texture_region_size = Vector2i(16, 16)
 [sub_resource type="TileSetAtlasSource" id="RockAtlas6"]
 resource_name = "water_coasts"
 texture = ExtResource("RockTexture6")
-texture_region_size = Vector2i(16, 16)
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -13027,7 +13032,6 @@ texture_region_size = Vector2i(16, 16)
 [sub_resource type="TileSetAtlasSource" id="RockAtlas7"]
 resource_name = "water_detilazation"
 texture = ExtResource("RockTexture7")
-texture_region_size = Vector2i(16, 16)
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -15918,7 +15922,6 @@ texture_region_size = Vector2i(16, 16)
 [sub_resource type="TileSetAtlasSource" id="RockAtlas8"]
 resource_name = "water_detilazation_v2"
 texture = ExtResource("RockTexture8")
-texture_region_size = Vector2i(16, 16)
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -18808,7 +18811,6 @@ texture_region_size = Vector2i(16, 16)
 
 [resource]
 resource_name = "Rocks 16x16"
-tile_size = Vector2i(16, 16)
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("RockAtlas0")
 sources/1 = SubResource("RockAtlas1")

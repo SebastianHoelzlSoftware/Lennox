@@ -169,6 +169,32 @@ var biome: BiomeType.Type   # Tipo de bioma de la barrera
 var openings: Array         # Lista de aperturas
 ```
 
+### Patrones nombrados de objetos TileSet
+
+La biblioteca `assets/tiles/rocks/tile_object_library.tres` contiene patrones consultables por nombre. Un patron puede ser una lista de variantes de una baldosa o una composicion de varias celdas del atlas. Cada patron declara por separado su huella ocupada y, opcionalmente, los tipos de terreno permitidos.
+
+- `rock_barrier` agrupa las seis variantes de muro que ya usa el renderizado de barreras.
+- `bone_fragment` compone seis celdas contiguas del atlas `Objects` en un objeto de 2x3 celdas.
+
+Ejemplo de consulta y colocacion desde codigo:
+
+```gdscript
+const TILE_OBJECTS: TileObjectLibrary = preload(
+    "res://assets/tiles/rocks/tile_object_library.tres"
+)
+
+var occupied_cells: Dictionary = {}
+var bone_fragment := TILE_OBJECTS.get_pattern(&"bone_fragment")
+bone_fragment.try_place(
+    object_layer,
+    Vector2i(10, 10),
+    Vector2i(level.width * level.chunk_size, level.height * level.chunk_size),
+    occupied_cells
+)
+```
+
+`object_layer` debe tener asignado el TileSet combinado `rocks_16x16.tres`, que contiene las fuentes `Objects` y `Ground_rocks`. `try_place()` valida los limites del mapa, el terreno permitido y las celdas ya ocupadas; solo despues dibuja las celdas y registra la huella. Para añadir un patron, crea recursos `TileObjectCell`, asigna la fuente del atlas, coordenadas y posicion local, y guardalos en un `TileObjectPattern` dentro de la biblioteca. Mantener los objetos en otra `TileMapLayer` permite controlar su orden de dibujo por separado del terreno.
+
 #### Opening
 ```gdscript
 class_name Opening
