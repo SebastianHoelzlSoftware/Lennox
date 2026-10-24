@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="108" height="135" viewBox="0 0 108 135">
+  <g stroke="#403744" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <g transform="translate(-8 -3) scale(1.18)">
+      <path fill="#f47b20" d="M31 46 Q28 33 31 19 Q35 3 54 3 Q73 3 77 19 L77 47Z"/>
+      <path fill="#533b35" d="M34 19 Q38 7 54 7 Q69 7 74 19 L70 24 Q55 18 38 24Z"/>
+      <path fill="#f4c8a1" d="M36 20 Q40 14 54 14 Q68 14 72 20 L72 36 Q68 46 54 47 Q40 46 36 36Z"/>
+    </g>
+    <g transform="translate(0 10) scale(1 0.8)">
+    <path fill="#f47b20" d="M36 44 Q44 40 54 43 Q64 40 72 44 L79 80 L72 95 L36 95 L29 80Z"/>
+    <path fill="#f9a43b" d="M37 46 L52 52 L50 91 L36 91 L31 78Z"/>
+    <path fill="#e86b1d" d="M72 46 L56 52 L58 91 L72 91 L77 78Z"/>
+    <path fill="none" d="M54 52 L54 90 M48 56 L48 87 M60 56 L60 87"/>
+    <path fill="#176b76" d="M37 53 Q40 48 46 50 L63 50 Q70 48 72 54 L76 79 Q75 86 68 87 L40 87 Q34 85 35 78Z"/>
+    <path fill="#35aeb0" d="M40 57 L69 56 L71 77 L40 79Z"/>
+    <path fill="#ffd45a" d="M40 57 Q41 50 49 50 L62 50 Q69 50 69 57 L69 65 L40 65Z"/>
+    <path fill="#176b76" d="M44 67 L65 66 L66 80 L43 80Z"/>
+    <path fill="#ffd45a" d="M51 69 L59 69 L59 75 L51 75Z"/>
+    <path fill="#35aeb0" d="M35 63 Q31 65 33 73 L39 76 L40 65Z"/>
+    <path fill="#35aeb0" d="M72 62 Q77 64 77 72 L71 76 L70 65Z"/>
+    <path fill="none" d="M39 57 Q35 63 36 72 M70 57 Q74 63 74 72"/>
+    <path fill="#71513b" d="M39 51 L24 56 L18 78 L25 83 L33 64Z"/>
+    <path fill="#a87539" d="M24 58 L35 55 L29 74 L21 76Z"/>
+    <path fill="#f47b20" d="M38 49 L29 55 L21 73 Q19 79 24 81 L30 79 L42 62Z"/>
+    <path fill="#f47b20" d="M70 49 L79 55 L87 73 Q89 79 84 81 L78 79 L66 62Z"/>
+    <path fill="#f4c8a1" d="M21 72 Q17 76 21 81 L26 84 L31 79 L28 74Z"/>
+    <path fill="#f4c8a1" d="M78 74 Q75 79 79 83 L84 82 L87 77 L84 73Z"/>
+    <path fill="#485064" d="M39 93 L53 93 L55 109 L61 118 L50 122 L39 113Z"/>
+    <path fill="#485064" d="M55 93 L69 93 L68 108 L62 117 L51 114 L53 105Z"/>
+    <path fill="#303646" d="M50 118 L62 116 L67 122 Q68 126 64 127 L50 125 Q47 122 50 118Z"/>
+    <path fill="#303646" d="M39 110 L51 113 L49 120 L35 118 Q32 116 35 113Z"/>
+    </g>
+  </g>
+</svg>

@@ -4,14 +4,14 @@
 [ext_resource type="TileSet" path="res://assets/tiles/rocks/rocks_16x16.tres" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://cv1p1j8ejkni0" path="res://scenes/level.gd" id="3_sugp2"]
 [ext_resource type="Script" uid="uid://smk1y6gutxhw" path="res://scenes/player.gd" id="4_jyhfs"]
-[ext_resource type="Texture2D" uid="uid://ca356qnhi5ors" path="res://assets/player/playerGrey_walk1.png" id="5_tipki"]
-[ext_resource type="Texture2D" uid="uid://c4s3nyl5latxr" path="res://assets/player/playerGrey_walk2.png" id="6_85g3d"]
-[ext_resource type="Texture2D" uid="uid://cebp8ckbdb055" path="res://assets/player/playerGrey_up1.png" id="7_choun"]
-[ext_resource type="Texture2D" uid="uid://l6t34fyjkyp1" path="res://assets/player/playerGrey_up2.png" id="8_ya4ey"]
+[ext_resource type="Texture2D" path="res://assets/player/playerOrange_right1.svg" id="5_tipki"]
+[ext_resource type="Texture2D" path="res://assets/player/playerOrange_right2.svg" id="6_85g3d"]
+[ext_resource type="Texture2D" path="res://assets/player/playerOrange_up1.svg" id="7_choun"]
+[ext_resource type="Texture2D" path="res://assets/player/playerOrange_up2.svg" id="8_ya4ey"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_tbgi4"]
-radius = 8.0
-height = 24.0
+radius = 9.0
+height = 26.0
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_eb6dy"]
 animations = [{
@@ -58,7 +58,7 @@ script = ExtResource("4_jyhfs")
 shape = SubResource("CapsuleShape2D_tbgi4")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=1168804960]
-scale = Vector2(0.32, 0.32)
+scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_eb6dy")
 animation = &"right"
 
