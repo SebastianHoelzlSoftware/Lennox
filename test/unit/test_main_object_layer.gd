@@ -10,7 +10,14 @@ func test_main_scene_starts_in_decorated_grass_biome():
 
 	var object_tilemap := main.get_node("ObjectTileMap") as TileMapLayer
 	var player := main.get_node("CharacterBody2D") as CharacterBody2D
+	var collision_shape := player.get_node("CollisionShape2D") as CollisionShape2D
+	var player_sprite := player.get_node("AnimatedSprite2D") as AnimatedSprite2D
+	var camera := player.get_node("Camera2D") as Camera2D
 	var level_tilemap := main.get_node("LevelTileMap") as TileMapLayer
+	assert_eq(collision_shape.shape.radius, 8.0)
+	assert_eq(collision_shape.shape.height, 24.0)
+	assert_eq(player_sprite.scale, Vector2(0.32, 0.32))
+	assert_eq(camera.zoom, Vector2.ONE)
 	var start_chunk: Vector2i = main.start_cell / 32
 	var object_cells := object_tilemap.get_used_cells()
 	assert_false(main.start_biome_chunks.is_empty())
