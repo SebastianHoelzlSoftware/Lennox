@@ -9,25 +9,28 @@ const TILE_OBJECT_LIBRARY: TileObjectLibrary = preload(
 	"res://assets/tiles/rocks/tile_object_library.tres"
 )
 const GRASSLAND_OBJECT_SEARCH_RADIUS := 6
-const GRASSLAND_DECORATIONS := [
-	{"pattern": &"objects_r04_c08", "offset": Vector2i(-24, -24)},
-	{"pattern": &"objects_r04_c14", "offset": Vector2i(0, -28)},
-	{"pattern": &"objects_r05_c19", "offset": Vector2i(22, -22)},
-	{"pattern": &"objects_r06_c23", "offset": Vector2i(29, -9)},
-	{"pattern": &"objects_r09_c16", "offset": Vector2i(27, 10)},
-	{"pattern": &"objects_r15_c16", "offset": Vector2i(16, 25)},
-	{"pattern": &"objects_r18_c02", "offset": Vector2i(-4, 28)},
-	{"pattern": &"objects_r18_c09", "offset": Vector2i(-23, 22)},
-	{"pattern": &"objects_r18_c12", "offset": Vector2i(-29, 5)},
-	{"pattern": &"objects_r18_c23", "offset": Vector2i(-28, -11)},
-	{"pattern": &"bone_fragment", "offset": Vector2i(-9, -18)},
-	{"pattern": &"objects_r29_c14", "offset": Vector2i(11, -15)},
-	{"pattern": &"objects_r34_c14", "offset": Vector2i(22, 17)},
-	{"pattern": &"objects_r35_c10", "offset": Vector2i(9, 24)},
-	{"pattern": &"objects_r39_c10", "offset": Vector2i(-16, 17)},
-	{"pattern": &"objects_r41_c22", "offset": Vector2i(-18, -2)},
-	{"pattern": &"objects_r44_c02", "offset": Vector2i(-15, -25)},
-	{"pattern": &"objects_r44_c18", "offset": Vector2i(2, -20)},
+const GRASSLAND_OBJECT_PATTERNS: Array[StringName] = [
+	&"objects_r04_c08",
+	&"objects_r04_c14",
+	&"objects_r05_c19",
+	&"objects_r06_c23",
+	&"objects_r09_c16",
+	&"objects_r15_c16",
+	&"objects_r18_c02",
+	&"objects_r18_c09",
+	&"objects_r18_c12",
+	&"objects_r18_c23",
+	&"bone_fragment",
+	&"objects_r29_c14",
+	&"objects_r34_c14",
+	&"objects_r35_c10",
+	&"objects_r39_c10",
+	&"objects_r41_c22",
+	&"objects_r44_c02",
+	&"objects_r44_c12",
+	&"objects_r44_c14",
+	&"objects_r44_c16",
+	&"objects_r44_c18",
 ]
 
 var start_cell := Vector2i.ZERO
@@ -162,37 +165,67 @@ func _place_grassland_decorations(p_level: Level, p_center_cell: Vector2i) -> vo
 		return
 
 	object_tilemap.clear()
-	var terrain_by_cell: Dictionary = {}
-	for chunk_x in range(p_level.width):
-		for chunk_y in range(p_level.height):
-			var chunk := p_level.get_chunk(chunk_x, chunk_y)
-			if chunk == null:
-				continue
-			for tile_x in range(chunk.tiles.size()):
-				for tile_y in range(chunk.tiles[tile_x].size()):
-					var map_cell := Vector2i(
-						chunk_x * p_level.chunk_size + tile_x,
-						chunk_y * p_level.chunk_size + tile_y
-					)
-					terrain_by_cell[map_cell] = chunk.get_tile(tile_x, tile_y)
-
 	var map_size := Vector2i(
 		p_level.width * p_level.chunk_size,
 		p_level.height * p_level.chunk_size
 	)
 	var occupied_cells: Dictionary = {}
-	for courtyard_object: Dictionary in GRASSLAND_DECORATIONS:
-		if not _place_pattern_near(
-			StringName(courtyard_object["pattern"]),
-			p_center_cell + courtyard_object["offset"],
-			map_size,
-			occupied_cells,
-			terrain_by_cell
-		):
-			push_warning(
-				"Could not place '%s' in the grass-biome starting area."
-				% courtyard_object["pattern"]
+	for offset_x in range(-2, 3):
+		for offset_y in range(-2, 3):
+			occupied_cells[p_center_cell + Vector2i(offset_x, offset_y)] = true
+
+	for chunk_x in range(p_level.width):
+		for chunk_y in range(p_level.height):
+			var chunk_position := Vector2i(chunk_x, chunk_y)
+			var chunk := p_level.get_chunk(chunk_x, chunk_y)
+			if chunk == null or chunk.biome != BiomeType.GRASSLAND:
+				continue
+
+			var chunk_terrain: Dictionary = {}
+			var chunk_origin := chunk_position * p_level.chunk_size
+			for tile_x in range(chunk.tiles.size()):
+				for tile_y in range(chunk.tiles[tile_x].size()):
+					if chunk.get_tile(tile_x, tile_y) == TileType.GRASS:
+						chunk_terrain[chunk_origin + Vector2i(tile_x, tile_y)] = TileType.GRASS
+
+			var rng := RandomNumberGenerator.new()
+			rng.seed = p_level.hash(
+				[p_level.world_seed, chunk_x, chunk_y, "grassland-decoration"]
 			)
+			var pattern_names: Array[StringName] = GRASSLAND_OBJECT_PATTERNS.duplicate()
+			_shuffle_patterns(pattern_names, rng)
+
+			var object_count := rng.randi_range(2, 4)
+			for pattern_index in range(object_count):
+				var pattern_name: StringName = pattern_names[pattern_index]
+				var placed := false
+				for attempt in range(12):
+					var anchor := chunk_origin + Vector2i(
+						rng.randi_range(0, p_level.chunk_size - 1),
+						rng.randi_range(0, p_level.chunk_size - 1)
+					)
+					if _place_pattern_near(
+						pattern_name,
+						anchor,
+						map_size,
+						occupied_cells,
+						chunk_terrain
+					):
+						placed = true
+						break
+				if not placed:
+					push_warning(
+						"Could not place '%s' in grass-biome chunk %s."
+						% [pattern_name, chunk_position]
+					)
+
+
+func _shuffle_patterns(p_patterns: Array[StringName], p_rng: RandomNumberGenerator) -> void:
+	for index in range(p_patterns.size() - 1, 0, -1):
+		var swap_index := p_rng.randi_range(0, index)
+		var pattern_name := p_patterns[index]
+		p_patterns[index] = p_patterns[swap_index]
+		p_patterns[swap_index] = pattern_name
 
 
 func _place_pattern_near(
