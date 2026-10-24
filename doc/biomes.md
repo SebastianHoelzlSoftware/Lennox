@@ -16,6 +16,39 @@ Los biomas definen la **estructura basica y la apariencia** del mundo del juego.
 
 ---
 
+## Referencias visuales
+
+Los archivos `assets/*_overview.jpeg` son referencias visuales de los conjuntos gráficos previstos para cada entorno; ilustran la dirección artística y no necesariamente una captura del mapa generado actualmente.
+
+<table>
+  <tr><th>Cueva</th><th>Desierto</th></tr>
+  <tr>
+    <td><img src="../assets/cave_overview.jpeg" alt="Referencia visual de cueva" width="100%"></td>
+    <td><img src="../assets/desert_overview.jpeg" alt="Referencia visual de desierto" width="100%"></td>
+  </tr>
+  <tr><th>Bosque</th><th>Pradera</th></tr>
+  <tr>
+    <td><img src="../assets/forest_overview.jpeg" alt="Referencia visual de bosque" width="100%"></td>
+    <td><img src="../assets/grasland_overview.jpeg" alt="Referencia visual de pradera" width="100%"></td>
+  </tr>
+  <tr><th>Rocas</th><th>Rocas y agua</th></tr>
+  <tr>
+    <td><img src="../assets/rocks_overview.jpeg" alt="Referencia visual de rocas" width="100%"></td>
+    <td><img src="../assets/rocks_water_overview.jpeg" alt="Referencia visual de rocas y agua" width="100%"></td>
+  </tr>
+  <tr><th>Pantano</th><th>Agua</th></tr>
+  <tr>
+    <td><img src="../assets/swamp_overview.jpeg" alt="Referencia visual de pantano" width="100%"></td>
+    <td><img src="../assets/water_overview.jpeg" alt="Referencia visual de agua" width="100%"></td>
+  </tr>
+</table>
+
+La vista animada de la cueva se encuentra en [`assets/cave_overview_animated.mp4`](../assets/cave_overview_animated.mp4).
+
+La captura más reciente del juego está en [`doc/video/daily_screencap.mp4`](video/daily_screencap.mp4) y se muestra en el README. La actualización es manual: reemplaza ese archivo cada día manteniendo el mismo nombre y ruta.
+
+---
+
 ## Biomas Base
 
 | Bioma | Descripcion | Color (Hex) | Densidad de Barreras | Barreras Tipicas | Frecuencia de Aperturas |

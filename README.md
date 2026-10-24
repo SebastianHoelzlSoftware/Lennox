@@ -16,6 +16,23 @@
 
 ---
 
+## 🎬 Daily Screencap
+
+<p align="center"><strong>La captura más reciente del juego</strong></p>
+
+<p align="center"><a href="doc/video/daily_screencap.mp4">▶ Abrir o descargar el video del día</a></p>
+
+<p align="center">
+  <video controls preload="metadata" width="100%">
+    <source src="doc/video/daily_screencap.mp4" type="video/mp4">
+    Tu navegador no puede reproducir este video. <a href="doc/video/daily_screencap.mp4">Abrir daily_screencap.mp4</a>.
+  </video>
+</p>
+
+  La actualización es manual: reemplaza el archivo `doc/video/daily_screencap.mp4` cada día y conserva ese nombre y ruta; así el reproductor siempre apunta a la captura más reciente.
+
+---
+
 ## 🎮 Estado del Proyecto y Hoja de Ruta de Jira
 
 El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a traves de **Atlassian Jira**. Los prefijos y numeros (por ejemplo, `LEN-3`, `LEN-5`) corresponden a los tickets y tareas oficiales dentro del proyecto de Jira:
@@ -48,6 +65,37 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 
 ---
 
+## 🌿 Referencias visuales de los biomas
+
+Estas imágenes muestran los estilos y conjuntos visuales previstos para los distintos entornos.
+
+<table>
+ <tr><th>Cueva</th><th>Desierto</th></tr>
+ <tr>
+   <td><img src="assets/cave_overview.jpeg" alt="Referencia visual del bioma de cueva" width="100%"></td>
+   <td><img src="assets/desert_overview.jpeg" alt="Referencia visual del bioma de desierto" width="100%"></td>
+ </tr>
+ <tr><th>Bosque</th><th>Pradera</th></tr>
+ <tr>
+   <td><img src="assets/forest_overview.jpeg" alt="Referencia visual del bioma de bosque" width="100%"></td>
+   <td><img src="assets/grasland_overview.jpeg" alt="Referencia visual del bioma de pradera" width="100%"></td>
+ </tr>
+ <tr><th>Rocas</th><th>Rocas y agua</th></tr>
+ <tr>
+   <td><img src="assets/rocks_overview.jpeg" alt="Referencia visual del bioma rocoso" width="100%"></td>
+   <td><img src="assets/rocks_water_overview.jpeg" alt="Referencia visual del entorno de rocas y agua" width="100%"></td>
+ </tr>
+ <tr><th>Pantano</th><th>Agua</th></tr>
+ <tr>
+   <td><img src="assets/swamp_overview.jpeg" alt="Referencia visual del bioma de pantano" width="100%"></td>
+   <td><img src="assets/water_overview.jpeg" alt="Referencia visual del bioma acuático" width="100%"></td>
+ </tr>
+</table>
+
+La animación de la cueva también está disponible en [`assets/cave_overview_animated.mp4`](assets/cave_overview_animated.mp4).
+
+---
+
 ## 🛠 Tecnologias
 
 - **Motor**: [Godot Engine 4.x](https://godotengine.org/) (GDScript)
@@ -72,6 +120,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   ├── assets/tiles/rocks/
   │   ├── rocks_16x16.tres             # TileSet combinado que usa la escena
   │   └── tile_object_library.tres     # Patrones y grupos de atlas
+  ├── assets/*_overview.jpeg           # Referencias visuales de biomas
   ├── scenes/
   │   ├── main.tscn                    # Escena de demostracion del mundo
   │   └── level.gd                     # Renderizado de chunks en TileMapLayer
@@ -81,6 +130,8 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   │   ├── biomes.md           # Documentacion de biomas (LEN-4)
   │   ├── level-structure.md  # Estructura de chunks y niveles
   │   ├── images/             # Diagramas y vision del proyecto
+  │   ├── video/
+  │   │   └── daily_screencap.mp4 # Captura diaria destacada en este README
   │   └── snap-in-mechanism.md # Documentacion de mecanismo educativo
   └── README.md
   ```
