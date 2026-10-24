@@ -38,6 +38,12 @@ Godot binaries and generated editor data are local tooling, not project source. 
 - The scene has a separate `ObjectTileMap` over the terrain layer. Current grass-biome decoration is intentionally temporary pending LEN-34: it tries 2-4 seed-derived patterns per grass chunk, restricts every footprint cell to `TileType.GRASS`, tracks occupied cells, and leaves a 5x5 spawn clearing. Placement attempts can skip objects when a chunk has no suitable space.
 - `test/unit/test_main_object_layer.gd` covers the scene's terrain restrictions and distribution. The latest full suite has 68 GUT tests (60 unit, 8 integration); update the README count when changing tests.
 
+### Player sprite sheets
+
+- `scenes/player.gd` builds `SpriteFrames` from the 64x64 atlas cells in `assets/player_sprites/Swordsman_lvl1/Without_shadow/`; keep the imported source sheets unchanged.
+- Sprite sheet rows are ordered down, left, right, up. Idle, walk, run, attack, walk-attack, run-attack, hurt, and death frames are exposed for all four directions.
+- Movement uses walk at the existing speed; hold Shift (`run` input action) to use the run animation and faster movement. The demo currently selects Swordsman level 1.
+
 ## Design and implementation guidelines
 
 - Keep the experience appropriate for children learning to read in English and Spanish: prioritize clarity, readable text, predictable interactions, and supportive feedback.

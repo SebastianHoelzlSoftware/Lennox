@@ -16,10 +16,48 @@ func test_main_scene_starts_in_decorated_grass_biome():
 	var level_tilemap := main.get_node("LevelTileMap") as TileMapLayer
 	assert_eq(collision_shape.shape.radius, 9.0)
 	assert_eq(collision_shape.shape.height, 26.0)
-	assert_eq(player_sprite.scale, Vector2(0.4, 0.4))
-	assert_eq(camera.zoom, Vector2.ONE)
-	assert_eq(player_sprite.sprite_frames.get_frame_texture(&"right", 0).resource_path, "res://assets/player/playerOrange_right1.svg")
-	assert_eq(player_sprite.sprite_frames.get_frame_texture(&"up", 0).resource_path, "res://assets/player/playerOrange_up1.svg")
+	assert_eq(player_sprite.scale, Vector2.ONE)
+	assert_eq(camera.zoom, Vector2(2.5, 2.5))
+	assert_eq(player_sprite.animation, &"idle_down")
+	assert_true(InputMap.has_action("run"))
+	var frame_counts := {
+		&"idle": 12,
+		&"walk": 6,
+		&"run": 8,
+		&"attack": 8,
+		&"walk_attack": 6,
+		&"run_attack": 8,
+		&"hurt": 5,
+		&"death": 7,
+	}
+	var direction_rows := {
+		&"down": 0,
+		&"left": 1,
+		&"right": 2,
+		&"up": 3,
+	}
+	var sprite_sheet_paths := {
+		&"idle": "res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Idle_without_shadow.png",
+		&"walk": "res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Walk_without_shadow.png",
+		&"run": "res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Run_without_shadow.png",
+		&"attack": "res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_attack_without_shadow.png",
+		&"walk_attack": "res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Walk_Attack_without_shadow.png",
+		&"run_attack": "res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Run_Attack_without_shadow.png",
+		&"hurt": "res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Hurt_without_shadow.png",
+		&"death": "res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Death_without_shadow.png",
+	}
+	for animation_prefix: StringName in frame_counts:
+		for direction: StringName in direction_rows:
+			var animation_name := StringName("%s_%s" % [animation_prefix, direction])
+			assert_true(player_sprite.sprite_frames.has_animation(animation_name))
+			assert_eq(
+				player_sprite.sprite_frames.get_frame_count(animation_name),
+				frame_counts[animation_prefix]
+			)
+			var frame := player_sprite.sprite_frames.get_frame_texture(animation_name, 0) as AtlasTexture
+			assert_not_null(frame)
+			assert_eq(frame.atlas.resource_path, sprite_sheet_paths[animation_prefix])
+			assert_eq(frame.region.position.y, direction_rows[direction] * 64.0)
 	var start_chunk: Vector2i = main.start_cell / 32
 	var object_cells := object_tilemap.get_used_cells()
 	assert_false(main.start_biome_chunks.is_empty())
