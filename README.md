@@ -22,15 +22,6 @@
 
 <p align="center"><a href="doc/video/daily_screencap.mp4">▶ Abrir o descargar el video del día</a></p>
 
-<p align="center">
-  <video controls preload="metadata" width="100%">
-    <source src="doc/video/daily_screencap.mp4" type="video/mp4">
-    Tu navegador no puede reproducir este video. <a href="doc/video/daily_screencap.mp4">Abrir daily_screencap.mp4</a>.
-  </video>
-</p>
-
-  La actualización es manual: reemplaza el archivo `doc/video/daily_screencap.mp4` cada día y conserva ese nombre y ruta; así el reproductor siempre apunta a la captura más reciente.
-
 ---
 
 ## 🎮 Estado del Proyecto y Hoja de Ruta de Jira
