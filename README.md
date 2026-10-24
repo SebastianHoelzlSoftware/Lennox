@@ -67,7 +67,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 
 ## 🌿 Referencias visuales de los biomas
 
-Estas imágenes muestran los estilos y conjuntos visuales previstos para los distintos entornos.
+Estas imágenes muestran los estilos y conjuntos visuales previstos para los distintos entornos. All credits go to @craftpix
 
 <table>
  <tr><th>Cueva</th><th>Desierto</th></tr>
