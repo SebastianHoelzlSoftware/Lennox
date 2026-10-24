@@ -144,7 +144,12 @@ La animación de la cueva también está disponible en [`assets/cave_overview_an
    - Ejecuta `project.godot` con Godot Engine
    - O arrastra la carpeta del proyecto al editor
 
-3. **Ejecutar pruebas** (opcional):
+3. **Iniciar el juego**:
+   - En el panel **FileSystem**, selecciona y abre `scenes/main.tscn`.
+   - Pulsa **F6** (**Run Current Scene**) para ejecutar la escena principal.
+   - No uses **F5** para iniciar el juego: el proyecto tiene GUT configurado como escena de inicio.
+
+4. **Ejecutar pruebas** (opcional):
    - Abre el panel **GUT** en el editor de Godot
    - Ejecuta los tests utilizando la interfaz grafica de GUT
 
