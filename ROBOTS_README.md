@@ -24,9 +24,19 @@ Read the relevant implementation, tests, and documentation before changing behav
 
 ## Local environment
 
-Use a Godot 4.6-compatible executable for this project; `project.godot` declares Godot 4.6 features. Prefer the executable already configured in the local editor or available in the environment.
+Use a Godot 4.6-compatible executable for this project; `project.godot` declares Godot 4.6 features. Prefer the executable already configured in the local editor or available in the environment. In the current Windows workspace, `bin\Godot_v4.6.3-stable_win64_console.exe` is available at the repository root; use it for headless validation if Godot is not on `PATH`.
 
 Godot binaries and generated editor data are local tooling, not project source. The repository ignores `.godot/` and `/bin/`; never force-add those directories or commit engine executables. Do not copy an executable into the repository unless the user explicitly requests it.
+
+### Map and TileSet notes
+
+- The current demo scene is `scenes/main.tscn` with logic in `scenes/main.gd`. It generates 12x12 chunks, each 32x32 tiles, using seed `12345`.
+- `Level.biome_map` is indexed `[x][y]`; chunk biome is `chunk.biome`. Biome enums are in `src/core/biome_type.gd`; tile enums are in `src/core/tile_type.gd`.
+- The demo starts the player in the connected `GRASSLAND` region nearest the map center and selects a walkable `TileType.GRASS` cell in its center chunk.
+- `scenes/main.tscn` uses `assets/tiles/rocks/rocks_16x16.tres`, a combined 16x16-pixel TileSet with named atlas sources including `Objects` and `Ground_rocks`. Keep this distinct from the per-sheet `.tres` files under `assets/tiles/rocks/tilesets/`; scene integration tests should use the combined resource.
+- Named object resources are in `assets/tiles/rocks/tile_object_library.tres`; `TileObjectLibrary.get_pattern()` returns explicit patterns or lazily creates a pattern from `atlas_groups`. Group names like `objects_r04_c08` identify connected atlas coordinates, not guaranteed semantic objects; inspect the source texture before selecting one. `bone_fragment` is a hand-authored 2x3 object.
+- The scene has a separate `ObjectTileMap` over the terrain layer. Current grass-biome decoration is intentionally temporary pending LEN-34: it tries 2-4 seed-derived patterns per grass chunk, restricts every footprint cell to `TileType.GRASS`, tracks occupied cells, and leaves a 5x5 spawn clearing. Placement attempts can skip objects when a chunk has no suitable space.
+- `test/unit/test_main_object_layer.gd` covers the scene's terrain restrictions and distribution. The latest full suite has 68 GUT tests (60 unit, 8 integration); update the README count when changing tests.
 
 ## Design and implementation guidelines
 
@@ -51,10 +61,18 @@ Use GUT, which is included in `addons/gut/`.
 The full suite can be run headlessly from the repository root (with `godot` available on `PATH`):
 
 ```sh
-godot --headless --path . --script addons/gut/gut_cmdln.gd -gdir=res://test -ginclude_subdirs -gexit -gjunit_xml_file=res://latest_test_output.xml
+godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://test -ginclude_subdirs -gprefix=test_ -gexit -gjunit_xml_file=res://latest_test_output.xml
 ```
 
-The command writes a JUnit report to `latest_test_output.xml`. This is generated output and is ignored by Git; do not edit it by hand or treat an old report as evidence for a new run. When reporting test results, state which command/scope was run and whether it passed.
+With the checked-in local Windows executable, PowerShell can run the suite without `godot` on `PATH`:
+
+```powershell
+& '.\bin\Godot_v4.6.3-stable_win64_console.exe' --headless --path '.' -s 'addons/gut/gut_cmdln.gd' '-gdir=res://test' -ginclude_subdirs -gprefix=test_ -gexit -gjunit_xml_file=res://latest_test_output.xml
+```
+
+Use `-gprefix=test_` so GUT discovers the repository's `test_*.gd` files; `-gdir=res://test` alone does not select these scripts under the default filename prefix. For a focused test, replace the directory flags with, for example, `'-gtest=res://test/unit/test_main_object_layer.gd'`.
+
+When `-gjunit_xml_file=res://latest_test_output.xml` is supplied, GUT writes a JUnit report there. This is generated output and is ignored by Git; do not edit it by hand or treat an old report as evidence for a new run. When reporting test results, state which command/scope was run and whether it passed.
 
 ## Work, documentation, and approval rules
 

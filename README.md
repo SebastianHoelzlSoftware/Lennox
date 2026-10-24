@@ -33,6 +33,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 | **LEN-13** | Implementar el sistema de biomas | ✅ Completado | Mapa de biomas determinista, Voronoi con domain warping y parámetros por bioma |
 | **LEN-14** | Implementar el algoritmo de generación de barreras | ✅ Completado | Barreras por bioma, convex hull, perturbación y aplicación a las baldosas |
 | **LEN-15** | Colocar aperturas en las barreras | ✅ Completado | Aperturas generadas asociadas a barreras; puertas cerradas bloquean y otras aperturas son transitables |
+| **LEN-34** | Implementar colocación de objetos con ocupación de baldosas | 📋 Por hacer | La decoración actual de hierba es una demostración temporal; falta el algoritmo de ocupación |
 | **LEN-17** | Pruebas de integración de barreras (LEN-5) | ✅ Completado | Pruebas unitarias y de integración para la generación y aplicación de barreras |
 | **LEN-16** | Integrar Godot y crear un nivel prototipo | 📋 Por hacer | Integración del mapa y prototipo dentro del motor |
 | **LEN-20** | Añadir características de mundo entre chunks | 📋 Por hacer | Soporte para elementos que atraviesan los límites entre chunks |
@@ -58,6 +59,9 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   │   └── core/
   │       ├── level.gd        # Generacion de niveles
   │       ├── chunk.gd        # Sistema de chunks
+  │       ├── tile_object_cell.gd    # Celda visual de un objeto de TileSet
+  │       ├── tile_object_pattern.gd # Huella y validacion de colocacion
+  │       ├── tile_object_library.gd # Biblioteca de objetos con nombre
   │       ├── barrier.gd      # Barreras y consulta de aperturas (LEN-5 / LEN-15)
   │       ├── opening.gd      # Aperturas generadas e interactivas (LEN-15)
   │       ├── biome_type.gd   # Enum global de biomas (BiomeType)
@@ -65,8 +69,14 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   ├── test/
   │   ├── unit/               # Tests unitarios (GUT)
   │   └── integration/        # Tests de integracion (GUT)
+  ├── assets/tiles/rocks/
+  │   ├── rocks_16x16.tres             # TileSet combinado que usa la escena
+  │   └── tile_object_library.tres     # Patrones y grupos de atlas
+  ├── scenes/
+  │   ├── main.tscn                    # Escena de demostracion del mundo
+  │   └── level.gd                     # Renderizado de chunks en TileMapLayer
   ├── doc/
-  │   ├── map-generation.md   # Documentacion LEN-3
+  │   ├── map-generation.md   # Generacion, objetos y decoracion temporal
   │   ├── barriers.md         # Documentacion LEN-5
   │   ├── biomes.md           # Documentacion de biomas (LEN-4)
   │   ├── level-structure.md  # Estructura de chunks y niveles
@@ -100,19 +110,27 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 
 ## 🧪 Pruebas
 
-El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 51 pruebas unitarias y 8 de integracion.
+El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 60 pruebas unitarias y 8 de integracion (68 en total).
 
 | Suite | Cantidad | Cobertura |
 |-------|---------:|-----------|
 | [`test_barrier.gd`](test/unit/test_barrier.gd) | 15 | Poligonos, consultas de puntos, aperturas pasables y estados de puertas |
 | [`test_biome.gd`](test/unit/test_biome.gd) | 11 | Generacion de biomas, determinismo, parametros y perfiles |
 | [`test_chunk.gd`](test/unit/test_chunk.gd) | 11 | Inicializacion de chunks, barreras y aplicacion de baldosas |
-| [`test_level.gd`](test/unit/test_level.gd) | 12 | Generacion de niveles, biomas, barreras y determinismo |
-| [`test_level_tilemap.gd`](test/unit/test_level_tilemap.gd) | 2 | Renderizado de tiles y limpieza al cargar un nivel nuevo |
+| [`test_level.gd`](test/unit/test_level.gd) | 13 | Generacion de niveles, biomas, barreras y determinismo |
+| [`test_level_tilemap.gd`](test/unit/test_level_tilemap.gd) | 3 | Renderizado de tilesets y limpieza al cargar un nivel nuevo |
+| [`test_main_object_layer.gd`](test/unit/test_main_object_layer.gd) | 1 | Inicio en bioma de hierba y decoracion restringida al terreno |
+| [`test_tile_object_library.gd`](test/unit/test_tile_object_library.gd) | 6 | Patrones, huellas, atlas y restricciones de terreno |
 | [`test_barrier_chunk_integration.gd`](test/integration/test_barrier_chunk_integration.gd) | 8 | Integracion de barreras y aperturas generadas con chunks, puertas y baldosas |
 
 ### Ejecutar pruebas:
-Busca el panel **GUT** en el editor y ejecuta los tests con la interfaz grafica:
+Desde la raíz del proyecto, también se puede ejecutar toda la suite en modo *headless* si Godot está disponible en `PATH`:
+
+```sh
+godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://test -ginclude_subdirs -gprefix=test_ -gexit
+```
+
+O busca el panel **GUT** en el editor y ejecuta los tests con la interfaz gráfica:
 
 
 <p align="center">

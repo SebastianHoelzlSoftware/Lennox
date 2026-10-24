@@ -11,6 +11,9 @@ Este documento describe el algoritmo y la implementacion de la **generacion proc
 - `Level` genera barreras por bioma, aplica los tipos de baldosa al chunk y usa RNG locales con semillas derivadas para mantener la generación determinista.
 - Los parámetros de cantidad, tamaño y aperturas se obtienen de `BiomeGenerator.get_biome_params()`. Cada apertura generada se guarda como `Opening` en la barrera correspondiente. Las puertas son interactivas y empiezan cerradas; las demás aperturas son pasables. La generación de aperturas y su integración con las consultas de barrera están implementadas (LEN-15).
 - La escena principal muestra el nivel con el atlas de rocas 16x16. Todos los biomas usan suelo rocoso y las barreras se muestran como paredes de roca con colisión de TileSet.
+- La escena `scenes/main.tscn` genera actualmente un mundo de 12x12 chunks de 32x32 baldosas con semilla `12345`. El jugador aparece en el chunk del bioma `GRASSLAND` conectado cuyo centro queda más cerca del centro del mapa, en la baldosa de hierba transitable más cercana al centro de ese chunk.
+- La demostración coloca de 2 a 4 objetos por chunk `GRASSLAND`, únicamente sobre baldosas `TileType.GRASS`, en la capa `ObjectTileMap`. La selección y las posiciones se derivan de la semilla y las coordenadas del chunk, por lo que son reproducibles. Se deja libre un área de 5x5 baldosas alrededor del jugador.
+- Esta decoración es una solución temporal de demostración, no el algoritmo de cobertura/ocupación pendiente de LEN-34. Cada huella debe caber en césped libre del mismo chunk; si no encuentra lugar tras varios intentos, el objeto se omite.
 
 Las secciones de diseño y pseudocódigo que siguen describen objetivos o alternativas; cuando difieran, el código en `src/core/` representa el comportamiento implementado.
 
@@ -202,6 +205,14 @@ var object_region := TILE_OBJECTS.get_pattern(&"objects_r28_c11")
 ```
 
 Estos nombres de coordenadas son identificadores, no etiquetas semanticas. Algunos atlas contienen animaciones, transiciones o graficos contiguos que el agrupamiento automatico no puede distinguir como objetos separados. Antes de usar una region grande, revisa sus celdas en el atlas y ajusta su `footprint` o crea un patron manual con nombre descriptivo.
+
+#### Decoracion temporal de los biomas de hierba
+
+La escena principal usa una lista seleccionada de patrones de `Objects` y `bone_fragment` para que haya variedad visible al recorrer el mapa. En cada chunk de `GRASSLAND`, elige de forma reproducible entre 2 y 4 patrones y prueba posiciones aleatorias locales. La semilla del RNG local combina la semilla del mundo, las coordenadas del chunk y el identificador `grassland-decoration`; cambiar el orden de generación de chunks no altera sus elecciones.
+
+Antes de colocar un patrón, la escena duplica el recurso y limita `allowed_terrain_types` a `TileType.GRASS`. `TileObjectPattern.try_place()` valida todas las celdas de su huella contra ese terreno y el diccionario compartido de celdas ocupadas. El diccionario evita solapamientos, y el diccionario de terreno de cada intento restringe la decoración al chunk de hierba correspondiente. Se conserva una zona de 5x5 celdas sin objetos alrededor del inicio del jugador.
+
+Esta distribución aleatoria sirve para mostrar los tiles durante la exploración; no busca densidad visual equilibrada ni garantiza colocar cada objeto. La selección semántica, cobertura, espaciado y tratamiento de objetos que cruzan chunks quedan para el algoritmo formal de LEN-34.
 
 #### Opening
 ```gdscript
