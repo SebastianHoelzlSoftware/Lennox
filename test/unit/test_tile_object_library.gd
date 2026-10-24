@@ -56,10 +56,20 @@ func test_saved_multicell_pattern_uses_object_atlas_cells():
 	var pattern := library.get_pattern(&"bone_fragment")
 	var tile_map := _new_tile_map()
 	var occupied: Dictionary = {}
+	var terrain := {
+		Vector2i(4, 5): TileType.GRASS,
+		Vector2i(5, 5): TileType.GRASS,
+		Vector2i(4, 6): TileType.GRASS,
+		Vector2i(5, 6): TileType.GRASS,
+		Vector2i(4, 7): TileType.GRASS,
+		Vector2i(5, 7): TileType.GRASS,
+	}
 
 	assert_not_null(pattern)
 	assert_eq(pattern.cells.size(), 6)
-	assert_true(pattern.try_place(tile_map, Vector2i(4, 5), Vector2i(10, 10), occupied))
+	assert_true(
+		pattern.try_place(tile_map, Vector2i(4, 5), Vector2i(10, 10), occupied, terrain)
+	)
 	assert_ne(tile_map.get_cell_source_id(Vector2i(4, 5)), -1)
 	assert_ne(tile_map.get_cell_source_id(Vector2i(5, 7)), -1)
 	assert_eq(occupied.size(), 6)
