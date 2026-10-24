@@ -16,7 +16,7 @@ func test_main_scene_places_bone_fragments_on_object_layer():
 			object_source_ids.append(source_id)
 
 	assert_eq(object_source_ids.size(), 1)
-	assert_eq(object_tilemap.get_used_cells().size(), 48)
+	assert_eq(object_tilemap.get_used_cells().size(), 130)
 	for cell: Vector2i in object_tilemap.get_used_cells():
 		assert_eq(object_tilemap.get_cell_source_id(cell), object_source_ids[0])
 
