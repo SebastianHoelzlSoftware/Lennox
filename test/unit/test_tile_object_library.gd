@@ -75,9 +75,40 @@ func test_saved_multicell_pattern_uses_object_atlas_cells():
 	assert_eq(occupied.size(), 6)
 
 
+func test_named_atlas_groups_cover_all_tile_set_sources():
+	var library := load("res://assets/tiles/rocks/tile_object_library.tres") as TileObjectLibrary
+	var tile_set := load("res://assets/tiles/rocks/rocks_16x16.tres") as TileSet
+	assert_eq(library.atlas_groups.size(), 9)
+
+	var named_patterns := library.get_pattern_names()
+	assert_eq(named_patterns.size(), 363)
+	assert_eq(named_patterns.size(), named_patterns.duplicate().size())
+
+	for source_name: StringName in library.atlas_groups:
+		var source_id := _get_source_ids(tile_set, source_name)
+		assert_ne(source_id, -1, "Atlas source %s must exist in the combined TileSet." % source_name)
+		if source_id == -1:
+			continue
+		var source := tile_set.get_source(source_id) as TileSetAtlasSource
+		for pattern_name: StringName in library.atlas_groups[source_name]:
+			var pattern := library.get_pattern(pattern_name)
+			assert_not_null(pattern, "Pattern %s must load by name." % pattern_name)
+			if pattern == null:
+				continue
+			assert_eq(pattern.atlas_source_name, source_name)
+			assert_eq(pattern.atlas_coords.size(), pattern.local_positions.size())
+			assert_eq(pattern.atlas_coords.size(), pattern.footprint.size())
+			for atlas_coords: Vector2i in pattern.atlas_coords:
+				assert_true(
+					source.has_tile(atlas_coords),
+					"Pattern %s must reference an existing atlas tile." % pattern_name
+				)
+
+
 func test_object_pattern_checks_all_footprint_cells_against_terrain():
 	var pattern := TileObjectPattern.new()
 	pattern.pattern_name = &"grassland_object"
+	pattern.cells = [_new_object_cell(Vector2i(8, 3), Vector2i.ZERO)]
 	pattern.footprint = [Vector2i.ZERO, Vector2i.RIGHT]
 	pattern.allowed_terrain_types = [TileType.GRASS]
 	var tile_map := _new_tile_map()
@@ -112,3 +143,11 @@ func _new_object_cell(p_atlas_coords: Vector2i, p_local_position: Vector2i) -> T
 	object_cell.atlas_coords = p_atlas_coords
 	object_cell.local_position = p_local_position
 	return object_cell
+
+
+func _get_source_ids(p_tile_set: TileSet, p_source_name: StringName) -> int:
+	for source_index in range(p_tile_set.get_source_count()):
+		var source_id := p_tile_set.get_source_id(source_index)
+		if StringName(p_tile_set.get_source(source_id).resource_name) == p_source_name:
+			return source_id
+	return -1

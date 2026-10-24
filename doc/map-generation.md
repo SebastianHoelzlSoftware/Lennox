@@ -195,6 +195,14 @@ bone_fragment.try_place(
 
 `object_layer` debe tener asignado el TileSet combinado `rocks_16x16.tres`, que contiene las fuentes `Objects` y `Ground_rocks`. `try_place()` valida los limites del mapa, el terreno permitido y las celdas ya ocupadas; solo despues dibuja las celdas y registra la huella. Para añadir un patron, crea recursos `TileObjectCell`, asigna la fuente del atlas, coordenadas y posicion local, y guardalos en un `TileObjectPattern` dentro de la biblioteca. Mantener los objetos en otra `TileMapLayer` permite controlar su orden de dibujo por separado del terreno.
 
+La biblioteca tambien contiene `atlas_groups`, con 361 regiones derivadas de las nueve fuentes del TileSet. Cada region agrupa celdas ocupadas que se tocan horizontal o verticalmente en la textura; su nombre usa el formato `<atlas>_r<fila>_c<columna>`, con coordenadas de atlas empezando en 1. Se pueden consultar igual que los patrones editados a mano:
+
+```gdscript
+var object_region := TILE_OBJECTS.get_pattern(&"objects_r28_c11")
+```
+
+Estos nombres de coordenadas son identificadores, no etiquetas semanticas. Algunos atlas contienen animaciones, transiciones o graficos contiguos que el agrupamiento automatico no puede distinguir como objetos separados. Antes de usar una region grande, revisa sus celdas en el atlas y ajusta su `footprint` o crea un patron manual con nombre descriptivo.
+
 #### Opening
 ```gdscript
 class_name Opening

@@ -4,6 +4,9 @@ extends Resource
 @export var pattern_name: StringName
 @export var cells: Array[TileObjectCell] = []
 @export var variants: Array[TileObjectCell] = []
+@export var atlas_source_name: StringName
+@export var atlas_coords: Array[Vector2i] = []
+@export var local_positions: Array[Vector2i] = []
 @export var footprint: Array[Vector2i] = [Vector2i.ZERO]
 @export var allowed_terrain_types: Array[int] = []
 
@@ -22,15 +25,18 @@ func try_place(
 	p_occupied_cells: Dictionary,
 	p_terrain_by_cell: Dictionary = {}
 ) -> bool:
-	var selected_cells: Array[TileObjectCell] = cells
+	var selected_cells := _get_visual_cells()
 	if not variants.is_empty():
-		if not cells.is_empty():
+		if not cells.is_empty() or not atlas_coords.is_empty():
 			push_error("Tile object pattern '%s' cannot define cells and variants together." % pattern_name)
 			return false
 		var variant := get_random_variant()
 		if variant == null:
 			return false
 		selected_cells = [variant]
+	if selected_cells.is_empty():
+		push_error("Tile object pattern '%s' has no visual cells." % pattern_name)
+		return false
 
 	if not _can_place(p_anchor, p_map_size, p_occupied_cells, p_terrain_by_cell):
 		return false
@@ -54,6 +60,28 @@ func try_place(
 		p_occupied_cells[p_anchor + footprint_cell] = true
 
 	return true
+
+
+func _get_visual_cells() -> Array[TileObjectCell]:
+	if not cells.is_empty():
+		if not atlas_coords.is_empty():
+			push_error("Tile object pattern '%s' cannot define cells and atlas_coords together." % pattern_name)
+			return []
+		return cells
+	if atlas_coords.is_empty():
+		return []
+	if atlas_coords.size() != local_positions.size() or atlas_source_name == &"":
+		push_error("Tile object pattern '%s' has incomplete atlas-cell data." % pattern_name)
+		return []
+
+	var visual_cells: Array[TileObjectCell] = []
+	for index in range(atlas_coords.size()):
+		var object_cell := TileObjectCell.new()
+		object_cell.atlas_source_name = atlas_source_name
+		object_cell.atlas_coords = atlas_coords[index]
+		object_cell.local_position = local_positions[index]
+		visual_cells.append(object_cell)
+	return visual_cells
 
 
 func _can_place(
