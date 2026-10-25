@@ -111,7 +111,7 @@ func _get_biome_params_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 	return BiomeGenerator.get_biome_params(p_biome, rng)
 
 func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) -> Array:
-	"""Generiert Barrieren für einen Chunk mittels Rectangle-Expansion ohne Überlappung."""
+	"""Generiert Barrieren für einen Chunk mittels Rectangle-Expansion (min_step = 2)."""
 	var barriers := []
 	var biome_params := _get_biome_params_for_chunk(p_x, p_y, p_biome)
 	var rng := RandomNumberGenerator.new()
@@ -125,24 +125,23 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 		col.fill(0)
 		chunk_grid.append(col)
 	
-	var min_step := 4 
-	var spacing := 4 # Mindestabstand zwischen verschiedenen Barrieren (in Tiles)
+	var min_step := 2 # <--- Hier von 4 auf 2 geändert
+	var spacing := 6  # <--- Mindestabstand angepasst (sollte Vielfaches von min_step sein)
 	
 	for i in range(num_barriers):
 		var rects_in_barrier: Array[Rect2i] = []
 		var success := false
 		var base_rect: Rect2i
 		
-		# 1. Finde einen freien Startpunkt (inkl. Puffer-Check)
+		# 1. Finde einen freien Startpunkt (auf 2er-Raster ausgerichtet)
 		for attempt in range(15):
-			var start_x = rng.randi_range(spacing, chunk_size - min_step - spacing)
+			var start_x = rng.randi_range(spacing, chunk_size - (min_step * 2) - spacing)
 			start_x = (start_x / min_step) * min_step
-			var start_y = rng.randi_range(spacing, chunk_size - min_step - spacing)
+			var start_y = rng.randi_range(spacing, chunk_size - (min_step * 2) - spacing)
 			start_y = (start_y / min_step) * min_step
 			
-			base_rect = Rect2i(start_x, start_y, min_step, min_step)
+			base_rect = Rect2i(start_x, start_y, min_step * 2, min_step * 2) # Startet mit einem 4x4 oder 2x2 Basis-Rechteck
 			
-			# Prüfe, ob der Bereich inklusive Abstand frei ist
 			if not _is_chunk_area_occupied_with_padding(chunk_grid, base_rect, spacing):
 				success = true
 				break
@@ -152,42 +151,50 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 			
 		var current_rect = base_rect
 		rects_in_barrier.append(current_rect)
-		
-		# Basis-Rechteck SOFORT im Grid vormerken, damit andere Barrieren hier nicht spawnen
 		_mark_chunk_area(chunk_grid, current_rect, 1)
 		
-		# 2. Expansions-Schritte
-		var expansion_steps = rng.randi_range(3, 6)
+		# 2. Expansions-Schritte (Wachsen in 2er-Schritten)
+		var expansion_steps = rng.randi_range(4, 8) # Etwas mehr Schritte, da die Zuwächse kleiner sind
 		var directions = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]
 		
 		for step in range(expansion_steps):
+			var source_rect = rects_in_barrier.pick_random()
+			
 			directions.shuffle()
 			var dir = directions[0]
-			var grow_amount = rng.randi_range(1, 2) * min_step
+			var grow_amount = rng.randi_range(1, 3) * min_step # Wächst um 2, 4 oder 6 Tiles
 			var candidate_rect: Rect2i
 			
-			if dir == Vector2i.RIGHT:
-				var sub_h = rng.randi_range(1, max(1, current_rect.size.y / min_step)) * min_step
-				var offset_y = rng.randi_range(0, (current_rect.size.y - sub_h) / min_step) * min_step
-				candidate_rect = Rect2i(current_rect.end.x, current_rect.position.y + offset_y, grow_amount, sub_h)
-			elif dir == Vector2i.LEFT:
-				var sub_h = rng.randi_range(1, max(1, current_rect.size.y / min_step)) * min_step
-				var offset_y = rng.randi_range(0, (current_rect.size.y - sub_h) / min_step) * min_step
-				candidate_rect = Rect2i(current_rect.position.x - grow_amount, current_rect.position.y + offset_y, grow_amount, sub_h)
-			elif dir == Vector2i.DOWN:
-				var sub_w = rng.randi_range(1, max(1, current_rect.size.x / min_step)) * min_step
-				var offset_x = rng.randi_range(0, (current_rect.size.x - sub_w) / min_step) * min_step
-				candidate_rect = Rect2i(current_rect.position.x + offset_x, current_rect.end.y, sub_w, grow_amount)
-			elif dir == Vector2i.UP:
-				var sub_w = rng.randi_range(1, max(1, current_rect.size.x / min_step)) * min_step
-				var offset_x = rng.randi_range(0, (current_rect.size.x - sub_w) / min_step) * min_step
-				candidate_rect = Rect2i(current_rect.position.x + offset_x, current_rect.position.y - grow_amount, sub_w, grow_amount)
+			if dir == Vector2i.RIGHT or dir == Vector2i.LEFT:
+				var max_h_steps = max(1, source_rect.size.y / min_step)
+				var sub_h_steps = rng.randi_range(1, max_h_steps)
+				var sub_h = sub_h_steps * min_step
+				
+				var max_offset_steps = (source_rect.size.y - sub_h) / min_step
+				var offset_steps = rng.randi_range(0, maxi(0, max_offset_steps))
+				var offset_y = offset_steps * min_step
+				
+				if dir == Vector2i.RIGHT:
+					candidate_rect = Rect2i(source_rect.end.x, source_rect.position.y + offset_y, grow_amount, sub_h)
+				else:
+					candidate_rect = Rect2i(source_rect.position.x - grow_amount, source_rect.position.y + offset_y, grow_amount, sub_h)
+					
+			else: # DOWN oder UP
+				var max_w_steps = max(1, source_rect.size.x / min_step)
+				var sub_w_steps = rng.randi_range(1, max_w_steps)
+				var sub_w = sub_w_steps * min_step
+				
+				var max_offset_steps = (source_rect.size.x - sub_w) / min_step
+				var offset_steps = rng.randi_range(0, maxi(0, max_offset_steps))
+				var offset_x = offset_steps * min_step
+				
+				if dir == Vector2i.DOWN:
+					candidate_rect = Rect2i(source_rect.position.x + offset_x, source_rect.end.y, sub_w, grow_amount)
+				else:
+					candidate_rect = Rect2i(source_rect.position.x + offset_x, source_rect.position.y - grow_amount, sub_w, grow_amount)
 			
-			# Prüfen, ob das neue Teilstück in der Welt liegt und FREI ist (unter Berücksichtigung des Abstands zu *anderen* Barrieren)
-			# Hinweis: Wir erlauben dem Teilstück, sich mit sich selbst (current_rect) zu verbinden, aber nicht mit Fremd-Barrieren.
 			if _is_valid_chunk_rect(candidate_rect, chunk_size) and not _is_chunk_area_occupied_strict(chunk_grid, candidate_rect, rects_in_barrier):
 				rects_in_barrier.append(candidate_rect)
-				current_rect = current_rect.merge(candidate_rect)
 				_mark_chunk_area(chunk_grid, candidate_rect, 1)
 		
 		# 3. Umriss-Polygon extrahieren und Barriere erstellen...

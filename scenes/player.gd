@@ -2,8 +2,8 @@ extends CharacterBody2D
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
-const WALK_SPEED := 100.0
-const RUN_SPEED := 200.0
+const WALK_SPEED := 200.0
+const RUN_SPEED := 400.0
 const FRAME_SIZE := Vector2i(64, 64)
 const DIRECTION_ROWS := {
 	&"down": 0,
