@@ -112,64 +112,103 @@ func _get_biome_params_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 
 
 func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) -> Array:
-	"""Genera barreras reproducibles para un chunk según su bioma y sus coordenadas."""
+	"""Generiert Barrieren für einen Chunk mittels Rectangle-Expansion."""
 	var barriers := []
-	
-	# Los parámetros y la distribución usan secuencias distintas, pero ambas dependen
-	# de las coordenadas y de la semilla del mundo: regenerar el chunk da el mismo resultado.
 	var biome_params := _get_biome_params_for_chunk(p_x, p_y, p_biome)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = hash([p_x, p_y, world_seed, "barrier-layout"])
 	var num_barriers: int = biome_params["barrier_count"]
 	
-	# Cada barrera se construye a partir de puntos aleatorios y su envolvente convexa.
+	# Lokales Grid für diesen Chunk (32x32), um Überschneidungen zu verhindern
+	var chunk_grid := []
+	for cx in range(chunk_size):
+		var col = []
+		col.resize(chunk_size)
+		col.fill(0)
+		chunk_grid.append(col)
+	
+	var min_step := 4 # Bedingung: Teilstücke sind Vielfache von 4 (mindestens 4)
+	
 	for i in range(num_barriers):
-		var hull := []
-		# Puede que los puntos no formen una envolvente válida; se vuelve a intentar
-		# hasta diez veces antes de recurrir a una forma triangular mínima.
-		for attempt in range(10):
-			var points := _generate_random_points(
-				p_biome,
-				chunk_size,
-				int(biome_params["barrier_size"]),
-				rng
-			)
-			if points.size() >= 3:
-				hull = _compute_convex_hull(points)
-				if hull.size() >= 3:
-					break
-
-		if hull.size() < 3:
-			# Evita descartar la barrera si los intentos aleatorios no dieron una forma válida.
-			var fallback_center := Vector2(
-				rng.randi_range(3, chunk_size - 4),
-				rng.randi_range(3, chunk_size - 4)
-			)
-			hull = _compute_convex_hull([
-				fallback_center + Vector2(-1, -1),
-				fallback_center + Vector2(1, -1),
-				fallback_center + Vector2(0, 1)
-			])
-
-		# Desplaza ligeramente los vértices para evitar formas demasiado geométricas.
-		hull = _perturb_hull(hull, 1, rng)
+		var rects_in_barrier: Array[Rect2i] = []
+		var success := false
+		var base_rect: Rect2i
 		
-		# El bioma determina cuántas aperturas se intentan y qué tipos pueden aparecer.
+		# 1. Finde einen freien Startpunkt im Chunk (auf 4er-Raster ausgerichtet)
+		for attempt in range(10):
+			var start_x = rng.randi_range(2, chunk_size - min_step - 2)
+			start_x = (start_x / min_step) * min_step
+			var start_y = rng.randi_range(2, chunk_size - min_step - 2)
+			start_y = (start_y / min_step) * min_step
+			
+			base_rect = Rect2i(start_x, start_y, min_step, min_step)
+			
+			if not _is_chunk_area_occupied(chunk_grid, base_rect):
+				success = true
+				break
+		
+		if not success:
+			continue
+			
+		var current_rect = base_rect
+		rects_in_barrier.append(current_rect)
+		
+		# 2. Expansions-Schritte (Rectangle-Expansion)
+		var expansion_steps = rng.randi_range(3, 6)
+		var directions = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]
+		
+		for step in range(expansion_steps):
+			directions.shuffle()
+			var dir = directions[0]
+			var grow_amount = rng.randi_range(1, 2) * min_step
+			var candidate_rect: Rect2i
+			
+			if dir == Vector2i.RIGHT:
+				var sub_h = rng.randi_range(1, max(1, current_rect.size.y / min_step)) * min_step
+				var offset_y = rng.randi_range(0, (current_rect.size.y - sub_h) / min_step) * min_step
+				candidate_rect = Rect2i(current_rect.end.x, current_rect.position.y + offset_y, grow_amount, sub_h)
+			elif dir == Vector2i.LEFT:
+				var sub_h = rng.randi_range(1, max(1, current_rect.size.y / min_step)) * min_step
+				var offset_y = rng.randi_range(0, (current_rect.size.y - sub_h) / min_step) * min_step
+				candidate_rect = Rect2i(current_rect.position.x - grow_amount, current_rect.position.y + offset_y, grow_amount, sub_h)
+			elif dir == Vector2i.DOWN:
+				var sub_w = rng.randi_range(1, max(1, current_rect.size.x / min_step)) * min_step
+				var offset_x = rng.randi_range(0, (current_rect.size.x - sub_w) / min_step) * min_step
+				candidate_rect = Rect2i(current_rect.position.x + offset_x, current_rect.end.y, sub_w, grow_amount)
+			elif dir == Vector2i.UP:
+				var sub_w = rng.randi_range(1, max(1, current_rect.size.x / min_step)) * min_step
+				var offset_x = rng.randi_range(0, (current_rect.size.x - sub_w) / min_step) * min_step
+				candidate_rect = Rect2i(current_rect.position.x + offset_x, current_rect.position.y - grow_amount, sub_w, grow_amount)
+			
+			if _is_valid_chunk_rect(candidate_rect, chunk_size) and not _is_chunk_area_occupied(chunk_grid, candidate_rect):
+				rects_in_barrier.append(candidate_rect)
+				current_rect = current_rect.merge(candidate_rect)
+		
+		# Zellen im Chunk-Grid als belegt markieren
+		for r in rects_in_barrier:
+			for rx in range(r.position.x, r.end.x):
+				for ry in range(r.position.y, r.end.y):
+					if rx >= 0 and rx < chunk_size and ry >= 0 and ry < chunk_size:
+						chunk_grid[rx][ry] = 1
+		
+		# 3. Umriss-Polygon aus den Rechtecken extrahieren
+		var polygon = _extract_polygon_from_rects(rects_in_barrier, chunk_size)
+		if polygon.size() < 3:
+			continue
+			
+		# 4. Öffnungen (Openings) integrieren (wie im bestehenden System)
 		var barrier_openings: Array[Opening] = []
 		var num_openings: int = biome_params["opening_count"]
 		var opening_types: Array = biome_params["opening_types"]
 		
 		for j in range(num_openings):
-			# Elige el tipo y el ancho de la apertura, busca un punto de inserción
-			# en la envolvente y modifica el polígono para representar el paso.
 			var opening_type: int = opening_types[rng.randi_range(0, opening_types.size() - 1)]
 			var opening_width := _get_opening_width(opening_type, rng)
-			
-			var opening_pos: Variant = _find_opening_position(hull, rng)
+			var opening_pos: Variant = _find_opening_position(polygon, rng)
 			if opening_pos == null:
 				continue
 
-			hull = _place_opening_in_hull(hull, opening_pos, opening_width)
+			polygon = _place_opening_in_hull(polygon, opening_pos, opening_width)
 			var opening := Opening.new(
 				opening_type,
 				opening_pos,
@@ -179,9 +218,9 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 			)
 			barrier_openings.append(opening)
 		
-		# Guarda el polígono final junto con su bioma para que el chunk pueda aplicarlo.
+		# 5. Barrier-Objekt erstellen und hinzufügen
 		var barrier := Barrier.new()
-		barrier.polygon = hull
+		barrier.polygon = polygon
 		barrier.biome = p_biome
 		for opening: Opening in barrier_openings:
 			barrier.add_opening(opening)
@@ -189,6 +228,56 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 	
 	return barriers
 
+
+func _is_valid_chunk_rect(r: Rect2i, p_chunk_size: int) -> bool:
+	return r.position.x >= 1 and r.position.y >= 1 and r.end.x < p_chunk_size - 1 and r.end.y < p_chunk_size - 1
+
+
+func _is_chunk_area_occupied(grid: Array, r: Rect2i) -> bool:
+	for rx in range(r.position.x, r.end.x):
+		for ry in range(r.position.y, r.end.y):
+			if rx < 0 or ry < 0 or rx >= grid.size() or ry >= grid[0].size():
+				return true
+			if grid[rx][ry] == 1:
+				return true
+	return false
+
+func _extract_polygon_from_rects(rects: Array[Rect2i], p_chunk_size: int) -> Array[Vector2]:
+	"""Verschmilzt die expandierten Rechtecke über Godots Geometry2D zu einem sauberen Polygon."""
+	if rects.is_empty():
+		return []
+		
+	# Starten mit dem ersten Rechteck als Basis-Polygon
+	var base_r = rects[0]
+	var current_poly = PackedVector2Array([
+		Vector2(base_r.position.x, base_r.position.y),
+		Vector2(base_r.end.x, base_r.position.y),
+		Vector2(base_r.end.x, base_r.end.y),
+		Vector2(base_r.position.x, base_r.end.y)
+	])
+	
+	# Alle weiteren Rechtecke nacheinander per Geometry2D verschmelzen
+	for i in range(1, rects.size()):
+		var r = rects[i]
+		var r_poly = PackedVector2Array([
+			Vector2(r.position.x, r.position.y),
+			Vector2(r.end.x, r.position.y),
+			Vector2(r.end.x, r.end.y),
+			Vector2(r.position.x, r.end.y)
+		])
+		
+		var merged_results = Geometry2D.merge_polygons(current_poly, r_poly)
+		if not merged_results.is_empty():
+			# Nimm das größte bzw. hauptsächliche verschmolzene Polygon
+			current_poly = merged_results[0]
+			
+	# Konvertiere das PackedVector2Array zurück in ein normales Array[Vector2] für deine Barrier-Klasse
+	var polygon: Array[Vector2] = []
+	for pt in current_poly:
+		polygon.append(pt)
+		
+	return polygon
+	
 
 func _get_opening_width(p_opening_type: int, p_rng: RandomNumberGenerator) -> int:
 	"""Devuelve el ancho de una apertura basado en el tipo."""
