@@ -110,16 +110,14 @@ func _get_biome_params_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 	rng.seed = hash([p_x, p_y, world_seed, "barriers"])
 	return BiomeGenerator.get_biome_params(p_biome, rng)
 
-
 func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) -> Array:
-	"""Generiert Barrieren für einen Chunk mittels Rectangle-Expansion."""
+	"""Generiert Barrieren für einen Chunk mittels Rectangle-Expansion ohne Überlappung."""
 	var barriers := []
 	var biome_params := _get_biome_params_for_chunk(p_x, p_y, p_biome)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = hash([p_x, p_y, world_seed, "barrier-layout"])
 	var num_barriers: int = biome_params["barrier_count"]
 	
-	# Lokales Grid für diesen Chunk (32x32), um Überschneidungen zu verhindern
 	var chunk_grid := []
 	for cx in range(chunk_size):
 		var col = []
@@ -127,23 +125,25 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 		col.fill(0)
 		chunk_grid.append(col)
 	
-	var min_step := 4 # Bedingung: Teilstücke sind Vielfache von 4 (mindestens 4)
+	var min_step := 4 
+	var spacing := 4 # Mindestabstand zwischen verschiedenen Barrieren (in Tiles)
 	
 	for i in range(num_barriers):
 		var rects_in_barrier: Array[Rect2i] = []
 		var success := false
 		var base_rect: Rect2i
 		
-		# 1. Finde einen freien Startpunkt im Chunk (auf 4er-Raster ausgerichtet)
-		for attempt in range(10):
-			var start_x = rng.randi_range(2, chunk_size - min_step - 2)
+		# 1. Finde einen freien Startpunkt (inkl. Puffer-Check)
+		for attempt in range(15):
+			var start_x = rng.randi_range(spacing, chunk_size - min_step - spacing)
 			start_x = (start_x / min_step) * min_step
-			var start_y = rng.randi_range(2, chunk_size - min_step - 2)
+			var start_y = rng.randi_range(spacing, chunk_size - min_step - spacing)
 			start_y = (start_y / min_step) * min_step
 			
 			base_rect = Rect2i(start_x, start_y, min_step, min_step)
 			
-			if not _is_chunk_area_occupied(chunk_grid, base_rect):
+			# Prüfe, ob der Bereich inklusive Abstand frei ist
+			if not _is_chunk_area_occupied_with_padding(chunk_grid, base_rect, spacing):
 				success = true
 				break
 		
@@ -153,7 +153,10 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 		var current_rect = base_rect
 		rects_in_barrier.append(current_rect)
 		
-		# 2. Expansions-Schritte (Rectangle-Expansion)
+		# Basis-Rechteck SOFORT im Grid vormerken, damit andere Barrieren hier nicht spawnen
+		_mark_chunk_area(chunk_grid, current_rect, 1)
+		
+		# 2. Expansions-Schritte
 		var expansion_steps = rng.randi_range(3, 6)
 		var directions = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]
 		
@@ -180,23 +183,18 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 				var offset_x = rng.randi_range(0, (current_rect.size.x - sub_w) / min_step) * min_step
 				candidate_rect = Rect2i(current_rect.position.x + offset_x, current_rect.position.y - grow_amount, sub_w, grow_amount)
 			
-			if _is_valid_chunk_rect(candidate_rect, chunk_size) and not _is_chunk_area_occupied(chunk_grid, candidate_rect):
+			# Prüfen, ob das neue Teilstück in der Welt liegt und FREI ist (unter Berücksichtigung des Abstands zu *anderen* Barrieren)
+			# Hinweis: Wir erlauben dem Teilstück, sich mit sich selbst (current_rect) zu verbinden, aber nicht mit Fremd-Barrieren.
+			if _is_valid_chunk_rect(candidate_rect, chunk_size) and not _is_chunk_area_occupied_strict(chunk_grid, candidate_rect, rects_in_barrier):
 				rects_in_barrier.append(candidate_rect)
 				current_rect = current_rect.merge(candidate_rect)
+				_mark_chunk_area(chunk_grid, candidate_rect, 1)
 		
-		# Zellen im Chunk-Grid als belegt markieren
-		for r in rects_in_barrier:
-			for rx in range(r.position.x, r.end.x):
-				for ry in range(r.position.y, r.end.y):
-					if rx >= 0 and rx < chunk_size and ry >= 0 and ry < chunk_size:
-						chunk_grid[rx][ry] = 1
-		
-		# 3. Umriss-Polygon aus den Rechtecken extrahieren
+		# 3. Umriss-Polygon extrahieren und Barriere erstellen...
 		var polygon = _extract_polygon_from_rects(rects_in_barrier, chunk_size)
 		if polygon.size() < 3:
 			continue
 			
-		# 4. Öffnungen (Openings) integrieren (wie im bestehenden System)
 		var barrier_openings: Array[Opening] = []
 		var num_openings: int = biome_params["opening_count"]
 		var opening_types: Array = biome_params["opening_types"]
@@ -218,7 +216,6 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 			)
 			barrier_openings.append(opening)
 		
-		# 5. Barrier-Objekt erstellen und hinzufügen
 		var barrier := Barrier.new()
 		barrier.polygon = polygon
 		barrier.biome = p_biome
@@ -227,6 +224,42 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 		barriers.append(barrier)
 	
 	return barriers
+
+
+func _is_chunk_area_occupied_with_padding(grid: Array, r: Rect2i, padding: int) -> bool:
+	"""Prüft, ob ein Bereich inklusive eines Sicherheitsabstands belegt ist."""
+	var padded_rect = Rect2i(r.position.x - padding, r.position.y - padding, r.size.x + (padding * 2), r.size.y + (padding * 2))
+	for rx in range(padded_rect.position.x, padded_rect.end.x):
+		for ry in range(padded_rect.position.y, padded_rect.end.y):
+			if rx < 0 or ry < 0 or rx >= grid.size() or ry >= grid[0].size():
+				return true
+			if grid[rx][ry] == 1:
+				return true
+	return false
+
+func _is_chunk_area_occupied_strict(grid: Array, candidate: Rect2i, own_rects: Array[Rect2i]) -> bool:
+	"""Prüft, ob das Kandidaten-Rechteck mit einer *anderen* Barriere kollidiert."""
+	for rx in range(candidate.position.x, candidate.end.x):
+		for ry in range(candidate.position.y, candidate.end.y):
+			if rx < 0 or ry < 0 or rx >= grid.size() or ry >= grid[0].size():
+				return true
+			# Wenn die Zelle belegt ist...
+			if grid[rx][ry] == 1:
+				# Prüfen, ob sie zu dieser *selben* Barriere gehört (dann ist es okay, da sie verschmelzen)
+				var belongs_to_self := false
+				for r in own_rects:
+					if r.has_point(Vector2i(rx, ry)) or Vector2i(rx, ry) == r.end or (rx >= r.position.x and rx < r.end.x and ry >= r.position.y and ry < r.end.y):
+						belongs_to_self = true
+						break
+				if not belongs_to_self:
+					return true
+	return false
+
+func _mark_chunk_area(grid: Array, r: Rect2i, val: int) -> void:
+	for rx in range(r.position.x, r.end.x):
+		for ry in range(r.position.y, r.end.y):
+			if rx >= 0 and rx < grid.size() and ry >= 0 and ry < grid[0].size():
+				grid[rx][ry] = val
 
 
 func _is_valid_chunk_rect(r: Rect2i, p_chunk_size: int) -> bool:
