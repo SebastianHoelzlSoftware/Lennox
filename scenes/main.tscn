@@ -33,5 +33,5 @@ shape = SubResource("CapsuleShape2D_tbgi4")
 texture_filter = 1
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=275283869]
-zoom = Vector2(1.5, 1.5)
+zoom = Vector2(2.5, 2.5)
 position_smoothing_enabled = true

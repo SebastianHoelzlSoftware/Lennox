@@ -184,7 +184,7 @@ func test_barriers_deterministic_with_seed():
 				assert_eq(b1.biome, b2.biome, "Los biomas de las barreras deben coincidir")
 				assert_eq(b1.polygon.size(), b2.polygon.size(), "La cantidad de vertices del poligono debe coincidir")
 				for p in range(b1.polygon.size()):
-					assert_eq(b1.polygon[p], b2.polygon[p], "Los vertices del poligono deben coincidir exactamente")
+					assert_eq(b1.polygon[b], b2.polygon[b], "Los vertices del poligono deben coincidir exactamente")
 			
 			for tx in range(32):
 				for ty in range(32):
