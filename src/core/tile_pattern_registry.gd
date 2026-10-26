@@ -107,7 +107,55 @@ static var dictionary: Dictionary = {
 		"is_atomic": false,
 	},
 
+	"Bridge Top (High Plateau Rocks)": {
+		"index": 11,
+		"pattern": [
+			Vector2i(4, 4),
+		],
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
 
+	"Bridge Bottom (High Plateau Rocks)": {
+		"index": 12,
+		"pattern": [
+			Vector2i(4, 2),
+		],
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Bridge Middle (High Plateau Rocks)": {
+		"index": 13, 
+		"pattern": [
+			Vector2i(4, 2),
+		],
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Diagonal Down (High Plateau Rocks)": {
+		"index": 14,
+		"pattern": [
+			Vector2i(4, 6),
+		],
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Diagonal Up (High Plateau Rocks)": {
+		"index": 15,
+		"pattern": [
+			Vector2i(4, 6),
+		],
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
 }
 
 static func get_pattern_index(pattern_name: String) -> Variant:

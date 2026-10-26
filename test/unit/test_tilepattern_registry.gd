@@ -27,3 +27,16 @@ func test_registry_has_correct_keys():
 	var dict = TilePatternRegistry.dictionary
 	for key in dict:
 		assert_eq(dict[key].keys(), ["index", "pattern", "is_corner", "corner_type", "is_atomic"])
+
+
+func test_registry_has_unique_incremental_indices():
+	var indices = []
+	var dict = TilePatternRegistry.dictionary
+	var count = 1
+	for key in dict.keys():
+		var index = dict[key]["index"]
+		assert_true(index not in indices)
+		assert_eq(index, count)
+		indices.append(index)
+		count += 1
+	
