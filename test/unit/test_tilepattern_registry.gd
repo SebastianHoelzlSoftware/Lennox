@@ -13,11 +13,13 @@ func test_registry_gets_values():
 	var tile_index = TilePatternRegistry.get_pattern_index(pattern_name)
 	var tile_pattern = TilePatternRegistry.get_pattern(pattern_name)
 	var tile_is_corner = TilePatternRegistry.is_corner(pattern_name)
+	var tile_is_atomic = TilePatternRegistry.is_atomic(pattern_name)
 
 	assert_not_null(tile_index)
 	assert_not_null(tile_pattern)
 	assert_ne(tile_pattern, [])
 	assert_not_null(tile_is_corner)
+	assert_not_null(tile_is_atomic)
 	if tile_index != null:
 		assert_eq(tile_index, 1)
 	if tile_pattern != null:

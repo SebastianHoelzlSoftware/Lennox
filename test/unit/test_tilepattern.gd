@@ -12,6 +12,7 @@ func test_create_tilepattern():
 		"Upper Left Corner (High Plateau)",
 		1,
 		true,
+		true,
 		upper_left_pattern
 	)
 	 

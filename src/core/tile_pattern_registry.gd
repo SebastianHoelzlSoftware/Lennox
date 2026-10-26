@@ -15,6 +15,7 @@ static var dictionary: Dictionary = {
 			Vector2i(1, 1)
 		],
 		"is_corner": true,
+		"is_atomic": true,
 		"corner_type": CornerType.UL
 	},
 }
@@ -35,5 +36,11 @@ static func get_pattern(pattern_name: String) -> Array:
 static func is_corner(pattern_name: String) -> Variant:
 	if pattern_name in dictionary.keys():
 		return dictionary[pattern_name]["is_corner"]
+	else:
+		return null	
+
+static func is_atomic(pattern_name: String) -> Variant:
+	if pattern_name in dictionary.keys():
+		return dictionary[pattern_name]["is_atomic"]
 	else:
 		return null	
