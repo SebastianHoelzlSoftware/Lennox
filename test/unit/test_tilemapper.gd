@@ -40,3 +40,7 @@ func test_tilemapper_creates_tile():
 		assert_eq(ul_corner_pattern.is_corner, p1.is_corner)
 		assert_eq(ul_corner_pattern.is_atomic, p1.is_atomic)
 		assert_eq(ul_corner_pattern.pattern, p1.pattern)
+
+
+func test_tilemapper_draws_a_tile_correctly():
+	pass
