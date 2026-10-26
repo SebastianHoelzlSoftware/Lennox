@@ -6,18 +6,59 @@ class_name TilePatternRegistry
 # is which tile pattern
 
 static var dictionary: Dictionary = {
-	"Upper Left Corner (High Plateau)" : {
+
+	"Upper Left Corner (High Plateau Rocks)" : {
 		"index": 1,
 		"pattern": [
 			Vector2i(0, 0),
 			Vector2i(0, 1),
 			Vector2i(1, 0),
-			Vector2i(1, 1)
+			Vector2i(1, 1),
 		],
 		"is_corner": true,
+		"corner_type": CornerType.UL,
 		"is_atomic": true,
-		"corner_type": CornerType.UL
 	},
+
+	"Upper Right Corner (High Plateau Rocks)": {
+		"index": 2,
+		"pattern": [
+			Vector2i(0, 0),
+			Vector2i(0, 1),
+			Vector2i(1, 0),
+			Vector2i(1, 1),			
+		],
+		"is_corner": true,
+		"corner_type": CornerType.UR,
+		"is_atomic": true,
+	},
+
+	"Lower Left Corner (High Plateau Rocks)": {
+		"index": 3,
+		"pattern": [
+			Vector2i(0, 0),
+			Vector2i(0, 1),
+			Vector2i(1, 0),
+			Vector2i(1, 1),			
+		],
+		"is_corner": true,
+		"corner_type": CornerType.LL,
+		"is_atomic": true,
+	},
+
+	"Lower Right Corner (High Plateau Rocks)": {
+		"index": 4,
+		"pattern": [
+			Vector2i(0, 0),
+			Vector2i(0, 1),
+			Vector2i(1, 0),
+			Vector2i(1, 1),			
+		],
+		"is_corner": true,
+		"corner_type": CornerType.LL,
+		"is_atomic": true,
+	},
+
 }
 
 static func get_pattern_index(pattern_name: String) -> Variant:

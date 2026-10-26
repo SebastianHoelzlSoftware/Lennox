@@ -1,7 +1,7 @@
 extends GutTest
 
 func test_registry_gets_values():
-	var pattern_name = "Upper Left Corner (High Plateau)"
+	var pattern_name = "Upper Left Corner (High Plateau Rocks)"
 	
 	var upper_left_pattern = [
 		Vector2i(0, 0),
@@ -25,3 +25,8 @@ func test_registry_gets_values():
 	if tile_pattern != null:
 		assert_eq(tile_pattern, upper_left_pattern)
 		
+
+func test_registry_has_correct_keys():
+	var dict = TilePatternRegistry.dictionary
+	for key in dict:
+		assert_eq(dict[key].keys(), ["index", "pattern", "is_corner", "corner_type", "is_atomic"])

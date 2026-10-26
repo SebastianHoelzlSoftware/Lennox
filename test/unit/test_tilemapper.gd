@@ -1,6 +1,7 @@
 extends GutTest
 
 func test_tilemapper_creates_tile():
+	# Arrange
 	# 1. Test-Szene sicher im Test laden (falls noch nicht geschehen)
 	var scene = load("res://scenes/main.tscn").instantiate() # Ersetze den Pfad mit deiner Szene
 	add_child_autofree(scene) # Lädt die Szene in den Tree, damit @onready funktioniert
@@ -14,7 +15,6 @@ func test_tilemapper_creates_tile():
 
 	# 3. Jetzt den TileMapper sicher mit dem TileSet initialisieren
 	var tile_mapper := TileMapper.new(level_tilemap.tile_set)
-	var ul_corner_pattern = tile_mapper.create_tile_pattern("Upper Left Corner (High Plateau)")
 	
 	var upper_left_pattern = [
 		Vector2i(0, 0),
@@ -23,13 +23,17 @@ func test_tilemapper_creates_tile():
 		Vector2i(1, 1)
 	]
 	var p1 = TilePattern.new(
-		"Upper Left Corner (High Plateau)",
+		"Upper Left Corner (High Plateau Rocks)",
 		1,
 		true,
 		true,
 		upper_left_pattern
 	)
+	
+	# Act	
+	var ul_corner_pattern = tile_mapper.create_tile_pattern("Upper Left Corner (High Plateau Rocks)")
 
+	# Assert
 	# Wichtig: Da TilePattern eine reine Datenklasse ist, schlägt assert_eq evtl. fehl, 
 	# wenn sie kein _eq() implementiert hat. Vergleiche ggf. die Properties einzeln:
 	assert_not_null(ul_corner_pattern)
