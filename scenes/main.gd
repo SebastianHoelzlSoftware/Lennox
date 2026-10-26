@@ -40,7 +40,7 @@ var start_biome_type: BiomeType.Type = BiomeType.GRASSLAND
 
 func _ready() -> void:
 	var level := Level.new(12, 12, 32, 16, 12345)
-	var _tile_mapper := TileMapper.new(level_tilemap.tile_set)
+	var _tile_mapper := TileMapper.new(level_tilemap)
 	level.generate()
 	start_biome_chunks = _find_nearest_biome_region(level.biome_map, BiomeType.GRASSLAND)
 	if start_biome_chunks.is_empty():

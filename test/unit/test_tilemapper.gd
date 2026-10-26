@@ -14,7 +14,7 @@ func test_tilemapper_creates_tile():
 	assert_not_null(level_tilemap.tile_set, "TileSet ist null im TileMapLayer!")
 
 	# 3. Jetzt den TileMapper sicher mit dem TileSet initialisieren
-	var tile_mapper := TileMapper.new(level_tilemap.tile_set)
+	var tile_mapper := TileMapper.new(level_tilemap)
 	
 	var upper_left_pattern = [
 		Vector2i(2, 2),
