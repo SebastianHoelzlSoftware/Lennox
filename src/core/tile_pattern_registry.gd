@@ -40,6 +40,10 @@ static var dictionary: Dictionary = {
 			Vector2i(0, 1),
 			Vector2i(1, 0),
 			Vector2i(1, 1),			
+			Vector2i(2, 0),
+			Vector2i(2, 1),
+			Vector2i(3, 0),
+			Vector2i(3, 1),			
 		],
 		"is_corner": true,
 		"corner_type": CornerType.LL,
@@ -53,12 +57,104 @@ static var dictionary: Dictionary = {
 			Vector2i(0, 1),
 			Vector2i(1, 0),
 			Vector2i(1, 1),			
+			Vector2i(2, 0),
+			Vector2i(2, 1),
+			Vector2i(3, 0),
+			Vector2i(3, 1),		
 		],
 		"is_corner": true,
 		"corner_type": CornerType.LL,
 		"is_atomic": true,
 	},
 
+	"Top Edge Straight (High Plateau Rocks)": {
+		"index": 5,
+		"pattern": [
+			Vector2i(0, 0),
+			Vector2i(0, 1),
+			Vector2i(1, 0),
+			Vector2i(1, 1),
+		],
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Bottom Edge Straight (High Plateau Rocks)": {
+		"index": 6,
+		"pattern": [
+			Vector2i(0, 0),
+			Vector2i(0, 1),
+			Vector2i(1, 0),
+			Vector2i(1, 1),
+			Vector2i(2, 0),
+			Vector2i(2, 1),
+			Vector2i(3, 0),
+			Vector2i(3, 1),		
+		],
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Left Edge Straight (High Plateau Rocks)": {
+		"index": 7,
+		"pattern": [
+			Vector2i(0, 0),
+			Vector2i(0, 1),
+			Vector2i(1, 0),
+			Vector2i(1, 1),
+			Vector2i(2, 0),
+			Vector2i(2, 1),
+			Vector2i(3, 0),
+			Vector2i(3, 1),		
+		],
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Right Edge Straight (High Plateau Rocks)": {
+		"index": 8,
+		"pattern": [
+			Vector2i(0, 0),
+			Vector2i(0, 1),
+			Vector2i(1, 0),
+			Vector2i(1, 1),
+			Vector2i(2, 0),
+			Vector2i(2, 1),
+			Vector2i(3, 0),
+			Vector2i(3, 1),		
+		],
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Ground Plate (High Plateau Rocks)": {
+		"index": 9,
+		"pattern": [
+			Vector2i(0, 0),
+			Vector2i(0, 1),
+			Vector2i(1, 0),
+			Vector2i(1, 1),
+		],
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Plateau 1x1 (High Plateau Rocks)": {
+		"index": 10,
+		"pattern": [
+			Vector2i(6, 8)
+		],
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": false,
+	},
+
+	
 }
 
 static func get_pattern_index(pattern_name: String) -> Variant:
