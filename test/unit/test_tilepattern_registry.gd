@@ -4,10 +4,7 @@ func test_registry_gets_values():
 	var pattern_name = "Upper Left Corner (High Plateau Rocks)"
 	
 	var upper_left_pattern = [
-		Vector2i(0, 0),
-		Vector2i(0, 1),
-		Vector2i(1, 0),
-		Vector2i(1, 1)
+		Vector2i(2, 2),
 	]
 	
 	var tile_index = TilePatternRegistry.get_pattern_index(pattern_name)

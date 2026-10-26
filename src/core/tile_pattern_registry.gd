@@ -10,10 +10,7 @@ static var dictionary: Dictionary = {
 	"Upper Left Corner (High Plateau Rocks)" : {
 		"index": 1,
 		"pattern": [
-			Vector2i(0, 0),
-			Vector2i(0, 1),
-			Vector2i(1, 0),
-			Vector2i(1, 1),
+			Vector2i(2, 2),
 		],
 		"is_corner": true,
 		"corner_type": CornerType.UL,
@@ -23,10 +20,7 @@ static var dictionary: Dictionary = {
 	"Upper Right Corner (High Plateau Rocks)": {
 		"index": 2,
 		"pattern": [
-			Vector2i(0, 0),
-			Vector2i(0, 1),
-			Vector2i(1, 0),
-			Vector2i(1, 1),			
+			Vector2i(2, 2),			
 		],
 		"is_corner": true,
 		"corner_type": CornerType.UR,
@@ -36,14 +30,7 @@ static var dictionary: Dictionary = {
 	"Lower Left Corner (High Plateau Rocks)": {
 		"index": 3,
 		"pattern": [
-			Vector2i(0, 0),
-			Vector2i(0, 1),
-			Vector2i(1, 0),
-			Vector2i(1, 1),			
-			Vector2i(2, 0),
-			Vector2i(2, 1),
-			Vector2i(3, 0),
-			Vector2i(3, 1),			
+			Vector2i(2, 8),
 		],
 		"is_corner": true,
 		"corner_type": CornerType.LL,
@@ -53,14 +40,7 @@ static var dictionary: Dictionary = {
 	"Lower Right Corner (High Plateau Rocks)": {
 		"index": 4,
 		"pattern": [
-			Vector2i(0, 0),
-			Vector2i(0, 1),
-			Vector2i(1, 0),
-			Vector2i(1, 1),			
-			Vector2i(2, 0),
-			Vector2i(2, 1),
-			Vector2i(3, 0),
-			Vector2i(3, 1),		
+			Vector2i(2, 8),	
 		],
 		"is_corner": true,
 		"corner_type": CornerType.LL,
@@ -70,10 +50,7 @@ static var dictionary: Dictionary = {
 	"Top Edge Straight (High Plateau Rocks)": {
 		"index": 5,
 		"pattern": [
-			Vector2i(0, 0),
-			Vector2i(0, 1),
-			Vector2i(1, 0),
-			Vector2i(1, 1),
+			Vector2i(2, 2),
 		],
 		"is_corner": false,
 		"corner_type": null,
@@ -83,14 +60,7 @@ static var dictionary: Dictionary = {
 	"Bottom Edge Straight (High Plateau Rocks)": {
 		"index": 6,
 		"pattern": [
-			Vector2i(0, 0),
-			Vector2i(0, 1),
-			Vector2i(1, 0),
-			Vector2i(1, 1),
-			Vector2i(2, 0),
-			Vector2i(2, 1),
-			Vector2i(3, 0),
-			Vector2i(3, 1),		
+			Vector2i(2, 8),
 		],
 		"is_corner": false,
 		"corner_type": null,
@@ -100,14 +70,7 @@ static var dictionary: Dictionary = {
 	"Left Edge Straight (High Plateau Rocks)": {
 		"index": 7,
 		"pattern": [
-			Vector2i(0, 0),
-			Vector2i(0, 1),
-			Vector2i(1, 0),
-			Vector2i(1, 1),
-			Vector2i(2, 0),
-			Vector2i(2, 1),
-			Vector2i(3, 0),
-			Vector2i(3, 1),		
+			Vector2i(2, 8),
 		],
 		"is_corner": false,
 		"corner_type": null,
@@ -117,14 +80,7 @@ static var dictionary: Dictionary = {
 	"Right Edge Straight (High Plateau Rocks)": {
 		"index": 8,
 		"pattern": [
-			Vector2i(0, 0),
-			Vector2i(0, 1),
-			Vector2i(1, 0),
-			Vector2i(1, 1),
-			Vector2i(2, 0),
-			Vector2i(2, 1),
-			Vector2i(3, 0),
-			Vector2i(3, 1),		
+			Vector2i(2, 8),		
 		],
 		"is_corner": false,
 		"corner_type": null,
@@ -134,10 +90,7 @@ static var dictionary: Dictionary = {
 	"Ground Plate (High Plateau Rocks)": {
 		"index": 9,
 		"pattern": [
-			Vector2i(0, 0),
-			Vector2i(0, 1),
-			Vector2i(1, 0),
-			Vector2i(1, 1),
+			Vector2i(2, 2),
 		],
 		"is_corner": false,
 		"corner_type": null,
@@ -154,7 +107,7 @@ static var dictionary: Dictionary = {
 		"is_atomic": false,
 	},
 
-	
+
 }
 
 static func get_pattern_index(pattern_name: String) -> Variant:
