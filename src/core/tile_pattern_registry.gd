@@ -82,10 +82,10 @@ static var dictionary: Dictionary = {
 	"Top Edge Straight (High Plateau Rocks)": {
 		"index": 5,
 		"atlas_coords": [
-			Vector2i(5, 0),
-			Vector2i(5, 1),
-			Vector2i(6, 0),
-			Vector2i(6, 1)
+			Vector2i(5, 21),
+			Vector2i(5, 22),
+			Vector2i(6, 21),
+			Vector2i(6, 22)
 		],
 		"pattern": [
 			Vector2i(2, 2),
@@ -134,10 +134,11 @@ static var dictionary: Dictionary = {
 	"Right Edge Straight (High Plateau Rocks)": {
 		"index": 8,
 		"atlas_coords": [
-			Vector2i(19, 27),
+			# Hier hab ich das muster verkehrt herum angelegt, ist aber okay. nur die indizes sind vertauscht hier			
 			Vector2i(19, 28),
-			Vector2i(20, 27),
-			Vector2i(20, 28)
+			Vector2i(19, 27),
+			Vector2i(20, 28),
+			Vector2i(20, 27)
 		],
 		"pattern": [
 			Vector2i(2, 2),

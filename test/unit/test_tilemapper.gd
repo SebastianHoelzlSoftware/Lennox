@@ -72,4 +72,66 @@ func test_tilemapper_draws_a_tile_correctly():
 	assert_eq(returned_coords, expected_atlas_coords)
 
 func test_tilemapper_draws_all_tiles_correctly():
-	pass
+	var scene := load("res://scenes/main.tscn") as PackedScene
+	var main := scene.instantiate() as Node2D
+	add_child(main)
+	autofree(main)
+	await get_tree().process_frame
+	var level_tilemap := main.get_node("LevelTileMap") as TileMapLayer
+	var tile_mapper := TileMapper.new(level_tilemap)
+
+	var start_draw_pos = Vector2i(10, 10)
+	var draw_pos = start_draw_pos
+	var tile_dict = TilePatternRegistry.dictionary
+
+	for tilename in tile_dict.keys():
+		# Get atlas coords for tile from registry
+		var atlas_coords = tile_dict[tilename]["atlas_coords"]
+		# Draw the pattern
+		tile_mapper.draw_editor_pattern(tilename, draw_pos)
+
+		var returned_atlas_coords = level_tilemap.get_cell_atlas_coords(draw_pos)
+		var ret_x = returned_atlas_coords[0]
+		var ret_y = returned_atlas_coords[1]
+		var ret_as_vec = Vector2i(ret_x, ret_y)
+		print("ATLAS COORDS:")
+		print(atlas_coords)
+		print("RETURNED COORDS:")
+		print(ret_as_vec)
+		assert_eq(ret_as_vec, atlas_coords[0], "Retrieved atlas coordinates should be equal with registry ones")
+
+		# Move draw position to the right
+		draw_pos = Vector2i(draw_pos[0] + 10, draw_pos[1])
+		
+	# --- DYNAMIC CAMERA FRAMING FOR SCREENSHOT ---
+	# 1. Create a temporary Camera2D for the test
+	var camera := Camera2D.new()
+	main.add_child(camera)
+	autofree(camera)
+
+	# 2. Convert cell coordinates to pixel positions
+	var start_pixel_pos = level_tilemap.map_to_local(start_draw_pos)
+	var end_pixel_pos = level_tilemap.map_to_local(draw_pos) # final draw_pos after loop
+
+	# 3. Position the camera at the exact center of all drawn tiles
+	camera.position = (start_pixel_pos + end_pixel_pos) / 2.0
+	
+	# 4. Adjust zoom if necessary (e.g., Vector2(2, 2) to zoom in, Vector2(1, 1) for default)
+	camera.zoom = Vector2(2.0, 2.0)
+	
+	# 5. Make this camera active so the viewport renders from its perspective
+	camera.make_current()
+
+	# Wait a couple of frames for the tilemap and camera to settle
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+	# Grab and save the viewport image
+	var viewport = get_viewport()
+	var image := viewport.get_texture().get_image()
+	var file_path = "user://test_tilemapper_output.png"
+	
+	if image.save_png(file_path) == OK:
+		print("Screenshot saved to: ", ProjectSettings.globalize_path(file_path))
+	else:
+		printerr("Failed to save screenshot.")
