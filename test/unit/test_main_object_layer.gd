@@ -49,10 +49,15 @@ func test_main_scene_starts_in_decorated_grass_biome():
 	for animation_prefix: StringName in frame_counts:
 		for direction: StringName in direction_rows:
 			var animation_name := StringName("%s_%s" % [animation_prefix, direction])
+			var expected_frame_count: int = (
+				4
+				if animation_prefix == &"idle" and direction == &"up"
+				else frame_counts[animation_prefix]
+			)
 			assert_true(player_sprite.sprite_frames.has_animation(animation_name))
 			assert_eq(
 				player_sprite.sprite_frames.get_frame_count(animation_name),
-				frame_counts[animation_prefix]
+				expected_frame_count
 			)
 			var frame := player_sprite.sprite_frames.get_frame_texture(animation_name, 0) as AtlasTexture
 			assert_not_null(frame)

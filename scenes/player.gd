@@ -70,7 +70,7 @@ func _update_animation(direction: Vector2) -> void:
 func _create_sprite_frames() -> SpriteFrames:
 	var frames := SpriteFrames.new()
 	frames.remove_animation(&"default")
-	_add_sheet(frames, &"idle", IDLE_SHEET, 12, 6.0, true)
+	_add_sheet(frames, &"idle", IDLE_SHEET, 12, 6.0, true, {&"up": 4})
 	_add_sheet(frames, &"walk", WALK_SHEET, 6, 9.0, true)
 	_add_sheet(frames, &"run", RUN_SHEET, 8, 12.0, true)
 	_add_sheet(frames, &"attack", ATTACK_SHEET, 8, 12.0, false)
@@ -87,7 +87,8 @@ func _add_sheet(
 	texture: Texture2D,
 	frame_count: int,
 	fps: float,
-	loop_animation: bool
+	loop_animation: bool,
+	direction_frame_overrides: Dictionary = {}
 ) -> void:
 	for direction: StringName in DIRECTION_ROWS:
 		var animation_name := StringName("%s_%s" % [animation_prefix, direction])
@@ -95,7 +96,8 @@ func _add_sheet(
 		frames.set_animation_speed(animation_name, fps)
 		frames.set_animation_loop(animation_name, loop_animation)
 		var row: int = DIRECTION_ROWS[direction]
-		for frame_index in range(frame_count):
+		var count: int = direction_frame_overrides.get(direction, frame_count)
+		for frame_index in range(count):
 			var atlas_frame := AtlasTexture.new()
 			atlas_frame.atlas = texture
 			atlas_frame.region = Rect2(
