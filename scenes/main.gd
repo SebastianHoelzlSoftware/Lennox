@@ -15,7 +15,7 @@ func _ready() -> void:
 		level.width * level.chunk_size / 2,
 		level.height * level.chunk_size / 2
 	)
-	level_tilemap.load_level(level)
+	level_tilemap.load_level(level, tile_mapper)
 	player.position = to_local(level_tilemap.to_global(level_tilemap.map_to_local(start_cell)))
 
 	tile_mapper.draw_editor_pattern("Upper Left Corner (High Plateau Rocks)", start_cell + Vector2i(10, 0))

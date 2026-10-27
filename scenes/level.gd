@@ -8,10 +8,12 @@ const TILE_ATLAS_COORDS := {
 }
 
 var level: Level
+var tile_mapper: TileMapper
 var _tile_source_id: int = -1
 
 
-func load_level(p_level: Level) -> void:
+func load_level(p_level: Level, p_tile_mapper: TileMapper) -> void:
+	tile_mapper = p_tile_mapper
 	if tile_set == null:
 		push_error("Cannot load level: LevelTileMap has no TileSet.")
 		return
@@ -61,14 +63,9 @@ func _draw_chunk(p_chunk: Chunk, p_chunk_x: int, p_chunk_y: int) -> void:
 		for tile_y in range(p_chunk.tiles[tile_x].size()):
 			var global_x := p_chunk_x * level.chunk_size + tile_x
 			var global_y := p_chunk_y * level.chunk_size + tile_y
-			var tile_type: TileType.Type = p_chunk.get_tile(tile_x, tile_y)
-			var atlas_coords := _get_tile_atlas_coords(tile_type)
-			if atlas_coords != Vector2i(-1, -1):
-				set_cell(Vector2i(global_x, global_y), _tile_source_id, atlas_coords)
+			var draw_pos = Vector2i(global_x, global_y)
+			
+			# TODO: Implement for different tile types
+			var _tile_type: TileType.Type = p_chunk.get_tile(tile_x, tile_y)
 
-
-func _get_tile_atlas_coords(_p_tile_type: TileType.Type) -> Vector2i:
-	# Todo: Implement prober floor tile handling
-	# for now return the base tile I'm using in the example
-	var atlas_coords = TilePatternRegistry.get_atlas_coords("Ground Plate (High Plateau Rocks) Variant A")
-	return atlas_coords[0]
+			tile_mapper.draw_editor_pattern("Ground Plate (High Plateau Rocks) Variant A", draw_pos)
