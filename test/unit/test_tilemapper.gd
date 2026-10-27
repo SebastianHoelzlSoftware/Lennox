@@ -43,4 +43,30 @@ func test_tilemapper_creates_tile():
 
 
 func test_tilemapper_draws_a_tile_correctly():
-	pass
+	var scene := load("res://scenes/main.tscn") as PackedScene
+	var main := scene.instantiate() as Node2D
+	add_child(main)
+	autofree(main)
+	await get_tree().process_frame
+	var level_tilemap := main.get_node("LevelTileMap") as TileMapLayer
+	var tile_mapper := TileMapper.new(level_tilemap)
+	
+	var draw_positions = [
+		Vector2i(10, 10), 
+		Vector2i(10, 11), 
+		Vector2i(11, 10), 
+		Vector2i(11, 11)
+		]
+	var expected_atlas_coords = [
+		Vector2i(3, 21),
+		Vector2i(3, 22),
+		Vector2i(4, 21),
+		Vector2i(4, 22)
+	]
+	tile_mapper.draw_editor_pattern("Upper Right Corner (High Plateau Rocks)", draw_positions[0])
+
+	var returned_coords = []
+	for draw_pos in draw_positions:
+		returned_coords.append(level_tilemap.get_cell_atlas_coords(draw_pos))
+
+	assert_eq(returned_coords, expected_atlas_coords)
