@@ -19,7 +19,6 @@ func _init(p_width: int, p_height: int, p_chunk_size: int, p_tile_size: int, p_w
 	tile_size = p_tile_size
 	world_seed = p_world_seed
 
-
 func generate() -> void:
 	"""Genera todos los chunks del nivel."""
 	chunks.clear()

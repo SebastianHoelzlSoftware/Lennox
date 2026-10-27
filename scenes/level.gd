@@ -1,9 +1,6 @@
 extends TileMapLayer
 
 const TILE_SOURCE_NAME := &"Ground_rocks"
-const TILE_OBJECT_LIBRARY: TileObjectLibrary = preload(
-	"res://assets/tiles/rocks/tile_object_library.tres"
-)
 const TILE_ATLAS_COORDS := {
 	TileType.GRASS: [Vector2i(2, 1), Vector2i(2, 2), Vector2i(3, 2)],
 	TileType.SAND: [Vector2i(2, 1), Vector2i(2, 2), Vector2i(3, 2)],
@@ -56,22 +53,6 @@ func _cache_tile_source_id() -> bool:
 					% [TILE_SOURCE_NAME, atlas_coords, tile_type]
 				)
 				return false
-
-	var barrier_pattern := TILE_OBJECT_LIBRARY.get_pattern(&"rock_barrier")
-	if barrier_pattern == null or barrier_pattern.variants.is_empty():
-		push_error("Tile object library is missing variants for 'rock_barrier'.")
-		return false
-	for variant: TileObjectCell in barrier_pattern.variants:
-		if (
-			variant.atlas_source_name != TILE_SOURCE_NAME
-			or not atlas_source.has_tile(variant.atlas_coords)
-		):
-			push_error(
-				"Tile object pattern 'rock_barrier' references an invalid tile at %s."
-				% variant.atlas_coords
-			)
-			return false
-
 	return true
 
 
@@ -86,16 +67,8 @@ func _draw_chunk(p_chunk: Chunk, p_chunk_x: int, p_chunk_y: int) -> void:
 				set_cell(Vector2i(global_x, global_y), _tile_source_id, atlas_coords)
 
 
-func _get_tile_atlas_coords(p_tile_type: TileType.Type) -> Vector2i:
-	if p_tile_type == TileType.ROCK or p_tile_type == TileType.TREE:
-		var rock_barrier := TILE_OBJECT_LIBRARY.get_pattern(&"rock_barrier")
-		if rock_barrier == null:
-			return Vector2i(-1, -1)
-		var variant := rock_barrier.get_random_variant()
-		return variant.atlas_coords if variant != null else Vector2i(-1, -1)
-
-	var atlas_coords: Array = TILE_ATLAS_COORDS.get(p_tile_type, [])
-	if atlas_coords.is_empty():
-		push_error("No atlas tile is configured for tile type '%s'." % p_tile_type)
-		return Vector2i(-1, -1)
-	return atlas_coords[randi_range(0, atlas_coords.size() - 1)]
+func _get_tile_atlas_coords(_p_tile_type: TileType.Type) -> Vector2i:
+	# Todo: Implement prober floor tile handling
+	# for now return the base tile I'm using in the example
+	var atlas_coords = TilePatternRegistry.get_atlas_coords("Ground Plate (High Plateau Rocks) Variant A")
+	return atlas_coords[0]

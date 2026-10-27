@@ -265,3 +265,9 @@ static func is_atomic(pattern_name: String) -> Variant:
 		return dictionary[pattern_name]["is_atomic"]
 	else:
 		return null	
+
+static func get_atlas_coords(pattern_name: String) -> Array:
+	if pattern_name in dictionary.keys():
+		return dictionary[pattern_name]["atlas_coords"]
+	else:
+		return []
