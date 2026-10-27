@@ -26,7 +26,7 @@ func test_registry_gets_values():
 func test_registry_has_correct_keys():
 	var dict = TilePatternRegistry.dictionary
 	for key in dict:
-		assert_eq(dict[key].keys(), ["index", "pattern", "is_corner", "corner_type", "is_atomic"])
+		assert_eq(dict[key].keys(), ["index", "atlas_coords", "pattern", "is_corner", "corner_type", "is_atomic"])
 
 
 func test_registry_has_unique_incremental_indices():

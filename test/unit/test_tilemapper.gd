@@ -70,3 +70,6 @@ func test_tilemapper_draws_a_tile_correctly():
 		returned_coords.append(level_tilemap.get_cell_atlas_coords(draw_pos))
 
 	assert_eq(returned_coords, expected_atlas_coords)
+
+func test_tilemapper_draws_all_tiles_correctly():
+	pass
