@@ -17,7 +17,8 @@ func test_tilemapper_creates_tile():
 	var tile_mapper := TileMapper.new(level_tilemap)
 	
 	var upper_left_pattern = [
-		Vector2i(2, 2),
+		Vector2i(1, 22),
+		Vector2i(1, 22)
 	]
 	var p1 = TilePattern.new(
 		"Upper Left Corner (High Plateau Rocks)",

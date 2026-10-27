@@ -15,9 +15,11 @@ static var dictionary: Dictionary = {
 			Vector2i(1, 21),
 			Vector2i(1, 22)
 		],
-		"pattern": [
-			Vector2i(2, 2),
+		"hull_pattern": [
+			Vector2i(1, 22),
+			Vector2i(1, 22)
 		],
+		"hull_curvature": HullCurvature.LEFT,
 		"is_corner": true,
 		"corner_type": CornerType.UL,
 		"is_atomic": true,
@@ -31,9 +33,11 @@ static var dictionary: Dictionary = {
 			Vector2i(4, 21),
 			Vector2i(4, 22)
 		],
-		"pattern": [
-			Vector2i(2, 2),			
+		"hull_pattern": [
+			Vector2i(4, 21),
+			Vector2i(4, 21)			
 		],
+		"hull_curvature": HullCurvature.RIGHT,
 		"is_corner": true,
 		"corner_type": CornerType.UR,
 		"is_atomic": true,
@@ -51,9 +55,11 @@ static var dictionary: Dictionary = {
 			Vector2i(1, 26),
 			Vector2i(1, 27)
 		],
-		"pattern": [
-			Vector2i(2, 4),
+		"hull_pattern": [
+			Vector2i(1, 24),
+			Vector2i(1, 24)
 		],
+		"hull_curvature": HullCurvature.LEFT,
 		"is_corner": true,
 		"corner_type": CornerType.LL,
 		"is_atomic": true,
@@ -71,9 +77,11 @@ static var dictionary: Dictionary = {
 			Vector2i(4, 26),
 			Vector2i(4, 27),
 		],
-		"pattern": [
-			Vector2i(2, 4),	
+		"hull_pattern": [
+			Vector2i(3, 24),
+			Vector2i(3, 24)
 		],
+		"hull_curvature": HullCurvature.RIGHT,
 		"is_corner": true,
 		"corner_type": CornerType.LL,
 		"is_atomic": true,
@@ -87,9 +95,11 @@ static var dictionary: Dictionary = {
 			Vector2i(6, 21),
 			Vector2i(6, 22)
 		],
-		"pattern": [
-			Vector2i(2, 2),
+		"hull_pattern": [
+			Vector2i(6, 21),
+			Vector2i(6, 22)
 		],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
 		"is_corner": false,
 		"corner_type": null,
 		"is_atomic": true,
@@ -107,9 +117,11 @@ static var dictionary: Dictionary = {
 			Vector2i(6, 25),
 			Vector2i(6, 26)
 		],
-		"pattern": [
-			Vector2i(2, 4),
+		"hull_pattern": [
+			Vector2i(5, 23),
+			Vector2i(6, 23)
 		],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
 		"is_corner": false,
 		"corner_type": null,
 		"is_atomic": true,
@@ -123,9 +135,11 @@ static var dictionary: Dictionary = {
 			Vector2i(22, 27),
 			Vector2i(22, 28)
 		],
-		"pattern": [
-			Vector2i(2, 2),
+		"hull_pattern": [
+			Vector2i(22, 28),
+			Vector2i(22, 27)
 		],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
 		"is_corner": false,
 		"corner_type": null,
 		"is_atomic": true,
@@ -140,11 +154,13 @@ static var dictionary: Dictionary = {
 			Vector2i(20, 28),
 			Vector2i(20, 27)
 		],
-		"pattern": [
-			Vector2i(2, 2),
+		"hull_pattern": [
+			Vector2i(19, 28), 
+			Vector2i(19, 27)
 		],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
 		"is_corner": false,
-		"corner_type": null,
+		"corner_type": CornerType.NO_CORNER,
 		"is_atomic": true,
 	},
 
@@ -156,11 +172,10 @@ static var dictionary: Dictionary = {
 			Vector2i(17, 37),
 			Vector2i(17, 37)
 		],
-		"pattern": [
-			Vector2i(2, 2),
-		],
+		"hull_pattern": [],
+		"hull_curvature": HullCurvature.NO_HULL,
 		"is_corner": false,
-		"corner_type": null,
+		"corner_type": CornerType.NO_CORNER,
 		"is_atomic": true,
 	},
 }
@@ -232,9 +247,9 @@ static func get_pattern_index(pattern_name: String) -> Variant:
 	else:
 		return null
 
-static func get_pattern(pattern_name: String) -> Array:
+static func get_hull_pattern(pattern_name: String) -> Array:
 	if pattern_name in dictionary.keys():
-		return dictionary[pattern_name]["pattern"]
+		return dictionary[pattern_name]["hull_pattern"]
 	else:
 		return []
 	

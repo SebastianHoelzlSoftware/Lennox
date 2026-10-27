@@ -4,11 +4,12 @@ func test_registry_gets_values():
 	var pattern_name = "Upper Left Corner (High Plateau Rocks)"
 	
 	var upper_left_pattern = [
-		Vector2i(2, 2),
+		Vector2i(1, 22),
+		Vector2i(1, 22)
 	]
 	
 	var tile_index = TilePatternRegistry.get_pattern_index(pattern_name)
-	var tile_pattern = TilePatternRegistry.get_pattern(pattern_name)
+	var tile_pattern = TilePatternRegistry.get_hull_pattern(pattern_name)
 	var tile_is_corner = TilePatternRegistry.is_corner(pattern_name)
 	var tile_is_atomic = TilePatternRegistry.is_atomic(pattern_name)
 
@@ -26,7 +27,8 @@ func test_registry_gets_values():
 func test_registry_has_correct_keys():
 	var dict = TilePatternRegistry.dictionary
 	for key in dict:
-		assert_eq(dict[key].keys(), ["index", "atlas_coords", "pattern", "is_corner", "corner_type", "is_atomic"])
+		var keys = dict[key].keys()
+		assert_eq(keys, ["index", "atlas_coords", "hull_pattern", "hull_curvature", "is_corner", "corner_type", "is_atomic"])
 
 
 func test_registry_has_unique_incremental_indices():
