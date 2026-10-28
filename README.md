@@ -20,6 +20,10 @@
 
 <p align="center"><strong>La captura más reciente del juego</strong></p>
 
+<p align="center">
+  <img src="doc/images/Screenshot 2026-10-28 131615.png" alt="Captura de pantalla 2026-10-28" width="100%">
+</p>
+
 <p align="center"><a href="doc/video/daily_screencap.mp4">▶ Abrir o descargar el video del día</a></p>
 
 ---
