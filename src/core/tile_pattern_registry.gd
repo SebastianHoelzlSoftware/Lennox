@@ -5,6 +5,7 @@ class_name TilePatternRegistry
 # I can only reference it by an index (which might change), it's crucial to keep a good register of which index
 # is which tile pattern
 
+# TODO: Create more dictionaries equivalating the pattern lists (different ones please!) in godot editor
 static var dictionary: Dictionary = {
 
 	"Upper Left Corner (High Plateau Rocks)" : {
@@ -178,6 +179,37 @@ static var dictionary: Dictionary = {
 		"corner_type": CornerType.NO_CORNER,
 		"is_atomic": true,
 	},
+
+	"Ground Plate (High Plateau Rocks) Variant B": {
+		"index": 16,
+		"atlas_coords": [
+			Vector2i(17, 37),
+			Vector2i(17, 37),
+			Vector2i(17, 37),
+			Vector2i(17, 37)
+		],
+		"hull_pattern": [],
+		"hull_curvature": HullCurvature.NO_HULL,
+		"is_corner": false,
+		"corner_type": CornerType.NO_CORNER,
+		"is_atomic": true,
+	},
+
+	"Ground Plate (High Plateau Rocks) Variant C": {
+		"index": 17,
+		"atlas_coords": [
+			Vector2i(17, 37),
+			Vector2i(17, 37),
+			Vector2i(17, 37),
+			Vector2i(17, 37)
+		],
+		"hull_pattern": [],
+		"hull_curvature": HullCurvature.NO_HULL,
+		"is_corner": false,
+		"corner_type": CornerType.NO_CORNER,
+		"is_atomic": true,
+	},
+
 }
 """ 
 	"Plateau 1x1 (High Plateau Rocks)": {

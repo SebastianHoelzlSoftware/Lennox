@@ -21,7 +21,8 @@ func load_level(p_level: Level, p_tile_mapper: TileMapper) -> void:
 		return
 
 	level = p_level
-	clear()
+	# TODO: Uncomment this!!!
+	#clear()
 
 	for x in range(level.width):
 		for y in range(level.height):
@@ -68,4 +69,4 @@ func _draw_chunk(p_chunk: Chunk, p_chunk_x: int, p_chunk_y: int) -> void:
 			# TODO: Implement for different tile types
 			var _tile_type: TileType.Type = p_chunk.get_tile(tile_x, tile_y)
 
-			tile_mapper.draw_editor_pattern("Ground Plate (High Plateau Rocks) Variant A", draw_pos)
+			#tile_mapper.draw_editor_pattern("Ground Plate (High Plateau Rocks) Variant A", draw_pos)

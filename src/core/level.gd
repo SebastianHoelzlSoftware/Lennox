@@ -132,11 +132,17 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 		var success := false
 		var base_rect: Rect2i
 		
+		
 		# 1. Finde einen freien Startpunkt (auf 2er-Raster ausgerichtet)
 		for attempt in range(15):
 			var start_x = rng.randi_range(spacing, chunk_size - (min_step * 2) - spacing)
+
+			@warning_ignore("INTEGER_DIVISION")
 			start_x = (start_x / min_step) * min_step
+
 			var start_y = rng.randi_range(spacing, chunk_size - (min_step * 2) - spacing)
+			
+			@warning_ignore("INTEGER_DIVISION")
 			start_y = (start_y / min_step) * min_step
 			
 			base_rect = Rect2i(start_x, start_y, min_step * 2, min_step * 2) # Startet mit einem 4x4 oder 2x2 Basis-Rechteck
@@ -197,7 +203,7 @@ func generate_barriers_for_chunk(p_x: int, p_y: int, p_biome: BiomeType.Type) ->
 				_mark_chunk_area(chunk_grid, candidate_rect, 1)
 		
 		# 3. Umriss-Polygon extrahieren und Barriere erstellen...
-		var polygon = _extract_polygon_from_rects(rects_in_barrier, chunk_size)
+		var polygon = _extract_polygon_from_rects(rects_in_barrier)
 		if polygon.size() < 3:
 			continue
 			
@@ -281,7 +287,7 @@ func _is_chunk_area_occupied(grid: Array, r: Rect2i) -> bool:
 				return true
 	return false
 
-func _extract_polygon_from_rects(rects: Array[Rect2i], p_chunk_size: int) -> Array[Vector2]:
+func _extract_polygon_from_rects(rects: Array[Rect2i]) -> Array[Vector2]:
 	"""Verschmilzt die expandierten Rechtecke über Godots Geometry2D zu einem sauberen Polygon."""
 	if rects.is_empty():
 		return []
