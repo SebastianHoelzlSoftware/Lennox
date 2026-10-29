@@ -10,6 +10,10 @@ var biome: BiomeType.Type = BiomeType.GRASSLAND
 # Aperturas en esta barrera
 var openings: Array = []
 
+# Celdas discretas / macro-celdas para autotiling de plataformas
+var cells: Array[Vector2i] = []
+
+
 
 func is_polygon_closed() -> bool:
 	"""Comprueba si el poligono esta cerrado (primer punto = ultimo punto)."""

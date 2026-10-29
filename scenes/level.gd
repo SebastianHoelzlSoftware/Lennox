@@ -1,5 +1,8 @@
 extends TileMapLayer
 
+const CliffAutotiler = preload("res://src/core/cliff_autotiler.gd")
+const ObjectCatalog = preload("res://src/core/object_catalog.gd")
+
 const TILE_SOURCE_NAME := &"Ground_rocks"
 const TILE_ATLAS_COORDS := {
 	TileType.GRASS: [Vector2i(2, 1), Vector2i(2, 2), Vector2i(3, 2)],
@@ -76,7 +79,7 @@ func _cache_tile_source_id() -> bool:
 
 
 func _draw_chunk(p_chunk: Chunk, p_chunk_x: int, p_chunk_y: int) -> void:
-	# 1. Dibujar baldosas del terreno
+	# 1. Dibujar baldosas base del terreno (valle / suelo inferior)
 	for tile_x in range(p_chunk.tiles.size()):
 		for tile_y in range(p_chunk.tiles[tile_x].size()):
 			var global_x := p_chunk_x * level.chunk_size + tile_x
@@ -87,7 +90,15 @@ func _draw_chunk(p_chunk: Chunk, p_chunk_x: int, p_chunk_y: int) -> void:
 			var atlas_coord: Vector2i = coords_list[(global_x * 7 + global_y * 13) % coords_list.size()]
 			set_cell(draw_pos, _tile_source_id, atlas_coord)
 
-	# 2. Instanciar objetos poblados del chunk en el contenedor con Y-sorting
+	# 2. Dibujar las plataformas elevadas con acantilados, cornisas y caras de roca (autotiling)
+	var chunk_origin := Vector2i(p_chunk_x * level.chunk_size, p_chunk_y * level.chunk_size)
+	if tile_mapper != null:
+		for barrier_item in p_chunk.barriers:
+			var barrier: Barrier = barrier_item
+			if not barrier.cells.is_empty():
+				CliffAutotiler.draw_plateau_cells(tile_mapper, chunk_origin, barrier.cells)
+
+	# 3. Instanciar objetos poblados del chunk (ruinas en mesetas, arboles/rocas en valles)
 	if _objects_node != null:
 		for obj in p_chunk.placed_objects:
 			var path: String = obj.get("path", "")
