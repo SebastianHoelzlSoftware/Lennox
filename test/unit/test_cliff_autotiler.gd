@@ -132,5 +132,3 @@ func test_draw_plateau_cells_with_solid_override_spanning_chunks():
 
 	var piece_spanning_chunk := CliffAutotiler.determine_piece_type(15, 0, with_override)
 	assert_eq(piece_spanning_chunk, PieceType.TOP_EDGE, "With override, continuous border cell continues as TOP_EDGE")
-
-
