@@ -129,41 +129,36 @@ func test_barrier_generation_uses_biome_parameters():
 		assert_lte(max_y - min_y, max_expected_size, "Die Barrierengröße muss die Biome-Parameter berücksichtigen")
 """
 
-func test_convex_hull_contains_outer_points_and_excludes_inner_points():
+func test_natural_formation_generation_within_chunk():
 	var level := Level.new(1, 1, 32, 32, 12345)
-	var points := [
-		Vector2(0, 0),
-		Vector2(2, 0),
-		Vector2(1, 2),
-		Vector2(1, 1)
-	]
+	var formations := level.generate_barriers_for_chunk(0, 0, BiomeType.ROCKS)
 
-	var hull := level._compute_convex_hull(points)
-
-	assert_eq(hull.size(), 3, "La envolvente convexa debe excluir el punto interior")
-	for point in [Vector2(0, 0), Vector2(2, 0), Vector2(1, 2)]:
-		assert_has(hull, point, "La envolvente convexa debe conservar los puntos exteriores")
-
-	var barrier := Barrier.new()
-	barrier.polygon = hull
-	assert_true(barrier.contains_point(Vector2(1, 1)), "La envolvente debe cerrar implicitamente el poligono")
+	assert_gt(formations.size(), 0, "Debe generar al menos una formacion natural para el bioma rocoso")
+	for barrier: Barrier in formations:
+		assert_gte(barrier.polygon.size(), 3, "El poligono natural debe tener al menos 3 vertices")
+		for pt: Vector2 in barrier.polygon:
+			assert_gte(pt.x, 0.0, "Las coordenadas deben estar dentro del chunk")
+			assert_lte(pt.x, 32.0, "Las coordenadas deben estar dentro del chunk")
+			assert_gte(pt.y, 0.0, "Las coordenadas deben estar dentro del chunk")
+			assert_lte(pt.y, 32.0, "Las coordenadas deben estar dentro del chunk")
 
 
-func test_perturb_hull_preserves_vertex_count_and_polygon():
-	var level := Level.new(1, 1, 32, 32, 12345)
-	var hull := [Vector2(0, 0), Vector2(20, 0), Vector2(10, 20)]
+func test_chunk_object_population_rich_and_deterministic():
+	var level1 := Level.new(1, 1, 32, 32, 9876)
+	var chunk1 := level1.generate_chunk(0, 0)
 
-	seed(12345)
-	var perturbed_hull := level._perturb_hull(hull, 1)
+	var level2 := Level.new(1, 1, 32, 32, 9876)
+	var chunk2 := level2.generate_chunk(0, 0)
 
-	assert_eq(perturbed_hull.size(), hull.size(), "La perturbacion debe conservar la cantidad de vertices")
-	for index in range(hull.size()):
-		var offset: Vector2 = perturbed_hull[index] - hull[index]
-		assert_true(abs(offset.x) <= 1 and abs(offset.y) <= 1, "Cada vertice solo debe desplazarse dentro del limite configurado")
+	assert_gt(chunk1.placed_objects.size(), 10, "El chunk debe poblarse ricamente con mas de 10 objetos")
+	assert_eq(chunk1.placed_objects.size(), chunk2.placed_objects.size(), "La cantidad de objetos debe ser determinista")
 
-	var barrier := Barrier.new()
-	barrier.polygon = perturbed_hull
-	assert_true(barrier.contains_point(Vector2(10, 10)), "El poligono perturbado debe seguir conteniendo su interior")
+	for i in range(chunk1.placed_objects.size()):
+		var o1 = chunk1.placed_objects[i]
+		var o2 = chunk2.placed_objects[i]
+		assert_eq(o1["path"], o2["path"], "El tipo de objeto debe coincidir exactamente")
+		assert_eq(o1["pos"], o2["pos"], "La posicion del objeto debe coincidir exactamente")
+
 
 """
 func test_barriers_deterministic_with_seed():

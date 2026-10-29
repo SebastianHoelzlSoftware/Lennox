@@ -42,13 +42,14 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 | **LEN-3** | Definir la estructura de niveles y chunks | ✅ Completado | Estructura del nivel y acceso a chunks por coordenadas |
 | **LEN-10** | Configurar el entorno de pruebas TDD | ✅ Completado | Godot, VS Code y GUT |
 | **LEN-11** | Implementar las clases Level y Chunk con TDD | ✅ Completado | Clases principales de nivel y chunks |
-| **LEN-13** | Implementar el sistema de biomas | ✅ Completado | Mapa de biomas determinista, Voronoi con domain warping y parámetros por bioma |
-| **LEN-14** | Implementar el algoritmo de generación de barreras | ✅ Completado | Barreras por bioma, convex hull, perturbación y aplicación a las baldosas |
-| **LEN-15** | Colocar aperturas en las barreras | ✅ Completado | Aperturas generadas asociadas a barreras; puertas cerradas bloquean y otras aperturas son transitables |
-| **LEN-34** | Implementar colocación de objetos con ocupación de baldosas | 📋 Por hacer | La decoración actual de hierba es una demostración temporal; falta el algoritmo de ocupación |
-| **LEN-17** | Pruebas de integración de barreras (LEN-5) | ✅ Completado | Pruebas unitarias y de integración para la generación y aplicación de barreras |
-| **LEN-16** | Integrar Godot y crear un nivel prototipo | 📋 Por hacer | Integración del mapa y prototipo dentro del motor |
-| **LEN-20** | Añadir características de mundo entre chunks | 📋 Por hacer | Soporte para elementos que atraviesan los límites entre chunks |
+| **LEN-13** | Implementar el sistema de biomas | ✅ Completado | 8 biomas canónicos, mapa determinista con Voronoi y FastNoiseLite domain warping |
+| **LEN-14** | Generador de mundo orgánico de cuento de hadas | ✅ Completado | Formaciones naturales armónicas, grandes mesetas y pasos transitables |
+| **LEN-15** | Colocar aperturas en las barreras | ✅ Completado | Aperturas generadas e interactivas (puertas, desfiladeros, vados) |
+| **LEN-34** | Población ecológica y catálogo de objetos | ✅ Completado | Catálogo dinámico `ObjectCatalog` y 4 reglas de población para los 8 biomas |
+| **LEN-17** | Pruebas de integración de barreras y chunks | ✅ Completado | Pruebas unitarias y de integración para la generación y aplicación de formaciones |
+| **LEN-16** | Integrar Godot y crear nivel de demostración | ✅ Completado | Escena de exploración con cámara suave, zoom y ordenación en Y |
+| **LEN-20** | Añadir características de mundo entre chunks | 📋 Por hacer | Soporte para ríos continuos entre límites de chunks |
+
 
 ---
 
@@ -100,34 +101,33 @@ La animación de la cueva también está disponible en [`assets/cave_overview_an
   lennox/
   ├── src/
   │   └── core/
-  │       ├── level.gd        # Generacion de niveles
-  │       ├── chunk.gd        # Sistema de chunks
-  │       ├── tile_object_cell.gd    # Celda visual de un objeto de TileSet
-  │       ├── tile_object_pattern.gd # Huella y validacion de colocacion
-  │       ├── tile_object_library.gd # Biblioteca de objetos con nombre
-  │       ├── barrier.gd      # Barreras y consulta de aperturas (LEN-5 / LEN-15)
-  │       ├── opening.gd      # Aperturas generadas e interactivas (LEN-15)
-  │       ├── biome_type.gd   # Enum global de biomas (BiomeType)
-  │       └── tile_type.gd    # Enum global de baldosas (TileType)
+  │       ├── level.gd                 # Generacion de niveles y mundo organico
+  │       ├── chunk.gd                 # Sistema de chunks y objetos poblados
+  │       ├── cliff_autotiler.gd       # Clasificador 9-slice para acantilados y mesetas
+  │       ├── object_catalog.gd        # Catalogo dinamico de activos para los 8 biomas
+  │       ├── biome_config.gd          # Perfiles y configuracion de biomas
+  │       ├── biome_generator.gd       # Generador de biomas Voronoi + Domain Warping
+  │       ├── barrier.gd               # Barreras naturales y consulta de aperturas
+  │       ├── opening.gd               # Aperturas generadas e interactivas
+  │       ├── biome_type.gd            # Enum global de los 8 biomas (BiomeType)
+  │       └── tile_type.gd             # Enum global de baldosas (TileType)
   ├── test/
-  │   ├── unit/               # Tests unitarios (GUT)
-  │   └── integration/        # Tests de integracion (GUT)
-  ├── assets/tiles/rocks/
-  │   ├── rocks_16x16.tres             # TileSet combinado que usa la escena
-  │   └── tile_object_library.tres     # Patrones y grupos de atlas
-  ├── assets/*_overview.jpeg           # Referencias visuales de biomas
+  │   ├── unit/                        # Tests unitarios (GUT)
+  │   └── integration/                 # Tests de integracion (GUT)
+  ├── assets/
+  │   ├── biomes/                      # Activos organizados en 8 biomas (tiles y objects)
+  │   ├── common/                      # Activos compartidos (trees, bushes, ruins, etc.)
+  │   └── tiles/rocks/rocks_16x16.tres # TileSet combinado
   ├── scenes/
-  │   ├── main.tscn                    # Escena de demostracion del mundo
-  │   └── level.gd                     # Renderizado de chunks en TileMapLayer
+  │   ├── main.tscn                    # Escena del mundo generado
+  │   ├── level.gd                     # Renderizado de chunks y objetos en TileMapLayer
+  │   ├── test_autotiling_level.tscn   # Escena de exploracion de los 8 biomas
+  │   └── player.gd                    # Controlador del personaje y animaciones
   ├── doc/
-  │   ├── map-generation.md   # Generacion, objetos y decoracion temporal
-  │   ├── barriers.md         # Documentacion LEN-5
-  │   ├── biomes.md           # Documentacion de biomas (LEN-4)
-  │   ├── level-structure.md  # Estructura de chunks y niveles
-  │   ├── images/             # Diagramas y vision del proyecto
-  │   ├── video/
-  │   │   └── daily_screencap.mp4 # Captura diaria destacada en este README
-  │   └── snap-in-mechanism.md # Documentacion de mecanismo educativo
+  │   ├── map-generation.md            # Arquitectura del mundo de cuentos de hadas
+  │   ├── biomes.md                    # Catalogo y guia visual de los 8 biomas
+  │   ├── barriers.md                  # Formaciones naturales y pasos
+  │   └── images/                      # Capturas y diagramas
   └── README.md
   ```
 
@@ -161,18 +161,21 @@ La animación de la cueva también está disponible en [`assets/cave_overview_an
 
 ## 🧪 Pruebas
 
-El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 60 pruebas unitarias y 8 de integracion (68 en total).
+El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 66 pruebas unitarias y 6 de integracion (72 en total), con una tasa de exito del 100%.
 
 | Suite | Cantidad | Cobertura |
 |-------|---------:|-----------|
 | [`test_barrier.gd`](test/unit/test_barrier.gd) | 15 | Poligonos, consultas de puntos, aperturas pasables y estados de puertas |
 | [`test_biome.gd`](test/unit/test_biome.gd) | 11 | Generacion de biomas, determinismo, parametros y perfiles |
 | [`test_chunk.gd`](test/unit/test_chunk.gd) | 11 | Inicializacion de chunks, barreras y aplicacion de baldosas |
-| [`test_level.gd`](test/unit/test_level.gd) | 13 | Generacion de niveles, biomas, barreras y determinismo |
-| [`test_level_tilemap.gd`](test/unit/test_level_tilemap.gd) | 3 | Renderizado de tilesets y limpieza al cargar un nivel nuevo |
-| [`test_main_object_layer.gd`](test/unit/test_main_object_layer.gd) | 1 | Inicio en bioma de hierba y decoracion restringida al terreno |
-| [`test_tile_object_library.gd`](test/unit/test_tile_object_library.gd) | 6 | Patrones, huellas, atlas y restricciones de terreno |
-| [`test_barrier_chunk_integration.gd`](test/integration/test_barrier_chunk_integration.gd) | 8 | Integracion de barreras y aperturas generadas con chunks, puertas y baldosas |
+| [`test_cliff_autotiler.gd`](test/unit/test_cliff_autotiler.gd) | 6 | Clasificacion 9-slice, esquinas, bordes y dibujado de mesetas |
+| [`test_level.gd`](test/unit/test_level.gd) | 11 | Generacion de niveles, formaciones naturales y poblacion de objetos |
+| [`test_object_catalog.gd`](test/unit/test_object_catalog.gd) | 5 | Catalogo de activos para los 8 biomas y categorias comunes |
+| [`test_tilemapper.gd`](test/unit/test_tilemapper.gd) | 3 | Dibujado de patrones en TileMapLayer |
+| [`test_tilepattern.gd`](test/unit/test_tilepattern.gd) | 1 | Creacion y validacion de patrones de baldosas |
+| [`test_tilepattern_registry.gd`](test/unit/test_tilepattern_registry.gd) | 3 | Registro e integridad de indices de patrones |
+| [`test_barrier_chunk_integration.gd`](test/integration/test_barrier_chunk_integration.gd) | 6 | Integracion de barreras y aperturas generadas con chunks y baldosas |
+
 
 ### Ejecutar pruebas:
 Desde la raíz del proyecto, también se puede ejecutar toda la suite en modo *headless* si Godot está disponible en `PATH`:

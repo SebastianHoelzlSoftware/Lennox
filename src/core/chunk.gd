@@ -6,13 +6,24 @@ var y: int
 var biome: BiomeType.Type
 var tiles: Array = []
 var barriers: Array = []
+var placed_objects: Array = []
 
 
 func _init(p_x: int, p_y: int):
 	x = p_x
 	y = p_y
 	biome = BiomeType.GRASSLAND  # Default to GRASSLAND
+	placed_objects = []
 	_init_tiles()
+
+
+func add_placed_object(obj_path: String, local_tile_pos: Vector2i, category: String = "") -> void:
+	placed_objects.append({
+		"path": obj_path,
+		"pos": local_tile_pos,
+		"category": category
+	})
+
 
 
 func _init_tiles():
