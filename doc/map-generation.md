@@ -3,7 +3,7 @@
 ## Descripción General
 
 Este documento describe la arquitectura y los algoritmos del **generador de mundos de cuento de hadas ("Märchenwelt-Generator")** para **Lennox**.
-El sistema reemplaza las antiguas aproximaciones rígidas (como combinaciones fragmentadas de Convex Hull, perturbación de vértices y expansión de rectángulos) por un modelo estratificado, armónico y ecológico que genera paisajes naturales, amplias mesetas transitables y biomas densamente poblados de vida y magia.
+El mundo es un campo continuo que atraviesa los chunks: mesetas, cañones y fronteras de bioma fluyen sin costuras, y un motor de autotiling a nivel de baldosa dibuja suelos y acantilados con las piezas originales de CraftPix.
 
 ---
 
@@ -11,17 +11,18 @@ El sistema reemplaza las antiguas aproximaciones rígidas (como combinaciones fr
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ 1. Capa Macro: Continentes y Biomas                         │
-│    Voronoi orgánico deformado con ruido Simplex (FBM)       │
+│ 1. Capa Macro: Biomas                                       │
+│    Voronoi + Simplex (por chunk) y fronteras deformadas     │
+│    por macro-celda, suavizadas para evitar islotes sueltos  │
 ├─────────────────────────────────────────────────────────────┤
-│ 2. Capa Meso: Formaciones Naturales y Grandes Mesetas        │
-│    Deformación armónica radial con pasos y cañones          │
+│ 2. Capa Meso: Campo continuo de mesetas                     │
+│    Elevación FBM + tallado de cañones + reglas de forma     │
 ├─────────────────────────────────────────────────────────────┤
-│ 3. Capa Micro: Población Ecológica Densa (4 Reglas)         │
-│    Hitos/Ruinas, arboledas agrupadas, maleza y flora viva   │
+│ 3. Capa Micro: Población ecológica                          │
+│    Recetas por bioma, huellas sin solapes, arboledas        │
 ├─────────────────────────────────────────────────────────────┤
-│ 4. Capa de Renderizado y Presentación                       │
-│    TileMapLayers + WorldObjects Y-Sorted en Godot           │
+│ 4. Renderizado: TerrainPainter                              │
+│    Suelo + manchas autotile + decals + acantilados 3/4      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -29,54 +30,80 @@ El sistema reemplaza las antiguas aproximaciones rígidas (como combinaciones fr
 
 ## 1. Capa Macro: Los 8 Biomas del Mundo
 
-El mundo se divide en 8 biomas canónicos generados de forma determinista mediante `BiomeGenerator`:
-1. 🌾 **GRASSLAND (Praderas y Alamedas de Cuento)**: Llanuras abiertas de hierba esmeralda, pozos de los deseos, vallas rústicas, flores silvestres.
-2. 🌲 **FOREST (Bosque Encantado)**: Arboledas centenarias de robles y sauces, círculos de hadas, setas gigantes y santuarios de madera.
-3. 🪨 **ROCKS (Montañas de Dragón)**: Majestuosas mesetas de piedra con amplias cimas transitables, columnas de cuarzo y ruinas monolíticas.
-4. 🌊 **ROCKS AND WATER (Costa Acantilada y Fiordos)**: Arrecifes costeros, restos de navíos, faros de piedra y pozas de marea.
-5. 🏜️ **DESERT (Dunas Doradas y Oasis)**: Palmerales rodeando manantiales, obeliscos de arenisca y reliquias sepultadas.
-6. 🍄 **SWAMP (Ciénaga Misteriosa)**: Bosques sumergidos de sauces, hongos luminiscentes, senderos de madera y calderos de bruja.
-7. 🪸 **SEABED (Bahía de Coral)**: Arrecifes turquesa, estrellas de mar, conchas perleras gigantes y anémonas.
-8. 💎 **CAVE (Gruta Brillante / Inframundo)**: Cavernas basálticas oscuras, estalagmitas, gemas brillantes y vetas de mineral.
+`BiomeGenerator` asigna un bioma a cada chunk (Voronoi deformado). `Level.get_biome_at_macro()` refina
+la frontera a nivel de macro-celda (2×2 baldosas) con un ruido de deformación de baja frecuencia y un fleco
+de alta frecuencia; después un filtro de mayoría elimina celdas aisladas. Así las fronteras serpentean
+en lugar de seguir la rejilla de chunks.
+
+1. 🌾 **GRASSLAND**: hierba sobre tierra con senderos serpenteantes, flores y matas.
+2. 🌲 **FOREST**: hierba densa, arboledas agrupadas, setas y helechos.
+3. 🪨 **ROCKS**: suelo de piedra clara y macizos grises con agujas oscuras.
+4. 🏝️ **ROCKS AND WATER**: islas flotantes sobre un mar de nubes.
+5. 🏜️ **DESERT**: arena, oasis de hierba y mesas de tierra anaranjada.
+6. 🍄 **SWAMP**: barro y hierba húmeda, flora extraña y calderos.
+7. 🪸 **SEABED**: lecho marino oscuro con montículos de arena azulada.
+8. 💎 **CAVE**: losas de mazmorra, cristales, huesos y ruinas oscuras.
 
 ---
 
-## 2. Capa Meso: Formaciones Naturales y Mesas Majestuosas
+## 2. Capa Meso: Campo Continuo de Mesetas
 
-En lugar de crear pequeños bloques aislados de 2x2 que fragmentaban las caras de los acantilados:
-- **Escala adecuada**: Las mesetas y barreras se generan con dimensiones generosas (al menos 8–16 baldosas de ancho), lo que garantiza una cumbre plana y espaciosa sobre la que el jugador puede caminar y descubrir secretos.
-- **Deformación Armónica Radial**: El contorno de las formaciones se genera calculando radios en torno a un centro con armónicos trigonométricos:
-  $$r(\theta) = R_{\text{base}} + A_1 \sin(k_1 \theta + \phi_1) + \text{jitter}$$
-- **Pasos Naturales y Cañones**: Cada formación incorpora pasos de montaña o aperturas transitables de ancho natural (3 a 6 baldosas), garantizando que el mapa sea explorable y nunca frustre el movimiento del jugador.
-
----
-
-## 3. Capa Micro: Población Ecológica Densa (4 Reglas de Cuento de Hadas)
-
-Para lograr un mundo vibrante ("schön voll mit Zeug"), los objetos se sitúan mediante 4 reglas ecológicas:
-
-### Regla 1: Anclaje de Hitos Narrativos (Landmarks / POIs)
-Cada zona importante y un 50% de los chunks albergan un hito principal (un monumento de piedra, pozo sagrado, estatua antigua o altar arcano) que atrae la curiosidad del jugador y sirve como punto de orientación.
-
-### Regla 2: Agrupación Biológica (Clustering de Biotopos)
-Los elementos naturales nunca se esparcen de forma aleatoria como ruido estático:
-- **Arboledas**: Los árboles crecen en grupos naturales de 3 a 7 unidades.
-- **Maleza circundante**: Los arbustos y helechos bordean las arboledas y el pie de los acantilados.
-- **Campos florales y minerales**: Las flores silvestres en praderas o los cristales en cuevas aparecen en constelaciones agrupadas.
-
-### Regla 3: Garantía de Transitabilidad (Clearance Corridors)
-Los caminos principales y los centros de las mesetas mantienen pasillos despejados de al menos 2 baldosas de ancho, evitando que el jugador quede atrapado por colisiones de objetos.
-
-### Regla 4: Profundidad Perspectiva (Y-Sorting)
-Todos los objetos y personajes se renderizan con `y_sort_enabled = true`. Los árboles y ruinas proyectan su presencia hacia el fondo o primer plano de forma correcta en función de la coordenada Y de la base.
+- **Elevación**: ruido FBM simplex muestreado en coordenadas globales de macro-celda; el umbral depende del bioma.
+- **Cañones**: donde `|canyon| < 0.085` se talla una garganta transitable.
+- **Pase de jugabilidad**: chunks casi cubiertos abren un claro central; chunks sin relieve reciben una meseta escénica.
+- **Reglas de forma** (garantizan piezas de autotiling válidas):
+  1. Sin conexiones solo diagonales.
+  2. Ningún hueco vertical de 1 macro-celda bajo un borde sur: la cara de roca nunca tapa otra meseta.
+  3. Sin celdas sueltas de 1×1.
+- **Estilo por meseta**: cada meseta conexa recibe un único estilo de acantilado (votación del bioma dominante), así una cordillera no cambia de material a mitad de camino.
 
 ---
 
-## 4. Estado Técnico y Pruebas
+## 3. Capa Micro: Población Ecológica
 
-- **Clases Principales**:
-  - `Level` (`src/core/level.gd`): Orquestación de chunks, mapas de bioma, formaciones y objetos.
-  - `Chunk` (`src/core/chunk.gd`): Baldoas, barreras y colección de `placed_objects`.
-  - `ObjectCatalog` (`src/core/object_catalog.gd`): Catálogo dinámico de cientos de activos para los 8 biomas y categorías comunes.
-  - `LevelTileMap` (`scenes/level.gd`): Renderizado de baldosas y contenedores de objetos con ordenación en Y.
-- **Cobertura de Pruebas**: Suite de pruebas unitarias e integración en GUT ejecutadas al 100% en verde (72 tests pasando).
+`Level._populate_chunk_objects()` sigue recetas por bioma (`POPULATION_RECIPES`):
+
+- **Clases de baldosa**: valle (suelo libre, sin cara de roca ni al pie de ella) o interior de meseta (a 1 baldosa del borde). El techo de la cueva no se puebla.
+- **Huellas**: cada sprite reserva una huella proporcional a su tamaño → sin solapes.
+- **Orden**: landmarks enormes → grandes → medianos → detalles.
+- **Arboledas**: árboles y arbustos aceptan posiciones según un ruido de bosquecillos, dejando claros.
+- **Temática**: las categorías comunes se filtran por bioma (`COMMON_FILTERS`): palmeras y cactus en el desierto, árboles musgosos en el pantano, sin árboles nevados en la pradera…
+- **Frontera orgánica**: el sprite se elige con el bioma real de la baldosa donde cae.
+
+---
+
+## 4. Renderizado: `TerrainPainter`
+
+`src/core/terrain_painter.gd` dibuja el mundo a nivel de baldosa en capas `TileMapLayer` propias
+(`Ground`, `GroundOverlay`, `GroundDecor`, `CliffFace`, `CliffTop`, `TopDecor`, `CliffSpillV`, `CliffSpillH`),
+con un `TileSet` creado en tiempo de ejecución a partir de las hojas PNG.
+
+- **Clasificación 3×3 + esquinas cóncavas** con los 8 vecinos. Las máscaras usan macro-celdas de 2×2, por lo que todas las formas tienen ≥2 baldosas de grosor y la clasificación es inequívoca.
+- **Vista 3/4**: la cara de roca (1–3 filas según el estilo) se dibuja *debajo* de cada borde sur.
+- **Esquinas cóncavas sur**: la cara continúa por debajo del flanco vecino; el borde transparente de la hierba cuelga sobre la roca sin dejar huecos.
+- **Derrame**: los estilos con agujas (rocas) emiten piezas que sobresalen de la huella hacia las celdas vacías.
+- **Suelos**: suelo base + manchas autotile (hierba sobre tierra, oasis…) + senderos + decals sueltos.
+
+Los estilos se definen como datos en `src/core/terrain_styles.gd` (coordenadas de atlas verificadas con
+`scenes/terrain_lab.tscn`, que dibuja una forma de prueba con todos los casos para cada bioma).
+
+| Estilo | Hoja | Uso |
+| :--- | :--- | :--- |
+| `grass` | `grassland/tiles/ground_grasss.png` | Pradera, bosque, pantano |
+| `dirt` | `grassland/tiles/ground_grasss.png` | Desierto |
+| `rock` | `tiles/rocks/Ground_rocks.png` | Rocas, cueva |
+| `cave` | `cave/tiles/ground_source.png` | Paredes de cueva (opcional) |
+| `flying` | `rocks_and_water/tiles/Ground_grass_flying.png` | Islas flotantes |
+| `seabed` | `seabed/tiles/Ground_sand.png` | Lecho marino |
+
+---
+
+## 5. Estado Técnico y Pruebas
+
+- **Clases principales**:
+  - `Level` (`src/core/level.gd`): biomas, campo de mesetas, reglas de forma, estilos y población.
+  - `TerrainPainter` / `TerrainStyles` (`src/core/`): motor de autotiling y datos de estilo.
+  - `Chunk` (`src/core/chunk.gd`): baldosas lógicas, barreras y `placed_objects`.
+  - `ObjectCatalog` (`src/core/object_catalog.gd`): catálogo de activos de los 8 biomas.
+  - `LevelTileMap` (`scenes/level.gd`): construye las rejillas y lanza el renderizado y los sprites.
+- **Pruebas**: 83 tests GUT en verde (77 unitarios + 6 de integración), incluidos los del motor de terreno y las reglas de forma.

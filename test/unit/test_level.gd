@@ -197,3 +197,51 @@ func test_get_barrier_tile_type_from_biome():
 	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.ROCKS_AND_WATER), TileType.ROCK)
 	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.SWAMP), TileType.TREE)
 	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.SEABED), TileType.ROCK)
+
+
+func test_plateau_field_respects_autotiling_shape_rules():
+	var level := Level.new(4, 4, 32, 16, 691)
+	level.generate()
+	var mw := level.width * level.get_macro_per_chunk()
+	var mh := level.height * level.get_macro_per_chunk()
+	for my in range(mh - 2):
+		for mx in range(mw - 1):
+			var a := level.is_macro_cell_solid(mx, my)
+			var b := level.is_macro_cell_solid(mx + 1, my)
+			var c := level.is_macro_cell_solid(mx, my + 1)
+			var d := level.is_macro_cell_solid(mx + 1, my + 1)
+			assert_false(a and d and not b and not c, "Sin conexion solo diagonal en %d,%d" % [mx, my])
+			assert_false(b and c and not a and not d, "Sin conexion solo antidiagonal en %d,%d" % [mx, my])
+			# La cara de roca (1 macro-celda) nunca cae sobre otra meseta
+			assert_false(a and not c and level.is_macro_cell_solid(mx, my + 2), "Sin hueco de 1 celda bajo %d,%d" % [mx, my])
+
+
+func test_every_plateau_cell_has_a_cliff_style():
+	var level := Level.new(3, 3, 32, 16, 4242)
+	level.generate()
+	var mw := level.width * level.get_macro_per_chunk()
+	var mh := level.height * level.get_macro_per_chunk()
+	for my in range(mh):
+		for mx in range(mw):
+			if level.is_macro_cell_solid(mx, my):
+				assert_true(TerrainStyles.CLIFFS.has(level.get_plateau_style(mx, my)), "Estilo valido")
+
+
+func test_objects_never_stand_on_cliff_faces():
+	var level := Level.new(3, 3, 32, 16, 691)
+	level.generate()
+	for cx in range(level.width):
+		for cy in range(level.height):
+			var chunk := level.get_chunk(cx, cy)
+			for obj in chunk.placed_objects:
+				var pos: Vector2i = obj["pos"]
+				var t := Vector2i(cx * level.chunk_size + pos.x, cy * level.chunk_size + pos.y)
+				assert_false(level.is_tile_cliff_face(t.x, t.y), "Objeto fuera de la cara de roca")
+
+
+func test_find_open_tile_returns_walkable_ground():
+	var level := Level.new(3, 3, 32, 16, 691)
+	level.generate()
+	var t := level.find_open_tile_near(Vector2i(48, 48))
+	assert_false(level.is_tile_solid(t.x, t.y), "El punto de inicio no esta sobre una meseta")
+	assert_false(level.is_tile_cliff_face(t.x, t.y), "El punto de inicio no esta sobre una cara")

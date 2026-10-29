@@ -103,7 +103,9 @@ La animación de la cueva también está disponible en [`assets/cave_overview_an
   │   └── core/
   │       ├── level.gd                 # Generacion de niveles y mundo organico
   │       ├── chunk.gd                 # Sistema de chunks y objetos poblados
-  │       ├── cliff_autotiler.gd       # Clasificador 9-slice para acantilados y mesetas
+  │       ├── terrain_painter.gd       # Motor de autotiling: suelos, acantilados 3/4 y derrames
+  │       ├── terrain_styles.gd        # Estilos de suelo y acantilado por bioma (datos)
+  │       ├── cliff_autotiler.gd       # Clasificador 9-slice basado en patrones (herramientas)
   │       ├── object_catalog.gd        # Catalogo dinamico de activos para los 8 biomas
   │       ├── biome_config.gd          # Perfiles y configuracion de biomas
   │       ├── biome_generator.gd       # Generador de biomas Voronoi + Domain Warping
@@ -120,7 +122,8 @@ La animación de la cueva también está disponible en [`assets/cave_overview_an
   │   └── tiles/rocks/rocks_16x16.tres # TileSet combinado
   ├── scenes/
   │   ├── main.tscn                    # Escena del mundo generado
-  │   ├── level.gd                     # Renderizado de chunks y objetos en TileMapLayer
+  │   ├── level.gd                     # Renderizado del terreno (TerrainPainter) y objetos
+  │   ├── terrain_lab.tscn             # Laboratorio visual de estilos de terreno por bioma
   │   ├── test_autotiling_level.tscn   # Escena de exploracion de los 8 biomas
   │   └── player.gd                    # Controlador del personaje y animaciones
   ├── doc/
@@ -161,16 +164,17 @@ La animación de la cueva también está disponible en [`assets/cave_overview_an
 
 ## 🧪 Pruebas
 
-El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 66 pruebas unitarias y 6 de integracion (72 en total), con una tasa de exito del 100%.
+El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 77 pruebas unitarias y 6 de integracion (83 en total), con una tasa de exito del 100%.
 
 | Suite | Cantidad | Cobertura |
 |-------|---------:|-----------|
 | [`test_barrier.gd`](test/unit/test_barrier.gd) | 15 | Poligonos, consultas de puntos, aperturas pasables y estados de puertas |
 | [`test_biome.gd`](test/unit/test_biome.gd) | 11 | Generacion de biomas, determinismo, parametros y perfiles |
 | [`test_chunk.gd`](test/unit/test_chunk.gd) | 11 | Inicializacion de chunks, barreras y aplicacion de baldosas |
-| [`test_cliff_autotiler.gd`](test/unit/test_cliff_autotiler.gd) | 6 | Clasificacion 9-slice, esquinas, bordes y dibujado de mesetas |
-| [`test_level.gd`](test/unit/test_level.gd) | 11 | Generacion de niveles, formaciones naturales y poblacion de objetos |
+| [`test_cliff_autotiler.gd`](test/unit/test_cliff_autotiler.gd) | 7 | Clasificacion 9-slice, esquinas, bordes y dibujado de mesetas |
+| [`test_level.gd`](test/unit/test_level.gd) | 15 | Generacion de niveles, reglas de forma, estilos y poblacion de objetos |
 | [`test_object_catalog.gd`](test/unit/test_object_catalog.gd) | 5 | Catalogo de activos para los 8 biomas y categorias comunes |
+| [`test_terrain_painter.gd`](test/unit/test_terrain_painter.gd) | 6 | Autotiling 3x3 + esquinas concavas, caras 3/4, derrames y estilos |
 | [`test_tilemapper.gd`](test/unit/test_tilemapper.gd) | 3 | Dibujado de patrones en TileMapLayer |
 | [`test_tilepattern.gd`](test/unit/test_tilepattern.gd) | 1 | Creacion y validacion de patrones de baldosas |
 | [`test_tilepattern_registry.gd`](test/unit/test_tilepattern_registry.gd) | 3 | Registro e integridad de indices de patrones |

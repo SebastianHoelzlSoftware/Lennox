@@ -1,40 +1,30 @@
 extends TileMapLayer
+# Renderizado del mundo generado.
+#
+# El terreno se dibuja con TerrainPainter en capas hijas propias (suelo, manchas, decals,
+# caras y cimas de acantilado, derrames). Este TileMapLayer se queda vacio y conserva su
+# TileSet de patrones para herramientas/tests (TileMapper / CliffAutotiler).
 
-const CliffAutotiler = preload("res://src/core/cliff_autotiler.gd")
+const TerrainPainter = preload("res://src/core/terrain_painter.gd")
+const TerrainStyles = preload("res://src/core/terrain_styles.gd")
 const ObjectCatalog = preload("res://src/core/object_catalog.gd")
 
-const TILE_SOURCE_NAME := &"Ground_rocks"
-const TILE_ATLAS_COORDS := {
-	TileType.GRASS: [Vector2i(2, 1), Vector2i(2, 2), Vector2i(3, 2)],
-	TileType.SAND: [Vector2i(2, 1), Vector2i(2, 2), Vector2i(3, 2)],
-	TileType.WATER: [Vector2i(2, 1), Vector2i(2, 2), Vector2i(3, 2)],
-	TileType.ROCK: [Vector2i(2, 1), Vector2i(2, 2), Vector2i(3, 2)],
-	TileType.TREE: [Vector2i(2, 1), Vector2i(2, 2), Vector2i(3, 2)],
-}
+# Las capas de terreno quedan por debajo de jugador y objetos (z 0)
+const TERRAIN_Z_BASE := -20
 
 var level: Level
 var tile_mapper: TileMapper
-var _tile_source_id: int = -1
+var painter: TerrainPainter
 var _objects_node: Node2D = null
 
 
 func load_level(p_level: Level, p_tile_mapper: TileMapper) -> void:
 	tile_mapper = p_tile_mapper
-	if tile_set == null:
-		push_error("Cannot load level: LevelTileMap has no TileSet.")
-		return
-	if not _cache_tile_source_id():
-		return
-
 	level = p_level
 	clear()
 	_setup_objects_container()
-
-	for x in range(level.width):
-		for y in range(level.height):
-			var chunk := level.get_chunk(x, y)
-			if chunk != null:
-				_draw_chunk(chunk, x, y)
+	_paint_terrain()
+	_spawn_objects()
 
 
 func _setup_objects_container() -> void:
@@ -50,78 +40,83 @@ func _setup_objects_container() -> void:
 			get_parent().add_child(_objects_node)
 
 
-func _cache_tile_source_id() -> bool:
-	_tile_source_id = -1
-	for source_index in range(tile_set.get_source_count()):
-		var source_id := tile_set.get_source_id(source_index)
-		var source: TileSetSource = tile_set.get_source(source_id)
-		if StringName(source.resource_name) == TILE_SOURCE_NAME:
-			if not source is TileSetAtlasSource:
-				push_error("TileSet source '%s' is not an atlas." % TILE_SOURCE_NAME)
-				return false
-			_tile_source_id = source_id
-			break
+func _paint_terrain() -> void:
+	painter = TerrainPainter.new()
+	painter.create_layers(self)
+	for layer_name: String in painter.layers:
+		var layer: TileMapLayer = painter.layers[layer_name]
+		layer.z_index = TERRAIN_Z_BASE + TerrainPainter.LAYER_NAMES.find(layer_name)
 
-	if _tile_source_id == -1:
-		push_error("TileSet is missing an atlas source named '%s'." % TILE_SOURCE_NAME)
-		return false
+	var w := level.width * level.chunk_size
+	var h := level.height * level.chunk_size
+	@warning_ignore("INTEGER_DIVISION")
+	var mw := w / 2
+	@warning_ignore("INTEGER_DIVISION")
+	var mh := h / 2
 
-	var atlas_source := tile_set.get_source(_tile_source_id) as TileSetAtlasSource
-	for tile_type: int in TILE_ATLAS_COORDS:
-		for atlas_coords: Vector2i in TILE_ATLAS_COORDS[tile_type]:
-			if not atlas_source.has_tile(atlas_coords):
-				push_error(
-					"TileSet atlas '%s' has no tile at %s for tile type '%s'."
-					% [TILE_SOURCE_NAME, atlas_coords, tile_type]
-				)
-				return false
-	return true
+	# Datos por macro-celda (2x2 baldosas)
+	var macro_biome := PackedInt32Array()
+	macro_biome.resize(mw * mh)
+	var macro_overlay := PackedByteArray()
+	macro_overlay.resize(mw * mh)
+	var macro_cliff := PackedInt32Array()
+	macro_cliff.resize(mw * mh)
+	var style_keys: Array = TerrainStyles.CLIFFS.keys()
+	for my in range(mh):
+		for mx in range(mw):
+			var i := my * mw + mx
+			macro_biome[i] = level.get_biome_at_macro(mx, my)
+			macro_overlay[i] = 1 if level.is_floor_overlay_macro(mx, my) else 0
+			if level.is_macro_cell_solid(mx, my):
+				macro_cliff[i] = style_keys.find(level.get_plateau_style(mx, my)) + 1
+
+	# Expandir a baldosas
+	var cliff := PackedInt32Array()
+	cliff.resize(w * h)
+	var overlay := PackedByteArray()
+	overlay.resize(w * h)
+	for y in range(h):
+		for x in range(w):
+			@warning_ignore("INTEGER_DIVISION")
+			var mi := (y / 2) * mw + (x / 2)
+			cliff[y * w + x] = macro_cliff[mi]
+			overlay[y * w + x] = macro_overlay[mi]
+
+	var face_mask := painter.paint_cliffs(w, h, cliff, style_keys, level.world_seed)
+
+	var blocked := PackedByteArray()
+	blocked.resize(w * h)
+	for i in range(w * h):
+		blocked[i] = 1 if cliff[i] > 0 or face_mask[i] == 1 else 0
+
+	var biome_at := func(x: int, y: int) -> int:
+		@warning_ignore("INTEGER_DIVISION")
+		return macro_biome[(y / 2) * mw + (x / 2)]
+	painter.paint_floor(w, h, biome_at, overlay, blocked, level.world_seed)
 
 
-func _draw_chunk(p_chunk: Chunk, p_chunk_x: int, p_chunk_y: int) -> void:
-	# 1. Dibujar baldosas base del terreno (valle / suelo inferior)
-	for tile_x in range(p_chunk.tiles.size()):
-		for tile_y in range(p_chunk.tiles[tile_x].size()):
-			var global_x := p_chunk_x * level.chunk_size + tile_x
-			var global_y := p_chunk_y * level.chunk_size + tile_y
-			var draw_pos := Vector2i(global_x, global_y)
-			var tile_type: TileType.Type = p_chunk.get_tile(tile_x, tile_y)
-			var coords_list: Array = TILE_ATLAS_COORDS.get(tile_type, [Vector2i(2, 1)])
-			var atlas_coord: Vector2i = coords_list[(global_x * 7 + global_y * 13) % coords_list.size()]
-			set_cell(draw_pos, _tile_source_id, atlas_coord)
-
-	# 2. Dibujar las plataformas elevadas con acantilados, cornisas y caras de roca (autotiling)
-	var chunk_origin := Vector2i(p_chunk_x * level.chunk_size, p_chunk_y * level.chunk_size)
-	if tile_mapper != null:
-		var is_solid_func := func(c: int, r: int) -> bool:
-			var global_mx := p_chunk_x * 16 + c
-			var global_my := p_chunk_y * 16 + r
-			return level.is_macro_cell_solid(global_mx, global_my)
-
-		for barrier_item in p_chunk.barriers:
-			var barrier: Barrier = barrier_item
-			if not barrier.cells.is_empty():
-				CliffAutotiler.draw_plateau_cells(
-					tile_mapper,
-					chunk_origin,
-					barrier.cells,
-					p_chunk.biome,
-					is_solid_func
-				)
-
-	# 3. Instanciar objetos poblados del chunk (ruinas en mesetas, arboles/rocas en valles)
-	if _objects_node != null:
-		for obj in p_chunk.placed_objects:
-			var path: String = obj.get("path", "")
-			var local_pos: Vector2i = obj.get("pos", Vector2i.ZERO)
-			var global_tile := Vector2i(
-				p_chunk_x * level.chunk_size + local_pos.x,
-				p_chunk_y * level.chunk_size + local_pos.y
-			)
-			var tex := ObjectCatalog.load_texture(path)
-			if tex != null:
+func _spawn_objects() -> void:
+	if _objects_node == null:
+		return
+	for x in range(level.width):
+		for y in range(level.height):
+			var chunk := level.get_chunk(x, y)
+			if chunk == null:
+				continue
+			for obj in chunk.placed_objects:
+				var path: String = obj.get("path", "")
+				var local_pos: Vector2i = obj.get("pos", Vector2i.ZERO)
+				var global_tile := Vector2i(x * level.chunk_size + local_pos.x, y * level.chunk_size + local_pos.y)
+				var tex := ObjectCatalog.load_texture(path)
+				if tex == null:
+					continue
 				var sprite := Sprite2D.new()
 				sprite.texture = tex
 				sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-				sprite.position = map_to_local(global_tile)
+				# El pie del sprite descansa sobre el borde inferior de su baldosa
+				sprite.position = map_to_local(global_tile) + Vector2(0, 7)
+				sprite.offset = Vector2(0, -tex.get_height() / 2.0)
+				# Ligera variedad: algunos objetos se reflejan
+				if (global_tile.x * 31 + global_tile.y * 17) % 3 == 0:
+					sprite.flip_h = true
 				_objects_node.add_child(sprite)
