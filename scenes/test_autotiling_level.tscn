@@ -1,4 +1,4 @@
-[gd_scene format=4 uid="uid://d3autotilinglvl"]
+[gd_scene format=4 uid="uid://c8jxkyyk4b7qj"]
 
 [ext_resource type="Script" uid="uid://b3autotilingscr" path="res://scenes/test_autotiling_level.gd" id="1_autotiler"]
 [ext_resource type="TileSet" uid="uid://efvdtmq4xa5v" path="res://assets/tiles/rocks/rocks_16x16.tres" id="2_tileset"]
@@ -15,7 +15,11 @@ script = ExtResource("1_autotiler")
 texture_filter = 1
 tile_set = ExtResource("2_tileset")
 
+[node name="ObjectsContainer" type="Node2D" parent="."]
+y_sort_enabled = true
+
 [node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+y_sort_enabled = true
 script = ExtResource("3_player")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
@@ -24,7 +28,6 @@ shape = SubResource("CapsuleShape2D_p1")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D"]
 texture_filter = 1
 
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(2.0, 2.0)
+[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
+zoom = Vector2(1.5, 1.5)
 position_smoothing_enabled = true
-

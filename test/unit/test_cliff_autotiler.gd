@@ -80,3 +80,26 @@ func test_draw_plateau_rect_on_tilemap():
 	var actual_ur_coords := level_tilemap.get_cell_atlas_coords(origin + Vector2i(4, 0))
 	assert_eq(actual_ur_coords, expected_ur_coords, "Top-right tile should match Upper Right Corner")
 
+
+func test_draw_plateau_cells_on_tilemap():
+	var scene := load("res://scenes/main.tscn") as PackedScene
+	var main := scene.instantiate() as Node2D
+	add_child(main)
+	autofree(main)
+	await get_tree().process_frame
+
+	var level_tilemap := main.get_node("LevelTileMap") as TileMapLayer
+	var tile_mapper := TileMapper.new(level_tilemap)
+	var origin := Vector2i(40, 40)
+
+	var cells: Array[Vector2i] = [
+		Vector2i(0, 0), Vector2i(1, 0),
+		Vector2i(0, 1), Vector2i(1, 1),
+	]
+	CliffAutotiler.draw_plateau_cells(tile_mapper, origin, cells)
+
+	var expected_ul_coords: Vector2i = TilePatternRegistry.dictionary["Upper Left Corner (High Plateau Rocks)"]["atlas_coords"][0]
+	var actual_ul_coords := level_tilemap.get_cell_atlas_coords(origin)
+	assert_eq(actual_ul_coords, expected_ul_coords, "Top-left cell should match Upper Left Corner")
+
+

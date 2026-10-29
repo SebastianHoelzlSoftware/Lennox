@@ -54,3 +54,17 @@ func test_random_biome_object_deterministic_with_rng():
 
 	assert_ne(obj1, "")
 	assert_eq(obj1, obj2)
+
+
+func test_random_common_object_deterministic_with_rng():
+	var rng1 := RandomNumberGenerator.new()
+	rng1.seed = 123
+	var obj1 := ObjectCatalog.get_random_common_object("trees", rng1)
+
+	var rng2 := RandomNumberGenerator.new()
+	rng2.seed = 123
+	var obj2 := ObjectCatalog.get_random_common_object("trees", rng2)
+
+	assert_ne(obj1, "")
+	assert_eq(obj1, obj2)
+

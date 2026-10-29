@@ -115,3 +115,28 @@ static func draw_plateau_mask(
 				var draw_pos := origin_tile + Vector2i(c * MACRO_CELL_SIZE.x, r * MACRO_CELL_SIZE.y)
 				tile_mapper.draw_editor_pattern(pat_name, draw_pos)
 
+
+static func draw_plateau_cells(
+	tile_mapper: TileMapper,
+	origin_tile: Vector2i,
+	cells: Array[Vector2i]
+) -> void:
+	if cells.is_empty():
+		return
+
+	var cell_set: Dictionary = {}
+	for cell in cells:
+		cell_set[cell] = true
+
+	var is_solid := func(c: int, r: int) -> bool:
+		return cell_set.has(Vector2i(c, r))
+
+	for cell in cells:
+		var c: int = cell.x
+		var r: int = cell.y
+		var piece := determine_piece_type(c, r, is_solid)
+		var pat_name := get_pattern_name(piece)
+		var draw_pos := origin_tile + Vector2i(c * MACRO_CELL_SIZE.x, r * MACRO_CELL_SIZE.y)
+		tile_mapper.draw_editor_pattern(pat_name, draw_pos)
+
+

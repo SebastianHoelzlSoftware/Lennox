@@ -79,6 +79,16 @@ static func get_random_biome_object(p_biome: BiomeType.Type, rng: RandomNumberGe
 	return objects[randi() % objects.size()]
 
 
+static func get_random_common_object(category: String, rng: RandomNumberGenerator = null) -> String:
+	var objects := get_common_objects(category)
+	if objects.is_empty():
+		return ""
+	if rng != null:
+		var index := rng.randi_range(0, objects.size() - 1)
+		return objects[index]
+	return objects[randi() % objects.size()]
+
+
 static func load_texture(res_path: String) -> Texture2D:
 	if res_path.is_empty():
 		return null
