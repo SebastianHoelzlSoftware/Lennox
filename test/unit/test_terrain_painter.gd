@@ -122,3 +122,4 @@ func test_every_biome_has_valid_floor_and_cliff_style():
 		assert_eq((cliff["cols"] as Array).size(), 3, "3 columnas en %s" % key)
 		assert_eq((cliff["rows"] as Array).size(), 3, "3 filas en %s" % key)
 		assert_gt((cliff["face"] as Array).size(), 0, "Cara definida en %s" % key)
+
