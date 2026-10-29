@@ -1,6 +1,6 @@
-[gd_scene format=4 uid="uid://c8jxkyyk4b7qj"]
+[gd_scene format=4]
 
-[ext_resource type="Script" uid="uid://b3autotilingscr" path="res://scenes/test_autotiling_level.gd" id="1_autotiler"]
+[ext_resource type="Script" path="res://scenes/test_autotiling_level.gd" id="1_autotiler"]
 [ext_resource type="TileSet" uid="uid://efvdtmq4xa5v" path="res://assets/tiles/rocks/rocks_16x16.tres" id="2_tileset"]
 [ext_resource type="Script" uid="uid://smk1y6gutxhw" path="res://scenes/player.gd" id="3_player"]
 
