@@ -129,12 +129,16 @@ func test_tilemapper_draws_all_tiles_correctly():
 	await get_tree().process_frame
 	await get_tree().process_frame
 
-	# Grab and save the viewport image
-	var viewport = get_viewport()
-	var image := viewport.get_texture().get_image()
-	var file_path = "user://test_tilemapper_output.png"
-	
-	if image.save_png(file_path) == OK:
-		print("Screenshot saved to: ", ProjectSettings.globalize_path(file_path))
-	else:
-		printerr("Failed to save screenshot.")
+	# Grab and save the viewport image (only in non-headless mode)
+	if DisplayServer.get_name() != "headless":
+		var viewport = get_viewport()
+		if viewport != null:
+			var texture = viewport.get_texture()
+			if texture != null:
+				var image := texture.get_image()
+				if image != null:
+					var file_path = "user://test_tilemapper_output.png"
+					if image.save_png(file_path) == OK:
+						print("Screenshot saved to: ", ProjectSettings.globalize_path(file_path))
+					else:
+						printerr("Failed to save screenshot.")

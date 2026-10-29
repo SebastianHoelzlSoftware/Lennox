@@ -65,16 +65,22 @@ func _apply_barrier_to_tiles(p_barrier: Barrier) -> void:
 	# Map biome to tile type directly (matching logic from Level.get_barrier_tile_type_from_biome)
 	var barrier_tile_type: TileType.Type
 	match p_barrier.biome:
+		BiomeType.CAVE:
+			barrier_tile_type = TileType.ROCK
+		BiomeType.DESERT:
+			barrier_tile_type = TileType.SAND
+		BiomeType.FOREST:
+			barrier_tile_type = TileType.TREE
 		BiomeType.GRASSLAND:
 			barrier_tile_type = TileType.ROCK
-		BiomeType.WOOD:
-			barrier_tile_type = TileType.TREE
 		BiomeType.ROCKS:
 			barrier_tile_type = TileType.ROCK
-		BiomeType.WATER:
-			barrier_tile_type = TileType.WATER
-		BiomeType.SAND:
-			barrier_tile_type = TileType.SAND
+		BiomeType.ROCKS_AND_WATER:
+			barrier_tile_type = TileType.ROCK
+		BiomeType.SWAMP:
+			barrier_tile_type = TileType.TREE
+		BiomeType.SEABED:
+			barrier_tile_type = TileType.ROCK
 		_:
 			barrier_tile_type = TileType.ROCK
 	

@@ -89,11 +89,14 @@ func test_apply_barriers_to_tiles_multiple_barriers():
 
 func test_get_barrier_tile_type_mapping():
 	var biomes = [
+		{"biome": BiomeType.CAVE, "expected_tile": TileType.ROCK},
+		{"biome": BiomeType.DESERT, "expected_tile": TileType.SAND},
+		{"biome": BiomeType.FOREST, "expected_tile": TileType.TREE},
 		{"biome": BiomeType.GRASSLAND, "expected_tile": TileType.ROCK},
-		{"biome": BiomeType.WOOD, "expected_tile": TileType.TREE},
 		{"biome": BiomeType.ROCKS, "expected_tile": TileType.ROCK},
-		{"biome": BiomeType.WATER, "expected_tile": TileType.WATER},
-		{"biome": BiomeType.SAND, "expected_tile": TileType.SAND}
+		{"biome": BiomeType.ROCKS_AND_WATER, "expected_tile": TileType.ROCK},
+		{"biome": BiomeType.SWAMP, "expected_tile": TileType.TREE},
+		{"biome": BiomeType.SEABED, "expected_tile": TileType.ROCK}
 	]
 	
 	for entry in biomes:

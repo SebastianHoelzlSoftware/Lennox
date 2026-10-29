@@ -194,8 +194,11 @@ func test_barriers_deterministic_with_seed():
 
 func test_get_barrier_tile_type_from_biome():
 	var level := Level.new(1, 1, 32, 32, 1)
-	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.ROCKS), TileType.ROCK, "El bioma ROCKS debe mapear a baldosa de barrera ROCK")
-	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.WOOD), TileType.TREE, "El bioma WOOD debe mapear a baldosa de barrera TREE")
-	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.WATER), TileType.WATER, "El bioma WATER debe mapear a baldosa de barrera WATER")
-	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.SAND), TileType.SAND, "El bioma SAND debe mapear a baldosa de barrera SAND")
-	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.GRASSLAND), TileType.ROCK, "El bioma GRASSLAND por defecto debe mapear a baldosa de barrera ROCK")
+	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.CAVE), TileType.ROCK)
+	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.DESERT), TileType.SAND)
+	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.FOREST), TileType.TREE)
+	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.GRASSLAND), TileType.ROCK)
+	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.ROCKS), TileType.ROCK)
+	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.ROCKS_AND_WATER), TileType.ROCK)
+	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.SWAMP), TileType.TREE)
+	assert_eq(level.get_barrier_tile_type_from_biome(BiomeType.SEABED), TileType.ROCK)

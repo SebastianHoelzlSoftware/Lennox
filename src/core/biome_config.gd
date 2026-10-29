@@ -12,23 +12,29 @@ const DEFAULT_PROFILE := {
 # Valores iniciales de balance para chunks de 32 x 32 tiles.
 # barrier_size limita la dispersion de los puntos que forman cada barrera.
 const BIOME_PROFILES := {
-	BiomeType.GRASSLAND: {
-		"barrier_count": Vector2i(4, 6),
-		#"barrier_size": Vector2i(12, 18),
-		"barrier_size": Vector2i(8, 14),
-		#"opening_count": Vector2i(0, 0),
+	BiomeType.CAVE: {
+		"barrier_count": Vector2i(8, 12),
+		"barrier_size": Vector2i(12, 18),
 		"opening_count": Vector2i(1, 2),
-		"point_count": Vector2i(5, 8),
+		"point_count": Vector2i(10, 15),
 		"opening_types": [
-			Opening.OpeningType.FORD,
 			Opening.OpeningType.PASS,
 			Opening.OpeningType.STEPS
 		]
 	},
-	BiomeType.WOOD: {
+	BiomeType.DESERT: {
+		"barrier_count": Vector2i(4, 6),
+		"barrier_size": Vector2i(8, 14),
+		"opening_count": Vector2i(1, 2),
+		"point_count": Vector2i(5, 8),
+		"opening_types": [
+			Opening.OpeningType.PASS,
+			Opening.OpeningType.FORD
+		]
+	},
+	BiomeType.FOREST: {
 		"barrier_count": Vector2i(7, 10),
 		"barrier_size": Vector2i(10, 16),
-		#"opening_count": Vector2i(0, 0),
 		"opening_count": Vector2i(1, 2),
 		"point_count": Vector2i(8, 12),
 		"opening_types": [
@@ -37,10 +43,20 @@ const BIOME_PROFILES := {
 			Opening.OpeningType.DOOR
 		]
 	},
+	BiomeType.GRASSLAND: {
+		"barrier_count": Vector2i(4, 6),
+		"barrier_size": Vector2i(8, 14),
+		"opening_count": Vector2i(1, 2),
+		"point_count": Vector2i(5, 8),
+		"opening_types": [
+			Opening.OpeningType.FORD,
+			Opening.OpeningType.PASS,
+			Opening.OpeningType.STEPS
+		]
+	},
 	BiomeType.ROCKS: {
 		"barrier_count": Vector2i(8, 12),
 		"barrier_size": Vector2i(12, 18),
-		#"opening_count": Vector2i(0, 0),
 		"opening_count": Vector2i(0, 1),
 		"point_count": Vector2i(10, 15),
 		"opening_types": [
@@ -48,23 +64,34 @@ const BIOME_PROFILES := {
 			Opening.OpeningType.STEPS
 		]
 	},
-	BiomeType.WATER: {
-		"barrier_count": Vector2i(0, 1),
+	BiomeType.ROCKS_AND_WATER: {
+		"barrier_count": Vector2i(4, 8),
 		"barrier_size": Vector2i(8, 14),
-		#"opening_count": Vector2i(0, 0),
 		"opening_count": Vector2i(1, 2),
-		"point_count": Vector2i(5, 10),
-		"opening_types": [Opening.OpeningType.FORD]
-	},
-	BiomeType.SAND: {
-		"barrier_count": Vector2i(4, 6),
-		"barrier_size": Vector2i(8, 14),
-		#"opening_count": Vector2i(0, 0),
-		"opening_count": Vector2i(1, 2),
-		"point_count": Vector2i(5, 8),
+		"point_count": Vector2i(6, 10),
 		"opening_types": [
-			Opening.OpeningType.PASS,
-			Opening.OpeningType.FORD
+			Opening.OpeningType.FORD,
+			Opening.OpeningType.PASS
+		]
+	},
+	BiomeType.SWAMP: {
+		"barrier_count": Vector2i(5, 8),
+		"barrier_size": Vector2i(9, 15),
+		"opening_count": Vector2i(1, 2),
+		"point_count": Vector2i(7, 11),
+		"opening_types": [
+			Opening.OpeningType.FORD,
+			Opening.OpeningType.PASS
+		]
+	},
+	BiomeType.SEABED: {
+		"barrier_count": Vector2i(4, 7),
+		"barrier_size": Vector2i(8, 14),
+		"opening_count": Vector2i(1, 2),
+		"point_count": Vector2i(6, 10),
+		"opening_types": [
+			Opening.OpeningType.FORD,
+			Opening.OpeningType.PASS
 		]
 	}
 }

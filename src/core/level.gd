@@ -57,13 +57,16 @@ func _get_biome_for_chunk(p_x: int, p_y: int) -> BiomeType.Type:
 
 	# Deterministico basado en semilla + coordenadas
 	var hash_val := hash([p_x, p_y, world_seed])
-	var biome_index : int = abs(hash_val) % 5
+	var biome_index : int = abs(hash_val) % 8
 	match biome_index:
-		0: return BiomeType.GRASSLAND
-		1: return BiomeType.WOOD
-		2: return BiomeType.ROCKS
-		3: return BiomeType.WATER
-		4: return BiomeType.SAND
+		0: return BiomeType.CAVE
+		1: return BiomeType.DESERT
+		2: return BiomeType.FOREST
+		3: return BiomeType.GRASSLAND
+		4: return BiomeType.ROCKS
+		5: return BiomeType.ROCKS_AND_WATER
+		6: return BiomeType.SWAMP
+		7: return BiomeType.SEABED
 		_: return BiomeType.GRASSLAND
 
 
@@ -77,21 +80,28 @@ func get_chunk(p_x: int, p_y: int) -> Chunk:
 func get_tile_type_from_biome(p_biome: BiomeType.Type) -> TileType.Type:
 	"""Devuelve el tipo de baldosa base para un bioma."""
 	match p_biome:
+		BiomeType.CAVE: return TileType.ROCK
+		BiomeType.DESERT: return TileType.SAND
+		BiomeType.FOREST: return TileType.GRASS
 		BiomeType.GRASSLAND: return TileType.GRASS
-		BiomeType.WOOD: return TileType.GRASS
 		BiomeType.ROCKS: return TileType.ROCK
-		BiomeType.WATER: return TileType.WATER
-		BiomeType.SAND: return TileType.SAND
+		BiomeType.ROCKS_AND_WATER: return TileType.WATER
+		BiomeType.SWAMP: return TileType.WATER
+		BiomeType.SEABED: return TileType.WATER
 		_: return TileType.GRASS
 
 
 func get_barrier_tile_type_from_biome(p_biome: BiomeType.Type) -> TileType.Type:
 	"""Devuelve el tipo de baldosa para una barrera basado en el bioma."""
 	match p_biome:
+		BiomeType.CAVE: return TileType.ROCK
+		BiomeType.DESERT: return TileType.SAND
+		BiomeType.FOREST: return TileType.TREE
+		BiomeType.GRASSLAND: return TileType.ROCK
 		BiomeType.ROCKS: return TileType.ROCK
-		BiomeType.WOOD: return TileType.TREE
-		BiomeType.WATER: return TileType.WATER
-		BiomeType.SAND: return TileType.SAND
+		BiomeType.ROCKS_AND_WATER: return TileType.ROCK
+		BiomeType.SWAMP: return TileType.TREE
+		BiomeType.SEABED: return TileType.ROCK
 		_: return TileType.ROCK
 
 

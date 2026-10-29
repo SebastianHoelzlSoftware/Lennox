@@ -24,11 +24,14 @@ static func generate_biome_map(p_seed: int, p_width: int, p_height: int) -> Arra
 
 	# Define los biomas posibles y asigna uno aleatorio a cada centro de Voronoi.
 	var biome_types: Array[BiomeType.Type] = [
+		BiomeType.CAVE,
+		BiomeType.DESERT,
+		BiomeType.FOREST,
 		BiomeType.GRASSLAND,
-		BiomeType.WOOD,
 		BiomeType.ROCKS,
-		BiomeType.WATER,
-		BiomeType.SAND
+		BiomeType.ROCKS_AND_WATER,
+		BiomeType.SWAMP,
+		BiomeType.SEABED
 	]
 	var biome_assignments: Array[BiomeType.Type] = []
 	for point in voronoi_points:

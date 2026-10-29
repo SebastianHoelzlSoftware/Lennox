@@ -71,11 +71,14 @@ func test_biome_params_are_deterministic_with_local_rng():
 
 func test_biome_params_stay_within_biome_ranges():
 	var cases := [
+		{"biome": BiomeType.CAVE, "barriers": Vector2i(8, 12), "size": Vector2i(12, 18), "openings": Vector2i(1, 2), "points": Vector2i(10, 15)},
+		{"biome": BiomeType.DESERT, "barriers": Vector2i(4, 6), "size": Vector2i(8, 14), "openings": Vector2i(1, 2), "points": Vector2i(5, 8)},
+		{"biome": BiomeType.FOREST, "barriers": Vector2i(7, 10), "size": Vector2i(10, 16), "openings": Vector2i(1, 2), "points": Vector2i(8, 12)},
 		{"biome": BiomeType.GRASSLAND, "barriers": Vector2i(4, 6), "size": Vector2i(8, 14), "openings": Vector2i(1, 2), "points": Vector2i(5, 8)},
-		{"biome": BiomeType.WOOD, "barriers": Vector2i(7, 10), "size": Vector2i(10, 16), "openings": Vector2i(1, 2), "points": Vector2i(8, 12)},
 		{"biome": BiomeType.ROCKS, "barriers": Vector2i(8, 12), "size": Vector2i(12, 18), "openings": Vector2i(0, 1), "points": Vector2i(10, 15)},
-		{"biome": BiomeType.WATER, "barriers": Vector2i(0, 1), "size": Vector2i(8, 14), "openings": Vector2i(1, 2), "points": Vector2i(5, 10)},
-		{"biome": BiomeType.SAND, "barriers": Vector2i(4, 6), "size": Vector2i(8, 14), "openings": Vector2i(1, 2), "points": Vector2i(5, 8)}
+		{"biome": BiomeType.ROCKS_AND_WATER, "barriers": Vector2i(4, 8), "size": Vector2i(8, 14), "openings": Vector2i(1, 2), "points": Vector2i(6, 10)},
+		{"biome": BiomeType.SWAMP, "barriers": Vector2i(5, 8), "size": Vector2i(9, 15), "openings": Vector2i(1, 2), "points": Vector2i(7, 11)},
+		{"biome": BiomeType.SEABED, "barriers": Vector2i(4, 7), "size": Vector2i(8, 14), "openings": Vector2i(1, 2), "points": Vector2i(6, 10)}
 	]
 
 	for index in range(cases.size()):
