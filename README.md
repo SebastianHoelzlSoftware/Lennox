@@ -26,11 +26,8 @@
 
 <p align="center"><strong>La captura más reciente del juego</strong></p>
 
-<p align="center">
-  <img src="doc/images/screenshot_of_the_day.png" alt="Captura de pantalla del dia" width="100%">
-</p>
 
-<p align="center"><a href="doc/video/daily_screencap.mp4">▶ Abrir o descargar el video del día</a></p>
+https://github.com/user-attachments/assets/e90fa3b8-fab1-437a-a054-e5f138264e31
 
 ---
 
@@ -80,7 +77,9 @@ Todo el mundo de **Lennox** se genera de forma 100 % procedural y determinista a
 
 ## 🌿 Referencias visuales de los biomas
 
-Estas imágenes muestran los estilos y conjuntos visuales previstos para los distintos entornos. All credits go to @craftpix
+Estas imágenes muestran los estilos y conjuntos visuales previstos para los distintos entornos. 
+
+!!! All credits go to @craftpix.net and their great top down tileset artwork <3 !!!
 
 <table>
  <tr><th>Cueva</th><th>Desierto</th></tr>
