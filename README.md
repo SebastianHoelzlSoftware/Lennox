@@ -65,6 +65,17 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   <img src="doc/images/procedual_map_generation.jpg" alt="Diagrama de generacion procedural del mapa, biomas, barreras y aperturas" width="100%">
 </p>
 
+### 🌍 Vista panoramica del mundo generado por semilla (*Seed*)
+
+Todo el mundo de **Lennox** se genera de forma 100 % procedural y determinista a partir de una única **semilla numérica (*seed*)**:
+
+- **Reproducibilidad exacta**: La misma semilla produce siempre el mismo mapa (regiones de biomas, mesetas continuas entre *chunks*, pasos transitables y distribución ecológica de objetos). Cambiar la semilla crea un mundo completamente nuevo.
+- **Transiciones y relieve continuo**: Mediante diagramas de Voronoi con *domain warping* (`FastNoiseLite`) y campos de elevación macro, los **8 biomas** se integran de forma orgánica con acantilados en perspectiva 3/4 y vegetación propia de cada entorno.
+
+<p align="center">
+  <img src="doc/images/mapa.png" alt="Vista panoramica del mapa completo generado proceduralmente a partir de una semilla" width="100%">
+</p>
+
 ---
 
 ## 🌿 Referencias visuales de los biomas
