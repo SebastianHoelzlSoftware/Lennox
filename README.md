@@ -107,36 +107,61 @@ La animación de la cueva también está disponible en [`assets/cave_overview_an
   lennox/
   ├── src/
   │   └── core/
-  │       ├── level.gd                 # Generacion de niveles y mundo organico
-  │       ├── chunk.gd                 # Sistema de chunks y objetos poblados
+  │       ├── level.gd                 # Generacion de niveles, mesetas entre chunks y mundo organico
+  │       ├── chunk.gd                 # Sistema de chunks, grilla de baldosas y objetos poblados
   │       ├── terrain_painter.gd       # Motor de autotiling: suelos, acantilados 3/4 y derrames
-  │       ├── terrain_styles.gd        # Estilos de suelo y acantilado por bioma (datos)
-  │       ├── cliff_autotiler.gd       # Clasificador 9-slice basado en patrones (herramientas)
-  │       ├── object_catalog.gd        # Catalogo dinamico de activos para los 8 biomas
-  │       ├── biome_config.gd          # Perfiles y configuracion de biomas
-  │       ├── biome_generator.gd       # Generador de biomas Voronoi + Domain Warping
-  │       ├── barrier.gd               # Barreras naturales y consulta de aperturas
-  │       ├── opening.gd               # Aperturas generadas e interactivas
+  │       ├── terrain_styles.gd        # Estilos de suelo y acantilado para los 8 biomas (datos)
+  │       ├── cliff_autotiler.gd       # Clasificador 9-slice basado en patrones de TileSet
+  │       ├── tile_mapper.gd           # Dibujado de TilePattern sobre TileMapLayer
+  │       ├── tile_pattern.gd          # Modelo de datos para patrones de baldosas (TilePattern)
+  │       ├── tile_pattern_registry.gd # Registro y consulta indexada de patrones
+  │       ├── corner_type.gd           # Enum de esquinas de patrones (CornerType)
+  │       ├── hull_curvature.gd        # Enum de curvatura de bordes (HullCurvature)
+  │       ├── object_catalog.gd        # Catalogo dinamico de activos para los 8 biomas y comunes
+  │       ├── biome_config.gd          # Perfiles y parametros de configuracion de biomas
+  │       ├── biome_generator.gd       # Generador determinista de biomas (Voronoi + Domain Warping)
+  │       ├── barrier.gd               # Poligonos de barreras naturales y consulta de aperturas
+  │       ├── opening.gd               # Aperturas generadas e interactivas (puertas, vados, pasos)
   │       ├── biome_type.gd            # Enum global de los 8 biomas (BiomeType)
-  │       └── tile_type.gd             # Enum global de baldosas (TileType)
+  │       └── tile_type.gd             # Enum global de tipos de baldosa (TileType)
   ├── test/
-  │   ├── unit/                        # Tests unitarios (GUT)
-  │   └── integration/                 # Tests de integracion (GUT)
+  │   ├── unit/                        # Tests unitarios con GUT (10 suites, 77 tests)
+  │   │   ├── test_barrier.gd
+  │   │   ├── test_biome.gd
+  │   │   ├── test_chunk.gd
+  │   │   ├── test_cliff_autotiler.gd
+  │   │   ├── test_level.gd
+  │   │   ├── test_object_catalog.gd
+  │   │   ├── test_terrain_painter.gd
+  │   │   ├── test_tilemapper.gd
+  │   │   ├── test_tilepattern.gd
+  │   │   └── test_tilepattern_registry.gd
+  │   └── integration/                 # Tests de integracion con GUT (1 suite, 6 tests)
+  │       └── test_barrier_chunk_integration.gd
   ├── assets/
-  │   ├── biomes/                      # Activos organizados en 8 biomas (tiles y objects)
-  │   ├── common/                      # Activos compartidos (trees, bushes, ruins, etc.)
-  │   └── tiles/rocks/rocks_16x16.tres # TileSet combinado
+  │   ├── biomes/                      # Activos de los 8 biomas (tiles, objects y <bioma>_16x16.tres)
+  │   ├── common/                      # Activos compartidos (trees, bushes, ruins, crystals, etc.)
+  │   ├── player_sprites/              # Spritesheets animados del personaje (walk, idle, run)
+  │   ├── tiles/rocks/                 # TileSet maestro (rocks_16x16.tres) y biblioteca de patrones
+  │   └── title_art/                   # Arte conceptual y portada del proyecto
   ├── scenes/
-  │   ├── main.tscn                    # Escena del mundo generado
-  │   ├── level.gd                     # Renderizado del terreno (TerrainPainter) y objetos
-  │   ├── terrain_lab.tscn             # Laboratorio visual de estilos de terreno por bioma
-  │   ├── test_autotiling_level.tscn   # Escena de exploracion de los 8 biomas
-  │   └── player.gd                    # Controlador del personaje y animaciones
+  │   ├── main.tscn                    # Escena principal del mundo generado
+  │   ├── main.gd                      # Controlador de escena, camara suave y zoom
+  │   ├── level.gd                     # Renderizado multicapa del terreno (TerrainPainter) y objetos
+  │   ├── player.gd                    # Controlador del jugador, movimiento y animaciones
+  │   ├── terrain_lab.tscn             # Escena del laboratorio visual de estilos por bioma
+  │   ├── terrain_lab.gd               # Generador de galeria de pruebas para los 8 biomas
+  │   ├── test_autotiling_level.tscn   # Escena de prueba de autotiling para los 8 biomas
+  │   ├── test_autotiling_level.gd     # Script de escena de prueba de autotiling
+  │   └── grassland_test_pattern.tscn  # Escena de referencia manual de patrones en pradera
   ├── doc/
-  │   ├── map-generation.md            # Arquitectura del mundo de cuentos de hadas
+  │   ├── map-generation.md            # Arquitectura del generador de mundo y autotiling 3/4
   │   ├── biomes.md                    # Catalogo y guia visual de los 8 biomas
-  │   ├── barriers.md                  # Formaciones naturales y pasos
-  │   └── images/                      # Capturas y diagramas
+  │   ├── barriers.md                  # Formaciones naturales, mesetas y aperturas
+  │   ├── level-structure.md           # Estructura de niveles y coordenadas de chunks
+  │   ├── snap-in-mechanism.md         # Mecanismo de encaje de piezas y patrones
+  │   ├── images/                      # Capturas de pantalla y diagramas de arquitectura
+  │   └── video/                       # Videos de demostracion (daily_screencap.mp4)
   └── README.md
   ```
 
