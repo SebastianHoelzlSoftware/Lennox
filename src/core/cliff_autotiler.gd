@@ -159,7 +159,8 @@ static func draw_plateau_cells(
 	tile_mapper: TileMapper,
 	origin_tile: Vector2i,
 	cells: Array[Vector2i],
-	biome: BiomeType.Type = BiomeType.Type.ROCKS
+	biome: BiomeType.Type = BiomeType.Type.ROCKS,
+	is_solid_override: Callable = Callable()
 ) -> void:
 	if cells.is_empty():
 		return
@@ -168,8 +169,12 @@ static func draw_plateau_cells(
 	for cell in cells:
 		cell_set[cell] = true
 
-	var is_solid := func(c: int, r: int) -> bool:
-		return cell_set.has(Vector2i(c, r))
+	var is_solid: Callable
+	if is_solid_override.is_valid():
+		is_solid = is_solid_override
+	else:
+		is_solid = func(c: int, r: int) -> bool:
+			return cell_set.has(Vector2i(c, r))
 
 	for cell in cells:
 		var c: int = cell.x

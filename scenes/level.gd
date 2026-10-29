@@ -93,10 +93,21 @@ func _draw_chunk(p_chunk: Chunk, p_chunk_x: int, p_chunk_y: int) -> void:
 	# 2. Dibujar las plataformas elevadas con acantilados, cornisas y caras de roca (autotiling)
 	var chunk_origin := Vector2i(p_chunk_x * level.chunk_size, p_chunk_y * level.chunk_size)
 	if tile_mapper != null:
+		var is_solid_func := func(c: int, r: int) -> bool:
+			var global_mx := p_chunk_x * 16 + c
+			var global_my := p_chunk_y * 16 + r
+			return level.is_macro_cell_solid(global_mx, global_my)
+
 		for barrier_item in p_chunk.barriers:
 			var barrier: Barrier = barrier_item
 			if not barrier.cells.is_empty():
-				CliffAutotiler.draw_plateau_cells(tile_mapper, chunk_origin, barrier.cells, p_chunk.biome)
+				CliffAutotiler.draw_plateau_cells(
+					tile_mapper,
+					chunk_origin,
+					barrier.cells,
+					p_chunk.biome,
+					is_solid_func
+				)
 
 	# 3. Instanciar objetos poblados del chunk (ruinas en mesetas, arboles/rocas en valles)
 	if _objects_node != null:

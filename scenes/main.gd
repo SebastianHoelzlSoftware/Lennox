@@ -24,6 +24,9 @@ func _ready() -> void:
 	player.position = to_local(level_tilemap.to_global(level_tilemap.map_to_local(start_cell)))
 
 	if OS.get_cmdline_user_args().has("--screenshot") or OS.get_cmdline_args().has("--screenshot"):
+		var camera := player.get_node_or_null("Camera2D") as Camera2D
+		if camera != null:
+			camera.zoom = Vector2(0.85, 0.85)
 		_capture_and_quit()
 
 

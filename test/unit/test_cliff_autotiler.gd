@@ -116,3 +116,21 @@ func test_draw_plateau_cells_on_tilemap():
 	assert_eq(actual_ul_coords, expected_ul_coords, "Top-left cell should match Upper Left Corner")
 
 
+func test_draw_plateau_cells_with_solid_override_spanning_chunks():
+	# Test that when is_solid_override reports an east neighbor (16, 0) is solid across chunk border,
+	# cell (15, 0) with a west neighbor (14, 0) evaluates to TOP_EDGE instead of UPPER_RIGHT_CORNER
+	var without_override := func(c: int, r: int) -> bool:
+		# Without chunk spanning, only within-chunk cells (14, y) and (15, y) are known
+		return (c == 14 or c == 15) and (r == 0 or r == 1)
+
+	var with_override := func(c: int, r: int) -> bool:
+		# With chunk spanning, neighbor cell (16, y) in adjacent chunk is also visible
+		return (c == 14 or c == 15 or c == 16) and (r == 0 or r == 1)
+
+	var piece_isolated_chunk := CliffAutotiler.determine_piece_type(15, 0, without_override)
+	assert_eq(piece_isolated_chunk, PieceType.UPPER_RIGHT_CORNER, "Without override, border cell is UPPER_RIGHT_CORNER")
+
+	var piece_spanning_chunk := CliffAutotiler.determine_piece_type(15, 0, with_override)
+	assert_eq(piece_spanning_chunk, PieceType.TOP_EDGE, "With override, continuous border cell continues as TOP_EDGE")
+
+
