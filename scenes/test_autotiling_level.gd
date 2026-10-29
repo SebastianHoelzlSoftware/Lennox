@@ -62,24 +62,24 @@ func _build_grand_plateaus(tile_mapper: TileMapper) -> void:
 	# und die Klippenfronten an der Südseite haben ausreichend Platz.
 	# =========================================================================
 
-	# 1. Großes Drachen-Hochplateau im Nordwesten (12 x 7 Makrozellen = 24 x 14 Kacheln)
-	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(10, 10), 12, 7)
+	# 1. Großes Drachen-Hochplateau im Nordwesten (ROCKS)
+	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(10, 10), 12, 7, BiomeType.ROCKS)
 
-	# 2. Heilige Bergfeste im Nordosten (10 x 6 Makrozellen = 20 x 12 Kacheln)
-	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(120, 10), 10, 6)
+	# 2. Heilige Bergfeste im Nordosten (FOREST)
+	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(120, 10), 10, 6, BiomeType.FOREST)
 
-	# 3. Zwillings-Mesa im Zentrum (8 x 5 Makrozellen = 16 x 10 Kacheln)
-	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(65, 35), 8, 5)
+	# 3. Zwillings-Mesa im Zentrum (DESERT)
+	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(65, 35), 8, 5, BiomeType.DESERT)
 
-	# 4. Südliches Sonnenplateau (14 x 7 Makrozellen = 28 x 14 Kacheln)
-	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(20, 100), 14, 7)
+	# 4. Südliches Sonnenplateau (GRASSLAND)
+	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(20, 100), 14, 7, BiomeType.GRASSLAND)
 
-	# 5. Südöstliche Klippenbastion (11 x 6 Makrozellen = 22 x 12 Kacheln)
-	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(115, 105), 11, 6)
+	# 5. Südöstliche Klippenbastion (SWAMP)
+	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(115, 105), 11, 6, BiomeType.SWAMP)
 
-	# 6. Freistehende Monolith-Inseln (je 4 x 4 Makrozellen = 8 x 8 Kacheln)
-	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(10, 65), 5, 4)
-	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(155, 65), 5, 4)
+	# 6. Freistehende Monolith-Inseln (CAVE & ROCKS_AND_WATER)
+	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(10, 65), 5, 4, BiomeType.CAVE)
+	CliffAutotiler.draw_plateau_rect(tile_mapper, Vector2i(155, 65), 5, 4, BiomeType.ROCKS_AND_WATER)
 
 
 func _populate_fairytale_biomes() -> void:

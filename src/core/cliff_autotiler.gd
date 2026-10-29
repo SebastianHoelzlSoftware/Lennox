@@ -27,11 +27,48 @@ const PATTERN_NAMES := {
 	PieceType.ISOLATED: "Upper Left Corner (High Plateau Rocks)"
 }
 
+const BIOME_SUFFIXES := {
+	BiomeType.Type.ROCKS: "High Plateau Rocks",
+	BiomeType.Type.GRASSLAND: "Grassland",
+	BiomeType.Type.FOREST: "Forest",
+	BiomeType.Type.DESERT: "Desert",
+	BiomeType.Type.CAVE: "Cave",
+	BiomeType.Type.SWAMP: "Swamp",
+	BiomeType.Type.SEABED: "Seabed",
+	BiomeType.Type.ROCKS_AND_WATER: "Rocks and Water",
+}
+
 const MACRO_CELL_SIZE := Vector2i(2, 2)
 
 
-static func get_pattern_name(p_type: PieceType) -> String:
-	return PATTERN_NAMES.get(p_type, "Ground Plate (High Plateau Rocks) Variant A")
+static func get_pattern_name(p_type: PieceType, biome: BiomeType.Type = BiomeType.Type.ROCKS) -> String:
+	var suffix: String = BIOME_SUFFIXES.get(biome, "High Plateau Rocks")
+	if suffix == "High Plateau Rocks":
+		return PATTERN_NAMES.get(p_type, "Ground Plate (High Plateau Rocks) Variant A")
+	
+	match p_type:
+		PieceType.UPPER_LEFT_CORNER:
+			return "Upper Left Corner (%s)" % suffix
+		PieceType.UPPER_RIGHT_CORNER:
+			return "Upper Right Corner (%s)" % suffix
+		PieceType.LOWER_LEFT_CORNER:
+			return "Lower Left Corner (%s)" % suffix
+		PieceType.LOWER_RIGHT_CORNER:
+			return "Lower Right Corner (%s)" % suffix
+		PieceType.TOP_EDGE:
+			return "Top Edge Straight (%s)" % suffix
+		PieceType.BOTTOM_EDGE:
+			return "Bottom Edge Straight (%s)" % suffix
+		PieceType.LEFT_EDGE:
+			return "Left Edge Straight (%s)" % suffix
+		PieceType.RIGHT_EDGE:
+			return "Right Edge Straight (%s)" % suffix
+		PieceType.CENTER_FILL:
+			return "Ground Plate (%s)" % suffix
+		PieceType.ISOLATED:
+			return "Upper Left Corner (%s)" % suffix
+		_:
+			return "Ground Plate (%s)" % suffix
 
 
 static func determine_piece_type(
@@ -76,7 +113,8 @@ static func draw_plateau_rect(
 	tile_mapper: TileMapper,
 	origin_tile: Vector2i,
 	cols: int,
-	rows: int
+	rows: int,
+	biome: BiomeType.Type = BiomeType.Type.ROCKS
 ) -> void:
 	if cols <= 0 or rows <= 0:
 		return
@@ -87,7 +125,7 @@ static func draw_plateau_rect(
 	for r in range(rows):
 		for c in range(cols):
 			var piece := determine_piece_type(c, r, is_in_rect)
-			var pat_name := get_pattern_name(piece)
+			var pat_name := get_pattern_name(piece, biome)
 			var draw_pos := origin_tile + Vector2i(c * MACRO_CELL_SIZE.x, r * MACRO_CELL_SIZE.y)
 			tile_mapper.draw_editor_pattern(pat_name, draw_pos)
 
@@ -95,7 +133,8 @@ static func draw_plateau_rect(
 static func draw_plateau_mask(
 	tile_mapper: TileMapper,
 	origin_tile: Vector2i,
-	mask: Array
+	mask: Array,
+	biome: BiomeType.Type = BiomeType.Type.ROCKS
 ) -> void:
 	if mask.is_empty():
 		return
@@ -111,7 +150,7 @@ static func draw_plateau_mask(
 		for r in range(rows):
 			if mask[c][r]:
 				var piece := determine_piece_type(c, r, is_solid)
-				var pat_name := get_pattern_name(piece)
+				var pat_name := get_pattern_name(piece, biome)
 				var draw_pos := origin_tile + Vector2i(c * MACRO_CELL_SIZE.x, r * MACRO_CELL_SIZE.y)
 				tile_mapper.draw_editor_pattern(pat_name, draw_pos)
 
@@ -119,7 +158,8 @@ static func draw_plateau_mask(
 static func draw_plateau_cells(
 	tile_mapper: TileMapper,
 	origin_tile: Vector2i,
-	cells: Array[Vector2i]
+	cells: Array[Vector2i],
+	biome: BiomeType.Type = BiomeType.Type.ROCKS
 ) -> void:
 	if cells.is_empty():
 		return
@@ -135,7 +175,7 @@ static func draw_plateau_cells(
 		var c: int = cell.x
 		var r: int = cell.y
 		var piece := determine_piece_type(c, r, is_solid)
-		var pat_name := get_pattern_name(piece)
+		var pat_name := get_pattern_name(piece, biome)
 		var draw_pos := origin_tile + Vector2i(c * MACRO_CELL_SIZE.x, r * MACRO_CELL_SIZE.y)
 		tile_mapper.draw_editor_pattern(pat_name, draw_pos)
 

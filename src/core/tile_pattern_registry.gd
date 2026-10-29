@@ -210,6 +210,637 @@ static var dictionary: Dictionary = {
 		"is_atomic": true,
 	},
 
+	"Upper Left Corner (Grassland)": {
+		"index": 18,
+		"atlas_coords": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.UL,
+		"is_atomic": true,
+	},
+
+	"Upper Right Corner (Grassland)": {
+		"index": 19,
+		"atlas_coords": [Vector2i(1, 0), Vector2i(2, 0), Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_pattern": [Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.UR,
+		"is_atomic": true,
+	},
+
+	"Lower Left Corner (Grassland)": {
+		"index": 20,
+		"atlas_coords": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 2), Vector2i(1, 2), Vector2i(0, 3), Vector2i(1, 3), Vector2i(0, 4), Vector2i(1, 4)],
+		"hull_pattern": [Vector2i(0, 2), Vector2i(1, 2)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.LL,
+		"is_atomic": true,
+	},
+
+	"Lower Right Corner (Grassland)": {
+		"index": 21,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2), Vector2i(1, 3), Vector2i(2, 3), Vector2i(1, 4), Vector2i(2, 4)],
+		"hull_pattern": [Vector2i(1, 2), Vector2i(2, 2)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.LR,
+		"is_atomic": true,
+	},
+
+	"Top Edge Straight (Grassland)": {
+		"index": 22,
+		"atlas_coords": [Vector2i(1, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(1, 0), Vector2i(1, 0)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Bottom Edge Straight (Grassland)": {
+		"index": 23,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 2), Vector2i(1, 2), Vector2i(1, 3), Vector2i(1, 3), Vector2i(1, 4), Vector2i(1, 4)],
+		"hull_pattern": [Vector2i(1, 2), Vector2i(1, 2)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Left Edge Straight (Grassland)": {
+		"index": 24,
+		"atlas_coords": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(0, 1), Vector2i(0, 1)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Right Edge Straight (Grassland)": {
+		"index": 25,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_pattern": [Vector2i(2, 1), Vector2i(2, 1)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Ground Plate (Grassland)": {
+		"index": 26,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1)],
+		"hull_pattern": [],
+		"hull_curvature": HullCurvature.NO_HULL,
+		"is_corner": false,
+		"corner_type": CornerType.NO_CORNER,
+		"is_atomic": true,
+	},
+
+	"Upper Left Corner (Forest)": {
+		"index": 27,
+		"atlas_coords": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.UL,
+		"is_atomic": true,
+	},
+
+	"Upper Right Corner (Forest)": {
+		"index": 28,
+		"atlas_coords": [Vector2i(1, 0), Vector2i(2, 0), Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_pattern": [Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.UR,
+		"is_atomic": true,
+	},
+
+	"Lower Left Corner (Forest)": {
+		"index": 29,
+		"atlas_coords": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 2), Vector2i(1, 2), Vector2i(0, 3), Vector2i(1, 3), Vector2i(0, 4), Vector2i(1, 4)],
+		"hull_pattern": [Vector2i(0, 2), Vector2i(1, 2)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.LL,
+		"is_atomic": true,
+	},
+
+	"Lower Right Corner (Forest)": {
+		"index": 30,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2), Vector2i(1, 3), Vector2i(2, 3), Vector2i(1, 4), Vector2i(2, 4)],
+		"hull_pattern": [Vector2i(1, 2), Vector2i(2, 2)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.LR,
+		"is_atomic": true,
+	},
+
+	"Top Edge Straight (Forest)": {
+		"index": 31,
+		"atlas_coords": [Vector2i(1, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(1, 0), Vector2i(1, 0)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Bottom Edge Straight (Forest)": {
+		"index": 32,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 2), Vector2i(1, 2), Vector2i(1, 3), Vector2i(1, 3), Vector2i(1, 4), Vector2i(1, 4)],
+		"hull_pattern": [Vector2i(1, 2), Vector2i(1, 2)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Left Edge Straight (Forest)": {
+		"index": 33,
+		"atlas_coords": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(0, 1), Vector2i(0, 1)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Right Edge Straight (Forest)": {
+		"index": 34,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_pattern": [Vector2i(2, 1), Vector2i(2, 1)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Ground Plate (Forest)": {
+		"index": 35,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1)],
+		"hull_pattern": [],
+		"hull_curvature": HullCurvature.NO_HULL,
+		"is_corner": false,
+		"corner_type": CornerType.NO_CORNER,
+		"is_atomic": true,
+	},
+
+	"Upper Left Corner (Desert)": {
+		"index": 36,
+		"atlas_coords": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.UL,
+		"is_atomic": true,
+	},
+
+	"Upper Right Corner (Desert)": {
+		"index": 37,
+		"atlas_coords": [Vector2i(1, 0), Vector2i(2, 0), Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_pattern": [Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.UR,
+		"is_atomic": true,
+	},
+
+	"Lower Left Corner (Desert)": {
+		"index": 38,
+		"atlas_coords": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 2), Vector2i(1, 2), Vector2i(0, 3), Vector2i(1, 3), Vector2i(0, 4), Vector2i(1, 4)],
+		"hull_pattern": [Vector2i(0, 2), Vector2i(1, 2)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.LL,
+		"is_atomic": true,
+	},
+
+	"Lower Right Corner (Desert)": {
+		"index": 39,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2), Vector2i(1, 3), Vector2i(2, 3), Vector2i(1, 4), Vector2i(2, 4)],
+		"hull_pattern": [Vector2i(1, 2), Vector2i(2, 2)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.LR,
+		"is_atomic": true,
+	},
+
+	"Top Edge Straight (Desert)": {
+		"index": 40,
+		"atlas_coords": [Vector2i(1, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(1, 0), Vector2i(1, 0)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Bottom Edge Straight (Desert)": {
+		"index": 41,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 2), Vector2i(1, 2), Vector2i(1, 3), Vector2i(1, 3), Vector2i(1, 4), Vector2i(1, 4)],
+		"hull_pattern": [Vector2i(1, 2), Vector2i(1, 2)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Left Edge Straight (Desert)": {
+		"index": 42,
+		"atlas_coords": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(0, 1), Vector2i(0, 1)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Right Edge Straight (Desert)": {
+		"index": 43,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_pattern": [Vector2i(2, 1), Vector2i(2, 1)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Ground Plate (Desert)": {
+		"index": 44,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1)],
+		"hull_pattern": [],
+		"hull_curvature": HullCurvature.NO_HULL,
+		"is_corner": false,
+		"corner_type": CornerType.NO_CORNER,
+		"is_atomic": true,
+	},
+
+	"Upper Left Corner (Cave)": {
+		"index": 45,
+		"atlas_coords": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.UL,
+		"is_atomic": true,
+	},
+
+	"Upper Right Corner (Cave)": {
+		"index": 46,
+		"atlas_coords": [Vector2i(1, 0), Vector2i(2, 0), Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_pattern": [Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.UR,
+		"is_atomic": true,
+	},
+
+	"Lower Left Corner (Cave)": {
+		"index": 47,
+		"atlas_coords": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 2), Vector2i(1, 2), Vector2i(0, 3), Vector2i(1, 3), Vector2i(0, 4), Vector2i(1, 4)],
+		"hull_pattern": [Vector2i(0, 2), Vector2i(1, 2)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.LL,
+		"is_atomic": true,
+	},
+
+	"Lower Right Corner (Cave)": {
+		"index": 48,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2), Vector2i(1, 3), Vector2i(2, 3), Vector2i(1, 4), Vector2i(2, 4)],
+		"hull_pattern": [Vector2i(1, 2), Vector2i(2, 2)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.LR,
+		"is_atomic": true,
+	},
+
+	"Top Edge Straight (Cave)": {
+		"index": 49,
+		"atlas_coords": [Vector2i(1, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(1, 0), Vector2i(1, 0)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Bottom Edge Straight (Cave)": {
+		"index": 50,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 2), Vector2i(1, 2), Vector2i(1, 3), Vector2i(1, 3), Vector2i(1, 4), Vector2i(1, 4)],
+		"hull_pattern": [Vector2i(1, 2), Vector2i(1, 2)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Left Edge Straight (Cave)": {
+		"index": 51,
+		"atlas_coords": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(0, 1), Vector2i(0, 1)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Right Edge Straight (Cave)": {
+		"index": 52,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_pattern": [Vector2i(2, 1), Vector2i(2, 1)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Ground Plate (Cave)": {
+		"index": 53,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1)],
+		"hull_pattern": [],
+		"hull_curvature": HullCurvature.NO_HULL,
+		"is_corner": false,
+		"corner_type": CornerType.NO_CORNER,
+		"is_atomic": true,
+	},
+
+	"Upper Left Corner (Swamp)": {
+		"index": 54,
+		"atlas_coords": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.UL,
+		"is_atomic": true,
+	},
+
+	"Upper Right Corner (Swamp)": {
+		"index": 55,
+		"atlas_coords": [Vector2i(1, 0), Vector2i(2, 0), Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_pattern": [Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.UR,
+		"is_atomic": true,
+	},
+
+	"Lower Left Corner (Swamp)": {
+		"index": 56,
+		"atlas_coords": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 2), Vector2i(1, 2), Vector2i(0, 3), Vector2i(1, 3), Vector2i(0, 4), Vector2i(1, 4)],
+		"hull_pattern": [Vector2i(0, 2), Vector2i(1, 2)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.LL,
+		"is_atomic": true,
+	},
+
+	"Lower Right Corner (Swamp)": {
+		"index": 57,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2), Vector2i(1, 3), Vector2i(2, 3), Vector2i(1, 4), Vector2i(2, 4)],
+		"hull_pattern": [Vector2i(1, 2), Vector2i(2, 2)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.LR,
+		"is_atomic": true,
+	},
+
+	"Top Edge Straight (Swamp)": {
+		"index": 58,
+		"atlas_coords": [Vector2i(1, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(1, 0), Vector2i(1, 0)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Bottom Edge Straight (Swamp)": {
+		"index": 59,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 2), Vector2i(1, 2), Vector2i(1, 3), Vector2i(1, 3), Vector2i(1, 4), Vector2i(1, 4)],
+		"hull_pattern": [Vector2i(1, 2), Vector2i(1, 2)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Left Edge Straight (Swamp)": {
+		"index": 60,
+		"atlas_coords": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(0, 1), Vector2i(0, 1)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Right Edge Straight (Swamp)": {
+		"index": 61,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_pattern": [Vector2i(2, 1), Vector2i(2, 1)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Ground Plate (Swamp)": {
+		"index": 62,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1)],
+		"hull_pattern": [],
+		"hull_curvature": HullCurvature.NO_HULL,
+		"is_corner": false,
+		"corner_type": CornerType.NO_CORNER,
+		"is_atomic": true,
+	},
+
+	"Upper Left Corner (Seabed)": {
+		"index": 63,
+		"atlas_coords": [Vector2i(0, 5), Vector2i(1, 5), Vector2i(0, 6), Vector2i(1, 6)],
+		"hull_pattern": [Vector2i(0, 6), Vector2i(1, 6)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.UL,
+		"is_atomic": true,
+	},
+
+	"Upper Right Corner (Seabed)": {
+		"index": 64,
+		"atlas_coords": [Vector2i(1, 5), Vector2i(2, 5), Vector2i(1, 6), Vector2i(2, 6)],
+		"hull_pattern": [Vector2i(1, 6), Vector2i(2, 6)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.UR,
+		"is_atomic": true,
+	},
+
+	"Lower Left Corner (Seabed)": {
+		"index": 65,
+		"atlas_coords": [Vector2i(0, 6), Vector2i(1, 6), Vector2i(0, 7), Vector2i(1, 7), Vector2i(0, 8), Vector2i(1, 8), Vector2i(0, 9), Vector2i(1, 9)],
+		"hull_pattern": [Vector2i(0, 7), Vector2i(1, 7)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.LL,
+		"is_atomic": true,
+	},
+
+	"Lower Right Corner (Seabed)": {
+		"index": 66,
+		"atlas_coords": [Vector2i(1, 6), Vector2i(2, 6), Vector2i(1, 7), Vector2i(2, 7), Vector2i(1, 8), Vector2i(2, 8), Vector2i(1, 9), Vector2i(2, 9)],
+		"hull_pattern": [Vector2i(1, 7), Vector2i(2, 7)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.LR,
+		"is_atomic": true,
+	},
+
+	"Top Edge Straight (Seabed)": {
+		"index": 67,
+		"atlas_coords": [Vector2i(1, 5), Vector2i(1, 5), Vector2i(1, 6), Vector2i(1, 6)],
+		"hull_pattern": [Vector2i(1, 5), Vector2i(1, 5)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Bottom Edge Straight (Seabed)": {
+		"index": 68,
+		"atlas_coords": [Vector2i(1, 6), Vector2i(1, 6), Vector2i(1, 7), Vector2i(1, 7), Vector2i(1, 8), Vector2i(1, 8), Vector2i(1, 9), Vector2i(1, 9)],
+		"hull_pattern": [Vector2i(1, 7), Vector2i(1, 7)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Left Edge Straight (Seabed)": {
+		"index": 69,
+		"atlas_coords": [Vector2i(0, 6), Vector2i(1, 6), Vector2i(0, 6), Vector2i(1, 6)],
+		"hull_pattern": [Vector2i(0, 6), Vector2i(0, 6)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Right Edge Straight (Seabed)": {
+		"index": 70,
+		"atlas_coords": [Vector2i(1, 6), Vector2i(2, 6), Vector2i(1, 6), Vector2i(2, 6)],
+		"hull_pattern": [Vector2i(2, 6), Vector2i(2, 6)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Ground Plate (Seabed)": {
+		"index": 71,
+		"atlas_coords": [Vector2i(1, 6), Vector2i(1, 6), Vector2i(1, 6), Vector2i(1, 6)],
+		"hull_pattern": [],
+		"hull_curvature": HullCurvature.NO_HULL,
+		"is_corner": false,
+		"corner_type": CornerType.NO_CORNER,
+		"is_atomic": true,
+	},
+
+	"Upper Left Corner (Rocks and Water)": {
+		"index": 72,
+		"atlas_coords": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.UL,
+		"is_atomic": true,
+	},
+
+	"Upper Right Corner (Rocks and Water)": {
+		"index": 73,
+		"atlas_coords": [Vector2i(1, 0), Vector2i(2, 0), Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_pattern": [Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.UR,
+		"is_atomic": true,
+	},
+
+	"Lower Left Corner (Rocks and Water)": {
+		"index": 74,
+		"atlas_coords": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 2), Vector2i(1, 2), Vector2i(0, 3), Vector2i(1, 3), Vector2i(0, 4), Vector2i(1, 4)],
+		"hull_pattern": [Vector2i(0, 2), Vector2i(1, 2)],
+		"hull_curvature": HullCurvature.LEFT,
+		"is_corner": true,
+		"corner_type": CornerType.LL,
+		"is_atomic": true,
+	},
+
+	"Lower Right Corner (Rocks and Water)": {
+		"index": 75,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 2), Vector2i(2, 2), Vector2i(1, 3), Vector2i(2, 3), Vector2i(1, 4), Vector2i(2, 4)],
+		"hull_pattern": [Vector2i(1, 2), Vector2i(2, 2)],
+		"hull_curvature": HullCurvature.RIGHT,
+		"is_corner": true,
+		"corner_type": CornerType.LR,
+		"is_atomic": true,
+	},
+
+	"Top Edge Straight (Rocks and Water)": {
+		"index": 76,
+		"atlas_coords": [Vector2i(1, 0), Vector2i(1, 0), Vector2i(1, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(1, 0), Vector2i(1, 0)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Bottom Edge Straight (Rocks and Water)": {
+		"index": 77,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 2), Vector2i(1, 2), Vector2i(1, 3), Vector2i(1, 3), Vector2i(1, 4), Vector2i(1, 4)],
+		"hull_pattern": [Vector2i(1, 2), Vector2i(1, 2)],
+		"hull_curvature": HullCurvature.STRAIGHT_HORIZONTAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Left Edge Straight (Rocks and Water)": {
+		"index": 78,
+		"atlas_coords": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(0, 1), Vector2i(1, 1)],
+		"hull_pattern": [Vector2i(0, 1), Vector2i(0, 1)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Right Edge Straight (Rocks and Water)": {
+		"index": 79,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(2, 1), Vector2i(1, 1), Vector2i(2, 1)],
+		"hull_pattern": [Vector2i(2, 1), Vector2i(2, 1)],
+		"hull_curvature": HullCurvature.STRAIGHT_VERTCAL,
+		"is_corner": false,
+		"corner_type": null,
+		"is_atomic": true,
+	},
+
+	"Ground Plate (Rocks and Water)": {
+		"index": 80,
+		"atlas_coords": [Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1)],
+		"hull_pattern": [],
+		"hull_curvature": HullCurvature.NO_HULL,
+		"is_corner": false,
+		"corner_type": CornerType.NO_CORNER,
+		"is_atomic": true,
+	},
+
+
 }
 """ 
 	"Plateau 1x1 (High Plateau Rocks)": {

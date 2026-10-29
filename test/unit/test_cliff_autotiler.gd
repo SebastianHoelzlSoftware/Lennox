@@ -5,7 +5,17 @@ const PieceType = CliffAutotiler.PieceType
 
 
 func test_all_pattern_names_exist_in_registry():
-	for piece_val in [
+	var all_biomes = [
+		BiomeType.Type.ROCKS,
+		BiomeType.Type.GRASSLAND,
+		BiomeType.Type.FOREST,
+		BiomeType.Type.DESERT,
+		BiomeType.Type.CAVE,
+		BiomeType.Type.SWAMP,
+		BiomeType.Type.SEABED,
+		BiomeType.Type.ROCKS_AND_WATER
+	]
+	var pieces = [
 		PieceType.UPPER_LEFT_CORNER,
 		PieceType.UPPER_RIGHT_CORNER,
 		PieceType.LOWER_LEFT_CORNER,
@@ -15,13 +25,16 @@ func test_all_pattern_names_exist_in_registry():
 		PieceType.LEFT_EDGE,
 		PieceType.RIGHT_EDGE,
 		PieceType.CENTER_FILL
-	]:
-		var pat_name := CliffAutotiler.get_pattern_name(piece_val)
-		assert_ne(pat_name, "", "Pattern name should not be empty")
-		assert_true(
-			TilePatternRegistry.dictionary.has(pat_name),
-			"Pattern '%s' must exist in TilePatternRegistry.dictionary" % pat_name
-		)
+	]
+
+	for biome_val in all_biomes:
+		for piece_val in pieces:
+			var pat_name := CliffAutotiler.get_pattern_name(piece_val, biome_val)
+			assert_ne(pat_name, "", "Pattern name should not be empty")
+			assert_true(
+				TilePatternRegistry.dictionary.has(pat_name),
+				"Pattern '%s' must exist in TilePatternRegistry.dictionary" % pat_name
+			)
 
 
 func test_determine_corners():

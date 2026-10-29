@@ -96,7 +96,7 @@ func _draw_chunk(p_chunk: Chunk, p_chunk_x: int, p_chunk_y: int) -> void:
 		for barrier_item in p_chunk.barriers:
 			var barrier: Barrier = barrier_item
 			if not barrier.cells.is_empty():
-				CliffAutotiler.draw_plateau_cells(tile_mapper, chunk_origin, barrier.cells)
+				CliffAutotiler.draw_plateau_cells(tile_mapper, chunk_origin, barrier.cells, p_chunk.biome)
 
 	# 3. Instanciar objetos poblados del chunk (ruinas en mesetas, arboles/rocas en valles)
 	if _objects_node != null:
