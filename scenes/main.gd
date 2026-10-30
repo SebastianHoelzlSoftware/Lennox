@@ -1,6 +1,9 @@
 # main.gd
 extends Node2D
 
+@export var regenerate_on_start: bool = false
+@export var world_seed: int = 691
+
 @onready var level_tilemap: TileMapLayer = $LevelTileMap
 @onready var object_tilemap: TileMapLayer = $ObjectTileMap
 @onready var player: CharacterBody2D = $CharacterBody2D
@@ -16,14 +19,20 @@ func _ready() -> void:
 	var tile_mapper := TileMapper.new(level_tilemap)
 	# 10x10 chunks de 32x32 baldosas = 320x320 baldosas de mundo continuo.
 	# La semilla 691 contiene los 8 biomas, con un bosque encantado en el centro.
-	level = Level.new(10, 10, 32, 16, 691)
+	level = Level.new(10, 10, 32, 16, world_seed)
 	level.generate()
 
 	@warning_ignore("INTEGER_DIVISION")
 	var center := Vector2i(level.width * level.chunk_size / 2, level.height * level.chunk_size / 2)
 	start_cell = level.find_open_tile_near(center)
 
-	level_tilemap.load_level(level, tile_mapper)
+	# Si el mapa ya esta horneado en la escena (para edicion manual en el editor de Godot),
+	# conservamos las capas pintadas y solo regeneramos cuando regenerate_on_start es true
+	# o cuando aun no existen las capas en la escena.
+	var has_baked_map := level_tilemap.get_node_or_null("Ground") != null
+	if regenerate_on_start or not has_baked_map:
+		level_tilemap.load_level(level, tile_mapper)
+
 	player.position = to_local(level_tilemap.to_global(level_tilemap.map_to_local(start_cell)))
 
 	var args := OS.get_cmdline_user_args() + OS.get_cmdline_args()

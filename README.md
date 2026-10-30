@@ -6,7 +6,7 @@
 
 
 <p align="center">
-  <img src="assets/title_art/title_art.jpg" alt="Vision del juego educativo Lennox con biomas, exploracion y aprendizaje de lectura" width="100%">
+  <img src="assets/title_art/title_art_03.jpg" alt="Vision del juego educativo Lennox con biomas, exploracion y aprendizaje de lectura" width="100%">
 </p>
 
 
