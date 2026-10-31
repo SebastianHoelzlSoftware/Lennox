@@ -18,6 +18,38 @@ func test_archer_sprite_frames_have_all_directions():
 	assert_eq(frames.get_frame_count(&"idle_down"), 12, "idle_down de la arquera tiene 12 frames")
 
 
+func test_dino_sprite_frames_have_all_directions():
+	var dino := NpcFriendScript.new()
+	dino.character_style = "dino"
+	add_child_autofree(dino)
+	var frames: SpriteFrames = dino.animated_sprite.sprite_frames
+	assert_not_null(frames, "SpriteFrames del dino creado")
+
+	for prefix in [&"idle", &"walk", &"run"]:
+		for dir in [&"down", &"left", &"right", &"up"]:
+			var anim := StringName("%s_%s" % [prefix, dir])
+			assert_true(frames.has_animation(anim), "Animacion de dino existente: %s" % anim)
+			assert_gt(frames.get_frame_count(anim), 0, "Frames > 0 en %s" % anim)
+	assert_eq(frames.get_frame_count(&"idle_up"), 4, "idle_up del dino tiene 4 frames")
+	assert_eq(frames.get_frame_count(&"idle_down"), 12, "idle_down del dino tiene 12 frames")
+
+
+func test_polar_bear_sprite_frames_have_all_directions():
+	var bear := NpcFriendScript.new()
+	bear.character_style = "polar_bear"
+	add_child_autofree(bear)
+	var frames: SpriteFrames = bear.animated_sprite.sprite_frames
+	assert_not_null(frames, "SpriteFrames del oso polar creado")
+
+	for prefix in [&"idle", &"walk", &"run"]:
+		for dir in [&"down", &"left", &"right", &"up"]:
+			var anim := StringName("%s_%s" % [prefix, dir])
+			assert_true(frames.has_animation(anim), "Animacion de oso polar existente: %s" % anim)
+			assert_gt(frames.get_frame_count(anim), 0, "Frames > 0 en %s" % anim)
+	assert_eq(frames.get_frame_count(&"idle_up"), 4, "idle_up del oso polar tiene 4 frames")
+	assert_eq(frames.get_frame_count(&"idle_down"), 12, "idle_down del oso polar tiene 12 frames")
+
+
 func test_npc_stays_idle_when_within_comfort_distance():
 	var root := Node2D.new()
 	add_child_autofree(root)

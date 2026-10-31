@@ -824,6 +824,20 @@ shape = SubResource("CapsuleShape2D_tbgi4")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="NpcFriend" unique_id=1849302114]
 texture_filter = 1
 
+[node name="DinoFriend" type="CharacterBody2D" parent="." unique_id=1849302115]
+position = Vector2(2492, 2584)
+script = ExtResource("5_npcf1")
+character_style = "dino"
+target_path = NodePath("../NpcFriend")
+follow_distance = 48.0
+run_catchup_distance = 86.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DinoFriend" unique_id=1849302116]
+shape = SubResource("CapsuleShape2D_tbgi4")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="DinoFriend" unique_id=1849302117]
+texture_filter = 1
+
 [node name="WorldObjects" type="Node2D" parent="." unique_id=1727101789]
 y_sort_enabled = true
 
@@ -22005,3 +22019,4 @@ texture_filter = 1
 position = Vector2(5048, 5039)
 texture = ExtResource("543_hhynb")
 offset = Vector2(0, -8)
+

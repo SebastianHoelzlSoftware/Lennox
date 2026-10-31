@@ -1,11 +1,11 @@
 extends CharacterBody2D
-# Compañera NPC arquera que sigue al jugador de forma natural.
+# Compañero NPC que sigue a un objetivo (el jugador o a otro compañero) de forma natural.
 #
-# Utiliza las hojas de animacion de la arquera (Archer_lvl1) con 4 direcciones (down, left,
-# right, up), una cola de migas de pan (breadcrumb trail) para seguir el camino recorrido
-# por el jugador con suavidad, aceleracion/frenado progresivo y pequenas miradas curiosas
-# cuando ambos estan detenidos.
+# Soporta tres estilos visuales ("archer", "dino" y "polar_bear") con hojas de 4 direcciones
+# (down, left, right, up), una cola de migas de pan (breadcrumb trail) para recorrer
+# el camino con suavidad, aceleracion/frenado progresivo y miradas curiosas en reposo.
 
+@export_enum("archer", "dino", "polar_bear") var character_style: String = "archer"
 @export var target_path: NodePath
 @export var follow_distance: float = 28.0
 @export var run_catchup_distance: float = 58.0
@@ -28,23 +28,43 @@ const DIRECTION_ROWS := {
 	&"up": 3,
 }
 
-const IDLE_SHEET: Texture2D = preload(
+const ARCHER_IDLE_SHEET: Texture2D = preload(
 	"res://assets/common/characters/Archer_lvl1_Idle_without_shadow.png"
 )
-const WALK_SHEET: Texture2D = preload(
+const ARCHER_WALK_SHEET: Texture2D = preload(
 	"res://assets/common/characters/Archer_lvl1_Walk_without_shadow.png"
 )
-const RUN_SHEET: Texture2D = preload(
+const ARCHER_RUN_SHEET: Texture2D = preload(
 	"res://assets/common/characters/Archer_lvl1_Run_without_shadow.png"
 )
-const ATTACK_SHEET: Texture2D = preload(
+const ARCHER_ATTACK_SHEET: Texture2D = preload(
 	"res://assets/common/characters/Archer_lvl1_Attack_without_shadow.png"
 )
-const HURT_SHEET: Texture2D = preload(
+const ARCHER_HURT_SHEET: Texture2D = preload(
 	"res://assets/common/characters/Archer_lvl1_Hurt_without_shadow.png"
 )
-const DEATH_SHEET: Texture2D = preload(
+const ARCHER_DEATH_SHEET: Texture2D = preload(
 	"res://assets/common/characters/Archer_lvl1_Death_without_shadow.png"
+)
+
+const DINO_IDLE_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Dino_Idle_without_shadow.png"
+)
+const DINO_WALK_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Dino_Walk_without_shadow.png"
+)
+const DINO_RUN_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Dino_Run_without_shadow.png"
+)
+
+const POLAR_BEAR_IDLE_SHEET: Texture2D = preload(
+	"res://assets/common/characters/PolarBear_Idle_without_shadow.png"
+)
+const POLAR_BEAR_WALK_SHEET: Texture2D = preload(
+	"res://assets/common/characters/PolarBear_Walk_without_shadow.png"
+)
+const POLAR_BEAR_RUN_SHEET: Texture2D = preload(
+	"res://assets/common/characters/PolarBear_Run_without_shadow.png"
 )
 
 var target: Node2D = null
@@ -201,12 +221,21 @@ func _update_animation(move_vec: Vector2) -> void:
 func _create_sprite_frames() -> SpriteFrames:
 	var frames := SpriteFrames.new()
 	frames.remove_animation(&"default")
-	_add_sheet(frames, &"idle", IDLE_SHEET, 12, 6.0, true, {&"up": 4})
-	_add_sheet(frames, &"walk", WALK_SHEET, 6, 9.0, true)
-	_add_sheet(frames, &"run", RUN_SHEET, 8, 12.0, true)
-	_add_sheet(frames, &"attack", ATTACK_SHEET, 8, 12.0, false)
-	_add_sheet(frames, &"hurt", HURT_SHEET, 5, 10.0, false)
-	_add_sheet(frames, &"death", DEATH_SHEET, 7, 8.0, false)
+	if character_style == "dino":
+		_add_sheet(frames, &"idle", DINO_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
+		_add_sheet(frames, &"walk", DINO_WALK_SHEET, 6, 10.0, true)
+		_add_sheet(frames, &"run", DINO_RUN_SHEET, 8, 13.0, true)
+	elif character_style == "polar_bear":
+		_add_sheet(frames, &"idle", POLAR_BEAR_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
+		_add_sheet(frames, &"walk", POLAR_BEAR_WALK_SHEET, 6, 10.0, true)
+		_add_sheet(frames, &"run", POLAR_BEAR_RUN_SHEET, 8, 13.0, true)
+	else:
+		_add_sheet(frames, &"idle", ARCHER_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
+		_add_sheet(frames, &"walk", ARCHER_WALK_SHEET, 6, 9.0, true)
+		_add_sheet(frames, &"run", ARCHER_RUN_SHEET, 8, 12.0, true)
+		_add_sheet(frames, &"attack", ARCHER_ATTACK_SHEET, 8, 12.0, false)
+		_add_sheet(frames, &"hurt", ARCHER_HURT_SHEET, 5, 10.0, false)
+		_add_sheet(frames, &"death", ARCHER_DEATH_SHEET, 7, 8.0, false)
 	return frames
 
 
