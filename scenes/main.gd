@@ -7,6 +7,7 @@ extends Node2D
 @onready var level_tilemap: TileMapLayer = $LevelTileMap
 @onready var object_tilemap: TileMapLayer = $ObjectTileMap
 @onready var player: CharacterBody2D = $CharacterBody2D
+@onready var npc_friend: CharacterBody2D = get_node_or_null("NpcFriend") as CharacterBody2D
 
 var start_cell := Vector2i.ZERO
 var level: Level
@@ -34,6 +35,8 @@ func _ready() -> void:
 		level_tilemap.load_level(level, tile_mapper)
 
 	player.position = to_local(level_tilemap.to_global(level_tilemap.map_to_local(start_cell)))
+	if npc_friend != null and npc_friend.has_method("set_follow_target"):
+		npc_friend.call("set_follow_target", player, true)
 
 	var args := OS.get_cmdline_user_args() + OS.get_cmdline_args()
 	for arg: String in args:

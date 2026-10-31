@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://cv1p1j8ejkni0" path="res://scenes/level.gd" id="3_sugp2"]
 [ext_resource type="TileSet" uid="uid://b8uuaflyj3ja8" path="res://assets/tiles/terrain_master_16x16.tres" id="4_ags1l"]
 [ext_resource type="Script" uid="uid://smk1y6gutxhw" path="res://scenes/player.gd" id="4_jyhfs"]
+[ext_resource type="Script" path="res://scenes/npc_friend.gd" id="5_npcf1"]
 [ext_resource type="Texture2D" uid="uid://dcwwrxbyl13wb" path="res://assets/biomes/cave/objects/Volcano2_light_shadow_frame6.png" id="6_600lq"]
 [ext_resource type="Texture2D" uid="uid://cljsyatbhy2kv" path="res://assets/biomes/cave/objects/Red_stone_vertical4.png" id="7_qsxfc"]
 [ext_resource type="Texture2D" uid="uid://dmspxg6djcqan" path="res://assets/biomes/cave/objects/Geyser2.png" id="8_7f6vt"]
@@ -811,6 +812,17 @@ texture_filter = 1
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=275283869]
 zoom = Vector2(2.5, 2.5)
 position_smoothing_enabled = true
+
+[node name="NpcFriend" type="CharacterBody2D" parent="." unique_id=1849302112]
+position = Vector2(2540, 2574)
+script = ExtResource("5_npcf1")
+target_path = NodePath("../CharacterBody2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NpcFriend" unique_id=1849302113]
+shape = SubResource("CapsuleShape2D_tbgi4")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="NpcFriend" unique_id=1849302114]
+texture_filter = 1
 
 [node name="WorldObjects" type="Node2D" parent="." unique_id=1727101789]
 y_sort_enabled = true
