@@ -7335,7 +7335,13 @@ flip_h = true
 
 [node name="Obj_1035" type="Sprite2D" parent="WorldObjects" unique_id=1063253525]
 texture_filter = 1
-position = Vector2(1816, 2271)
+position = Vector2(1848, 2207)
+texture = ExtResource("302_tv13n")
+offset = Vector2(0, -32)
+
+[node name="Obj_1035" type="Sprite2D" parent="WorldObjects/Obj_1035" unique_id=623560836]
+texture_filter = 1
+position = Vector2(1848, 2213)
 texture = ExtResource("302_tv13n")
 offset = Vector2(0, -32)
 
@@ -7418,13 +7424,13 @@ flip_h = true
 
 [node name="Obj_1048" type="Sprite2D" parent="WorldObjects" unique_id=3566979]
 texture_filter = 1
-position = Vector2(1672, 2223)
+position = Vector2(1720, 2105)
 texture = ExtResource("304_u8emh")
 offset = Vector2(0, -32)
 
 [node name="Obj_1049" type="Sprite2D" parent="WorldObjects" unique_id=849088288]
 texture_filter = 1
-position = Vector2(1896, 2271)
+position = Vector2(1896, 2229)
 texture = ExtResource("299_yaol1")
 offset = Vector2(0, -32)
 
@@ -7436,13 +7442,13 @@ offset = Vector2(0, -16)
 
 [node name="Obj_1051" type="Sprite2D" parent="WorldObjects" unique_id=1226029747]
 texture_filter = 1
-position = Vector2(1912, 2127)
+position = Vector2(1904, 2105)
 texture = ExtResource("296_7qeqb")
 offset = Vector2(0, -16)
 
 [node name="Obj_1052" type="Sprite2D" parent="WorldObjects" unique_id=1754725994]
 texture_filter = 1
-position = Vector2(1720, 2191)
+position = Vector2(1712, 2177)
 texture = ExtResource("295_pxse2")
 offset = Vector2(0, -16)
 
@@ -7460,13 +7466,13 @@ offset = Vector2(0, -16)
 
 [node name="Obj_1055" type="Sprite2D" parent="WorldObjects" unique_id=1343995100]
 texture_filter = 1
-position = Vector2(1752, 2207)
+position = Vector2(1704, 2191)
 texture = ExtResource("305_u3h2o")
 offset = Vector2(0, -16)
 
 [node name="Obj_1056" type="Sprite2D" parent="WorldObjects" unique_id=1106583698]
 texture_filter = 1
-position = Vector2(1976, 2111)
+position = Vector2(1992, 2079)
 texture = ExtResource("258_nditx")
 offset = Vector2(0, -16)
 
@@ -7504,14 +7510,14 @@ offset = Vector2(0, -16)
 
 [node name="Obj_1062" type="Sprite2D" parent="WorldObjects" unique_id=373811717]
 texture_filter = 1
-position = Vector2(2232, 2041)
+position = Vector2(2228, 2044)
 texture = ExtResource("308_gwte3")
 offset = Vector2(0, -32)
 flip_h = true
 
 [node name="Obj_1063" type="Sprite2D" parent="WorldObjects" unique_id=1805350574]
 texture_filter = 1
-position = Vector2(1768, 2191)
+position = Vector2(1816, 2159)
 texture = ExtResource("296_7qeqb")
 offset = Vector2(0, -16)
 
@@ -7523,7 +7529,7 @@ offset = Vector2(0, -8)
 
 [node name="Obj_1065" type="Sprite2D" parent="WorldObjects" unique_id=1883600518]
 texture_filter = 1
-position = Vector2(2224, 2095)
+position = Vector2(2248, 2095)
 texture = ExtResource("296_7qeqb")
 offset = Vector2(0, -16)
 
@@ -9535,7 +9541,7 @@ offset = Vector2(0, -32)
 
 [node name="Obj_1384" type="Sprite2D" parent="WorldObjects" unique_id=692117553]
 texture_filter = 1
-position = Vector2(2256, 2143)
+position = Vector2(2400, 2079)
 texture = ExtResource("103_a18u2")
 offset = Vector2(0, -32)
 
@@ -9586,21 +9592,21 @@ flip_h = true
 
 [node name="Obj_1392" type="Sprite2D" parent="WorldObjects" unique_id=445420288]
 texture_filter = 1
-position = Vector2(2376, 2175)
+position = Vector2(2384, 2177)
 texture = ExtResource("313_ra23s")
 offset = Vector2(0, -32)
 flip_h = true
 
 [node name="Obj_1393" type="Sprite2D" parent="WorldObjects" unique_id=157101238]
 texture_filter = 1
-position = Vector2(2256, 2111)
+position = Vector2(2260, 2127)
 texture = ExtResource("309_7hl8l")
 offset = Vector2(0, -32)
 flip_h = true
 
 [node name="Obj_1394" type="Sprite2D" parent="WorldObjects" unique_id=1906756944]
 texture_filter = 1
-position = Vector2(2072, 2239)
+position = Vector2(2096, 2247)
 texture = ExtResource("326_f4cb6")
 offset = Vector2(0, -32)
 
@@ -12388,7 +12394,7 @@ flip_h = true
 
 [node name="Obj_1834" type="Sprite2D" parent="WorldObjects" unique_id=277620257]
 texture_filter = 1
-position = Vector2(3056, 2853)
+position = Vector2(3064, 2887)
 texture = ExtResource("306_2y3nf")
 offset = Vector2(0, -16)
 
@@ -14506,7 +14512,7 @@ offset = Vector2(0, -32)
 
 [node name="Obj_2167" type="Sprite2D" parent="WorldObjects" unique_id=2072225574]
 texture_filter = 1
-position = Vector2(3160, 2783)
+position = Vector2(3120, 2687)
 texture = ExtResource("301_e7ewc")
 offset = Vector2(0, -16)
 flip_h = true
