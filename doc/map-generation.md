@@ -100,10 +100,12 @@ Los estilos se definen como datos en `src/core/terrain_styles.gd` (coordenadas d
 
 ## 5. Estado Técnico y Pruebas
 
-- **Clases principales**:
+- **Clases y escenas principales**:
   - `Level` (`src/core/level.gd`): biomas, campo de mesetas, reglas de forma, estilos y población.
   - `TerrainPainter` / `TerrainStyles` (`src/core/`): motor de autotiling y datos de estilo.
   - `Chunk` (`src/core/chunk.gd`): baldosas lógicas, barreras y `placed_objects`.
   - `ObjectCatalog` (`src/core/object_catalog.gd`): catálogo de activos de los 8 biomas.
   - `LevelTileMap` (`scenes/level.gd`): construye las rejillas y lanza el renderizado y los sprites.
-- **Pruebas**: 83 tests GUT en verde (77 unitarios + 6 de integración), incluidos los del motor de terreno y las reglas de forma.
+  - `NpcFriend` (`scenes/npc_friend.gd`): compañeros NPC (`NpcFriend` arquera y `DinoFriend` pequeño dinosaurio) que siguen en caravana al jugador con cola de migas de pan (*breadcrumb trail*), histéresis de distancia y transición automática entre caminar y correr.
+  - `scenes/main.tscn` y `scenes/main.gd`: incluyen el mapa generado para la semilla `691` horneado directamente en la escena (`assets/tiles/terrain_master_16x16.tres`) para permitir edición manual en el editor de Godot sin perder cambios al iniciar (`regenerate_on_start = false` por defecto).
+- **Pruebas**: 89 tests GUT en verde (83 unitarios en 11 suites + 6 de integración), incluidos los del motor de terreno, las reglas de forma y el comportamiento de los compañeros NPC.

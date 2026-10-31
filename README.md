@@ -138,12 +138,13 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   │       ├── biome_type.gd            # Enum global de los 8 biomas (BiomeType)
   │       └── tile_type.gd             # Enum global de tipos de baldosa (TileType)
   ├── test/
-  │   ├── unit/                        # Tests unitarios con GUT (10 suites, 77 tests)
+  │   ├── unit/                        # Tests unitarios con GUT (11 suites, 83 tests)
   │   │   ├── test_barrier.gd
   │   │   ├── test_biome.gd
   │   │   ├── test_chunk.gd
   │   │   ├── test_cliff_autotiler.gd
   │   │   ├── test_level.gd
+  │   │   ├── test_npc_friend.gd
   │   │   ├── test_object_catalog.gd
   │   │   ├── test_terrain_painter.gd
   │   │   ├── test_tilemapper.gd
@@ -153,15 +154,16 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   │       └── test_barrier_chunk_integration.gd
   ├── assets/
   │   ├── biomes/                      # Activos de los 8 biomas (tiles, objects y <bioma>_16x16.tres)
-  │   ├── common/                      # Activos compartidos (trees, bushes, ruins, crystals, etc.)
+  │   ├── common/                      # Activos compartidos (characters, trees, bushes, ruins, crystals)
   │   ├── player_sprites/              # Spritesheets animados del personaje (walk, idle, run)
-  │   ├── tiles/rocks/                 # TileSet maestro (rocks_16x16.tres) y biblioteca de patrones
+  │   ├── tiles/                       # TileSet maestro de terreno (terrain_master_16x16.tres) y rocas
   │   └── title_art/                   # Arte conceptual y portada del proyecto
   ├── scenes/
-  │   ├── main.tscn                    # Escena principal del mundo generado
-  │   ├── main.gd                      # Controlador de escena, camara suave y zoom
+  │   ├── main.tscn                    # Escena principal (mundo horneado seed 691 + jugador y companeros)
+  │   ├── main.gd                      # Controlador de escena, camara suave, zoom y capturas
   │   ├── level.gd                     # Renderizado multicapa del terreno (TerrainPainter) y objetos
   │   ├── player.gd                    # Controlador del jugador, movimiento y animaciones
+  │   ├── npc_friend.gd                # Companero NPC con seguimiento por migas de pan (arquera / dino)
   │   ├── terrain_lab.tscn             # Escena del laboratorio visual de estilos por bioma
   │   ├── terrain_lab.gd               # Generador de galeria de pruebas para los 8 biomas
   │   ├── test_autotiling_level.tscn   # Escena de prueba de autotiling para los 8 biomas
@@ -208,7 +210,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 
 ## 🧪 Pruebas
 
-El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 77 pruebas unitarias y 6 de integracion (83 en total), con una tasa de exito del 100%.
+El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 83 pruebas unitarias y 6 de integracion (89 en total), con una tasa de exito del 100%.
 
 | Suite | Cantidad | Cobertura |
 |-------|---------:|-----------|
@@ -217,6 +219,7 @@ El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit T
 | [`test_chunk.gd`](test/unit/test_chunk.gd) | 11 | Inicializacion de chunks, barreras y aplicacion de baldosas |
 | [`test_cliff_autotiler.gd`](test/unit/test_cliff_autotiler.gd) | 7 | Clasificacion 9-slice, esquinas, bordes y dibujado de mesetas |
 | [`test_level.gd`](test/unit/test_level.gd) | 15 | Generacion de niveles, reglas de forma, estilos y poblacion de objetos |
+| [`test_npc_friend.gd`](test/unit/test_npc_friend.gd) | 6 | Companeros NPC (arquera, dino y oso polar), animaciones 4 direcciones y seguimiento |
 | [`test_object_catalog.gd`](test/unit/test_object_catalog.gd) | 5 | Catalogo de activos para los 8 biomas y categorias comunes |
 | [`test_terrain_painter.gd`](test/unit/test_terrain_painter.gd) | 6 | Autotiling 3x3 + esquinas concavas, caras 3/4, derrames y estilos |
 | [`test_tilemapper.gd`](test/unit/test_tilemapper.gd) | 3 | Dibujado de patrones en TileMapLayer |
