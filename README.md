@@ -27,10 +27,7 @@
 <p align="center"><strong>La captura más reciente del juego</strong></p>
 
 
-
-
-https://github.com/user-attachments/assets/cfc651a0-6a3d-4a47-a158-e30e6440eee7
-
+https://github.com/user-attachments/assets/53d6cd8b-25e3-4bee-afba-5ebc8461a7c8
 
 
 ---
