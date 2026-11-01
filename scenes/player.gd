@@ -44,6 +44,58 @@ func _ready() -> void:
 	animated_sprite.play(&"idle_down")
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if _is_interact_event(event):
+		if interact_with_nearest_npc() != null:
+			var vp := get_viewport()
+			if vp != null:
+				vp.set_input_as_handled()
+
+
+static func _is_interact_event(event: InputEvent) -> bool:
+	if event.is_action_pressed(&"interact"):
+		return true
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if key_event.pressed and not key_event.echo:
+			return key_event.keycode == KEY_E or key_event.physical_keycode == KEY_E
+	return false
+
+
+func interact_with_nearest_npc() -> Node2D:
+	var candidates: Array[Node] = []
+	if is_inside_tree():
+		candidates.assign(get_tree().get_nodes_in_group(&"npc_companions"))
+	if candidates.is_empty() and get_parent() != null:
+		for child in get_parent().get_children():
+			if child != self and child is Node2D and child.has_method("interact"):
+				candidates.append(child)
+
+	var nearest: Node2D = null
+	var nearest_dist := INF
+	for node in candidates:
+		if not (node is Node2D) or not is_instance_valid(node) or not node.has_method("interact"):
+			continue
+		var npc := node as Node2D
+		var max_dist := 72.0
+		if "interaction_radius" in npc:
+			max_dist = float(npc.get("interaction_radius"))
+		var dist := global_position.distance_to(npc.global_position)
+		if dist <= max_dist and dist < nearest_dist:
+			nearest = npc
+			nearest_dist = dist
+
+	if nearest != null:
+		# Si otro companero tenia una ventana abierta, la cerramos para centrar la atencion
+		for node in candidates:
+			if node != nearest and is_instance_valid(node) and "dialog_bubble" in node:
+				var other_bubble: Object = node.get("dialog_bubble")
+				if other_bubble != null and other_bubble.has_method("hide_bubble"):
+					other_bubble.call("hide_bubble")
+		nearest.call("interact", self)
+	return nearest
+
+
 func _physics_process(_delta: float) -> void:
 	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var is_running := Input.is_action_pressed("run")

@@ -1,6 +1,7 @@
 extends GutTest
 
 const NpcFriendScript = preload("res://scenes/npc_friend.gd")
+const PlayerScript = preload("res://scenes/player.gd")
 
 
 func test_archer_sprite_frames_have_all_directions():
@@ -112,3 +113,33 @@ func test_npc_teleports_if_player_is_extremely_far():
 	player.global_position = Vector2(1000, 0)
 	npc._physics_process(0.05)
 	assert_lt(npc.global_position.distance_to(player.global_position), 100.0, "Se acerca si queda demasiado lejos")
+
+
+func test_npc_interaction_toggles_question_mark_dialog():
+	var root := Node2D.new()
+	add_child_autofree(root)
+
+	var player := PlayerScript.new()
+	player.name = "CharacterBody2D"
+	var player_sprite := AnimatedSprite2D.new()
+	player_sprite.name = "AnimatedSprite2D"
+	player.add_child(player_sprite)
+	root.add_child(player)
+	player.global_position = Vector2(100, 100)
+
+	var npc := NpcFriendScript.new()
+	root.add_child(npc)
+	npc.global_position = Vector2(75, 100)
+
+	assert_false(npc.is_dialog_visible(), "El dialogo empieza oculto")
+	assert_not_null(npc.dialog_bubble.get("icon_texture"), "Tiene el icono de interrogacion listo")
+
+	# Al interactuar con E (o llamando interact_with_nearest_npc), se abre la ventana con '?'
+	var interacted := player.interact_with_nearest_npc()
+	assert_eq(interacted, npc, "Interactua con el companero mas cercano")
+	assert_true(npc.is_dialog_visible(), "La ventana de dialogo se muestra al interactuar")
+	assert_eq(npc.animated_sprite.animation, &"idle_right", "El NPC mira hacia el jugador al hablar")
+
+	# Al volver a pulsar E mientras esta abierta, se cierra
+	player.interact_with_nearest_npc()
+	assert_false(npc.is_dialog_visible(), "La ventana se oculta al interactuar de nuevo")

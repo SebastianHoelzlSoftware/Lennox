@@ -11,8 +11,13 @@ extends CharacterBody2D
 @export var run_catchup_distance: float = 58.0
 @export var teleport_distance: float = 360.0
 @export var breadcrumb_spacing: float = 12.0
+@export var interaction_radius: float = 64.0
+@export var dialog_auto_hide_seconds: float = 3.5
+
+const DialogBubbleScript = preload("res://scenes/npc_dialog_bubble.gd")
 
 @onready var animated_sprite: AnimatedSprite2D = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+var dialog_bubble: Node2D = null
 
 const WALK_SPEED := 105.0
 const RUN_SPEED := 210.0
@@ -72,12 +77,14 @@ var _facing_direction: StringName = &"down"
 var _breadcrumbs: Array[Vector2] = []
 var _is_catching_up: bool = false
 var _idle_glance_timer: float = 2.5
+var _dialog_timer: float = 0.0
 
 
 func _ready() -> void:
 	# Evitar empujar al jugador al caminar a su lado
 	collision_layer = 0
 	collision_mask = 0
+	add_to_group(&"npc_companions")
 
 	if animated_sprite == null:
 		animated_sprite = AnimatedSprite2D.new()
@@ -88,10 +95,43 @@ func _ready() -> void:
 	animated_sprite.sprite_frames = _create_sprite_frames()
 	animated_sprite.play(&"idle_down")
 
+	dialog_bubble = get_node_or_null("DialogBubble") as Node2D
+	if dialog_bubble == null:
+		dialog_bubble = DialogBubbleScript.new()
+		dialog_bubble.name = "DialogBubble"
+		dialog_bubble.position = Vector2(0.0, -14.0)
+		dialog_bubble.visible = false
+		add_child(dialog_bubble)
+
 	if not target_path.is_empty():
 		target = get_node_or_null(target_path) as Node2D
 	if target == null and get_parent() != null:
 		target = get_parent().get_node_or_null("CharacterBody2D") as Node2D
+
+
+func interact(interactor: Node2D = null, custom_icon: Texture2D = null) -> void:
+	if interactor != null:
+		var to_interactor := interactor.global_position - global_position
+		if to_interactor.length() > 1.0:
+			_facing_direction = direction_name_from_vector(to_interactor)
+			_update_animation(Vector2.ZERO)
+
+	if dialog_bubble == null:
+		return
+
+	if dialog_bubble.visible and custom_icon == null:
+		dialog_bubble.call("hide_bubble")
+		_dialog_timer = 0.0
+	else:
+		if custom_icon != null:
+			dialog_bubble.call("show_icon", custom_icon)
+		else:
+			dialog_bubble.call("show_question_mark")
+		_dialog_timer = dialog_auto_hide_seconds
+
+
+func is_dialog_visible() -> bool:
+	return dialog_bubble != null and dialog_bubble.visible
 
 
 func set_follow_target(p_target: Node2D, p_snap: bool = false) -> void:
@@ -102,6 +142,11 @@ func set_follow_target(p_target: Node2D, p_snap: bool = false) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _dialog_timer > 0.0:
+		_dialog_timer -= delta
+		if _dialog_timer <= 0.0 and dialog_bubble != null:
+			dialog_bubble.call("hide_bubble")
+
 	if target == null or not is_instance_valid(target):
 		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
 		_update_animation(velocity)
