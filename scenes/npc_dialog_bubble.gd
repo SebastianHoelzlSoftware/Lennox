@@ -4,6 +4,8 @@ extends Node2D
 # en la esquina superior izquierda, casilla de icono (con signo de interrogacion
 # pixel-art o cualquier Texture2D) y barra naranja inferior estilo boton.
 
+const APPLE_ICON_TEXTURE: Texture2D = preload("res://assets/common/icons/Alchemy4_2.png")
+
 const QUESTION_MARK_ASCII := [
 	"................",
 	".....######.....",
@@ -37,25 +39,26 @@ func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_default_question_texture = _build_question_mark_texture()
 	if icon_texture == null:
-		icon_texture = _default_question_texture
+		icon_texture = APPLE_ICON_TEXTURE
+
+
+func show_apple() -> void:
+	show_icon(APPLE_ICON_TEXTURE)
 
 
 func show_question_mark() -> void:
 	if _default_question_texture == null:
 		_default_question_texture = _build_question_mark_texture()
-	icon_texture = _default_question_texture
+	show_icon(_default_question_texture)
+
+
+func show_icon(p_texture: Texture2D) -> void:
+	icon_texture = p_texture if p_texture != null else APPLE_ICON_TEXTURE
 	visible = true
 	_pulse_time = 0.0
 	scale = Vector2(0.75, 0.75)
 	var tween := create_tween()
 	tween.tween_property(self, "scale", Vector2.ONE, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	queue_redraw()
-
-
-func show_icon(p_texture: Texture2D) -> void:
-	icon_texture = p_texture if p_texture != null else _default_question_texture
-	visible = true
-	_pulse_time = 0.0
 	queue_redraw()
 
 
@@ -118,17 +121,22 @@ func _draw() -> void:
 	draw_rect(Rect2(star_c - Vector2(0.5, 1.5), Vector2(1.0, 3.0)), c_star, true)
 
 	# Casilla oscura central para el icono (estilo slot de la Vision de Lennox)
-	var slot_size := Vector2(24.0, 22.0)
-	var slot_pos := box_rect.position + Vector2((box_w - slot_size.x) * 0.5, 7.0)
+	var slot_size := Vector2(28.0, 26.0)
+	var slot_pos := box_rect.position + Vector2((box_w - slot_size.x) * 0.5, 5.5)
 	var slot_rect := Rect2(slot_pos, slot_size)
 	_draw_pixel_rounded_rect(slot_rect, c_slot, c_slot_border)
 
-	# Icono dentro de la casilla (por defecto el signo de interrogacion '?')
-	var tex := icon_texture if icon_texture != null else _default_question_texture
+	# Icono dentro de la casilla (por defecto la manzana de los assets comunes)
+	# Si la textura tiene margen transparente (como los iconos 32x32 de CraftPix),
+	# recortamos su region util para que el icono llene bien la casilla.
+	var tex := icon_texture if icon_texture != null else APPLE_ICON_TEXTURE
 	if tex != null:
-		var icon_size := Vector2(16.0, 16.0)
-		var icon_pos := slot_rect.position + (slot_rect.size - icon_size) * 0.5
-		draw_texture_rect(tex, Rect2(icon_pos, icon_size), false)
+		var src_rect := _get_visible_icon_region(tex)
+		var target_max := slot_size - Vector2(4.0, 4.0)
+		var scale_factor := minf(target_max.x / maxf(src_rect.size.x, 1.0), target_max.y / maxf(src_rect.size.y, 1.0))
+		var draw_size := src_rect.size * scale_factor
+		var draw_pos := slot_rect.position + (slot_rect.size - draw_size) * 0.5
+		draw_texture_rect_region(tex, Rect2(draw_pos, draw_size), src_rect)
 
 	# Barra naranja inferior (como el boton/barra inferior del GUI en la Vision de Lennox)
 	var bar_size := Vector2(30.0, 7.0)
@@ -156,6 +164,15 @@ func _draw_pixel_rounded_rect(rect: Rect2, fill_color: Color, border_color: Colo
 		draw_line(Vector2(x0 + 1, y1), Vector2(x1 - 1, y1), border_color, 1.0)
 		draw_line(Vector2(x0, y0 + 1), Vector2(x0, y1 - 1), border_color, 1.0)
 		draw_line(Vector2(x1, y0 + 1), Vector2(x1, y1 - 1), border_color, 1.0)
+
+
+static func _get_visible_icon_region(tex: Texture2D) -> Rect2:
+	var img := tex.get_image()
+	if img != null:
+		var used := img.get_used_rect()
+		if used.size.x > 0 and used.size.y > 0:
+			return Rect2(used.position, used.size)
+	return Rect2(Vector2.ZERO, tex.get_size())
 
 
 static func _build_question_mark_texture() -> ImageTexture:

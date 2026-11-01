@@ -126,7 +126,7 @@ func interact(interactor: Node2D = null, custom_icon: Texture2D = null) -> void:
 		if custom_icon != null:
 			dialog_bubble.call("show_icon", custom_icon)
 		else:
-			dialog_bubble.call("show_question_mark")
+			dialog_bubble.call("show_apple")
 		_dialog_timer = dialog_auto_hide_seconds
 
 
