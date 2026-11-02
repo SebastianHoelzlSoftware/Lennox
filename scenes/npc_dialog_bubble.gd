@@ -4,6 +4,7 @@ extends Node2D
 # en la esquina superior izquierda, casilla de icono (con signo de interrogacion
 # pixel-art o cualquier Texture2D) y barra naranja inferior estilo boton.
 
+const HEART_ICON_TEXTURE: Texture2D = preload("res://assets/common/icons/Item9_2.png")
 const APPLE_ICON_TEXTURE: Texture2D = preload("res://assets/common/icons/Alchemy4_2.png")
 
 const QUESTION_MARK_ASCII := [
@@ -39,7 +40,11 @@ func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_default_question_texture = _build_question_mark_texture()
 	if icon_texture == null:
-		icon_texture = APPLE_ICON_TEXTURE
+		icon_texture = HEART_ICON_TEXTURE
+
+
+func show_heart() -> void:
+	show_icon(HEART_ICON_TEXTURE)
 
 
 func show_apple() -> void:
@@ -53,7 +58,7 @@ func show_question_mark() -> void:
 
 
 func show_icon(p_texture: Texture2D) -> void:
-	icon_texture = p_texture if p_texture != null else APPLE_ICON_TEXTURE
+	icon_texture = p_texture if p_texture != null else HEART_ICON_TEXTURE
 	visible = true
 	_pulse_time = 0.0
 	scale = Vector2(0.75, 0.75)
@@ -126,10 +131,10 @@ func _draw() -> void:
 	var slot_rect := Rect2(slot_pos, slot_size)
 	_draw_pixel_rounded_rect(slot_rect, c_slot, c_slot_border)
 
-	# Icono dentro de la casilla (por defecto la manzana de los assets comunes)
+	# Icono dentro de la casilla (por defecto el corazon de los assets comunes)
 	# Si la textura tiene margen transparente (como los iconos 32x32 de CraftPix),
 	# recortamos su region util para que el icono llene bien la casilla.
-	var tex := icon_texture if icon_texture != null else APPLE_ICON_TEXTURE
+	var tex := icon_texture if icon_texture != null else HEART_ICON_TEXTURE
 	if tex != null:
 		var src_rect := _get_visible_icon_region(tex)
 		var target_max := slot_size - Vector2(4.0, 4.0)

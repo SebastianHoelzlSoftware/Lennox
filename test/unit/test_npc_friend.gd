@@ -133,8 +133,8 @@ func test_npc_interaction_toggles_question_mark_dialog():
 
 	assert_false(npc.is_dialog_visible(), "El dialogo empieza oculto")
 	var icon_tex: Texture2D = npc.dialog_bubble.get("icon_texture") as Texture2D
-	assert_not_null(icon_tex, "Tiene el icono de manzana listo")
-	assert_eq(icon_tex.resource_path, "res://assets/common/icons/Alchemy4_2.png", "Muestra el icono de manzana de los assets")
+	assert_not_null(icon_tex, "Tiene el icono de corazon listo")
+	assert_eq(icon_tex.resource_path, "res://assets/common/icons/Item9_2.png", "Muestra el icono de corazon de los assets")
 
 	# Al interactuar con E (o llamando interact_with_nearest_npc), se abre la ventana con '?'
 	var interacted := player.interact_with_nearest_npc()
