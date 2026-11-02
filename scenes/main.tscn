@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://cv1p1j8ejkni0" path="res://scenes/level.gd" id="3_sugp2"]
 [ext_resource type="TileSet" uid="uid://b8uuaflyj3ja8" path="res://assets/tiles/terrain_master_16x16.tres" id="4_ags1l"]
 [ext_resource type="Script" uid="uid://smk1y6gutxhw" path="res://scenes/player.gd" id="4_jyhfs"]
-[ext_resource type="Script" path="res://scenes/npc_friend.gd" id="5_npcf1"]
+[ext_resource type="Script" uid="uid://dch8nqkl1ieg7" path="res://scenes/npc_friend.gd" id="5_npcf1"]
 [ext_resource type="Texture2D" uid="uid://dcwwrxbyl13wb" path="res://assets/biomes/cave/objects/Volcano2_light_shadow_frame6.png" id="6_600lq"]
 [ext_resource type="Texture2D" uid="uid://cljsyatbhy2kv" path="res://assets/biomes/cave/objects/Red_stone_vertical4.png" id="7_qsxfc"]
 [ext_resource type="Texture2D" uid="uid://dmspxg6djcqan" path="res://assets/biomes/cave/objects/Geyser2.png" id="8_7f6vt"]
@@ -732,6 +732,8 @@
 [ext_resource type="Texture2D" uid="uid://dc0lhdxbnke0c" path="res://assets/biomes/desert/objects/Rock7_grass_shadow.png" id="731_og7jg"]
 [ext_resource type="Texture2D" uid="uid://bsfs2srtqi27e" path="res://assets/biomes/desert/objects/Rock3_3.png" id="732_418hj"]
 [ext_resource type="Texture2D" uid="uid://gviksn0wmt83" path="res://assets/biomes/desert/objects/Grass_element2_2_grass_shadow.png" id="733_dvn18"]
+[ext_resource type="Texture2D" uid="uid://475stpclpwrb" path="res://assets/common/ruins/Brown_ruins4.png" id="733_qsxfc"]
+[ext_resource type="Texture2D" uid="uid://bt7f8ip6mbg4r" path="res://assets/biomes/forest/objects/Swirling tree1.png" id="734_7f6vt"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_tbgi4"]
 radius = 9.0
@@ -12172,7 +12174,7 @@ flip_h = true
 
 [node name="Obj_1795" type="Sprite2D" parent="WorldObjects" unique_id=899138414]
 texture_filter = 1
-position = Vector2(2968, 2783)
+position = Vector2(2976, 2735)
 texture = ExtResource("300_1oqn1")
 offset = Vector2(0, -32)
 flip_h = true
@@ -12336,7 +12338,7 @@ offset = Vector2(0, -16)
 
 [node name="Obj_1821" type="Sprite2D" parent="WorldObjects" unique_id=731227548]
 texture_filter = 1
-position = Vector2(2584, 3039)
+position = Vector2(2576, 3039)
 texture = ExtResource("329_esqyk")
 offset = Vector2(0, -32)
 
@@ -12387,7 +12389,7 @@ flip_h = true
 
 [node name="Obj_1829" type="Sprite2D" parent="WorldObjects" unique_id=915834927]
 texture_filter = 1
-position = Vector2(3216, 2853)
+position = Vector2(3208, 2879)
 texture = ExtResource("296_7qeqb")
 offset = Vector2(0, -16)
 
@@ -12406,14 +12408,14 @@ flip_h = true
 
 [node name="Obj_1832" type="Sprite2D" parent="WorldObjects" unique_id=2080475125]
 texture_filter = 1
-position = Vector2(2768, 2951)
+position = Vector2(2536, 3082)
 texture = ExtResource("327_yayrk")
 offset = Vector2(0, -32)
 flip_h = true
 
 [node name="Obj_1833" type="Sprite2D" parent="WorldObjects" unique_id=2116452643]
 texture_filter = 1
-position = Vector2(3032, 2895)
+position = Vector2(3048, 2911)
 texture = ExtResource("296_7qeqb")
 offset = Vector2(0, -16)
 flip_h = true
@@ -12653,7 +12655,7 @@ offset = Vector2(0, -16)
 
 [node name="Obj_1870" type="Sprite2D" parent="WorldObjects" unique_id=1241080253]
 texture_filter = 1
-position = Vector2(2584, 3103)
+position = Vector2(2573, 3103)
 texture = ExtResource("328_0vk5p")
 offset = Vector2(0, -32)
 
@@ -14390,7 +14392,7 @@ offset = Vector2(0, -16)
 
 [node name="Obj_2144" type="Sprite2D" parent="WorldObjects" unique_id=1215378625]
 texture_filter = 1
-position = Vector2(3320, 2431)
+position = Vector2(3368, 2367)
 texture = ExtResource("294_whx18")
 offset = Vector2(0, -32)
 
@@ -14707,7 +14709,7 @@ flip_h = true
 
 [node name="Obj_2193" type="Sprite2D" parent="WorldObjects" unique_id=293559472]
 texture_filter = 1
-position = Vector2(3240, 2767)
+position = Vector2(3248, 2743)
 texture = ExtResource("295_pxse2")
 offset = Vector2(0, -16)
 flip_h = true
@@ -14728,7 +14730,7 @@ flip_h = true
 
 [node name="Obj_2196" type="Sprite2D" parent="WorldObjects" unique_id=1971799946]
 texture_filter = 1
-position = Vector2(3224, 2719)
+position = Vector2(3328, 2730)
 texture = ExtResource("313_ra23s")
 offset = Vector2(0, -32)
 
@@ -14758,7 +14760,7 @@ offset = Vector2(0, -32)
 
 [node name="Obj_2201" type="Sprite2D" parent="WorldObjects" unique_id=528209697]
 texture_filter = 1
-position = Vector2(3176, 3023)
+position = Vector2(3168, 3018)
 texture = ExtResource("350_8ms1u")
 offset = Vector2(0, -16)
 
@@ -14771,7 +14773,7 @@ flip_h = true
 
 [node name="Obj_2203" type="Sprite2D" parent="WorldObjects" unique_id=443422169]
 texture_filter = 1
-position = Vector2(3128, 3023)
+position = Vector2(3128, 2975)
 texture = ExtResource("258_nditx")
 offset = Vector2(0, -16)
 
@@ -16325,7 +16327,7 @@ offset = Vector2(0, -32)
 
 [node name="Obj_2449" type="Sprite2D" parent="WorldObjects" unique_id=1998055463]
 texture_filter = 1
-position = Vector2(3736, 2367)
+position = Vector2(3720, 2383)
 texture = ExtResource("521_4ybsy")
 offset = Vector2(0, -32)
 
@@ -22020,3 +22022,18 @@ position = Vector2(5048, 5039)
 texture = ExtResource("543_hhynb")
 offset = Vector2(0, -8)
 
+[node name="BrownRuins3" type="Sprite2D" parent="." unique_id=1536993506]
+position = Vector2(2656, 2599)
+texture = ExtResource("378_300fl")
+
+[node name="BrownRuins4" type="Sprite2D" parent="." unique_id=506606494]
+position = Vector2(2680, 2633)
+texture = ExtResource("733_qsxfc")
+
+[node name="BrownRuins5" type="Sprite2D" parent="." unique_id=2116932212]
+position = Vector2(2672, 2671)
+texture = ExtResource("205_ptlvt")
+
+[node name="SwirlingTree1" type="Sprite2D" parent="." unique_id=1543320397]
+position = Vector2(2568, 2911)
+texture = ExtResource("734_7f6vt")
