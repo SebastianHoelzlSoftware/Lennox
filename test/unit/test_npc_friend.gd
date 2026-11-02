@@ -135,12 +135,17 @@ func test_npc_interaction_toggles_question_mark_dialog():
 	var icon_tex: Texture2D = npc.dialog_bubble.get("icon_texture") as Texture2D
 	assert_not_null(icon_tex, "Tiene el icono de corazon listo")
 	assert_eq(icon_tex.resource_path, "res://assets/common/icons/Item9_2.png", "Muestra el icono de corazon de los assets")
+	assert_eq(npc.dialog_bubble.get("word_text"), "LOVE", "La palabra por defecto debajo del icono es LOVE")
 
-	# Al interactuar con E (o llamando interact_with_nearest_npc), se abre la ventana con '?'
+	# Al interactuar con E (o llamando interact_with_nearest_npc), se abre la ventana con corazon + LOVE
 	var interacted := player.interact_with_nearest_npc()
 	assert_eq(interacted, npc, "Interactua con el companero mas cercano")
 	assert_true(npc.is_dialog_visible(), "La ventana de dialogo se muestra al interactuar")
 	assert_eq(npc.animated_sprite.animation, &"idle_right", "El NPC mira hacia el jugador al hablar")
+
+	# Se puede cambiar dinamicamente el simbolo y la palabra mostrada
+	npc.interact(player, null, "APPLE")
+	assert_eq(npc.dialog_bubble.get("word_text"), "APPLE", "Permite actualizar la palabra mostrada en los bloques")
 
 	# Al volver a pulsar E mientras esta abierta, se cierra
 	player.interact_with_nearest_npc()

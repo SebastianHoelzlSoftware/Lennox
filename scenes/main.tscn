@@ -819,6 +819,7 @@ position_smoothing_enabled = true
 position = Vector2(2540, 2574)
 script = ExtResource("5_npcf1")
 target_path = NodePath("../CharacterBody2D")
+dialog_word = "AMOR"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="NpcFriend" unique_id=1849302113]
 shape = SubResource("CapsuleShape2D_tbgi4")

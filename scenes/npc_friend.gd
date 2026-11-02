@@ -13,6 +13,8 @@ extends CharacterBody2D
 @export var breadcrumb_spacing: float = 12.0
 @export var interaction_radius: float = 64.0
 @export var dialog_auto_hide_seconds: float = 3.5
+@export var dialog_word: String = "LOVE"
+@export var dialog_icon: Texture2D = null
 
 const DialogBubbleScript = preload("res://scenes/npc_dialog_bubble.gd")
 
@@ -102,6 +104,9 @@ func _ready() -> void:
 		dialog_bubble.position = Vector2(0.0, -14.0)
 		dialog_bubble.visible = false
 		add_child(dialog_bubble)
+	dialog_bubble.set("word_text", dialog_word)
+	if dialog_icon != null:
+		dialog_bubble.set("icon_texture", dialog_icon)
 
 	if not target_path.is_empty():
 		target = get_node_or_null(target_path) as Node2D
@@ -109,7 +114,7 @@ func _ready() -> void:
 		target = get_parent().get_node_or_null("CharacterBody2D") as Node2D
 
 
-func interact(interactor: Node2D = null, custom_icon: Texture2D = null) -> void:
+func interact(interactor: Node2D = null, custom_icon: Texture2D = null, custom_word: String = "") -> void:
 	if interactor != null:
 		var to_interactor := interactor.global_position - global_position
 		if to_interactor.length() > 1.0:
@@ -119,14 +124,16 @@ func interact(interactor: Node2D = null, custom_icon: Texture2D = null) -> void:
 	if dialog_bubble == null:
 		return
 
-	if dialog_bubble.visible and custom_icon == null:
+	if dialog_bubble.visible and custom_icon == null and custom_word.is_empty():
 		dialog_bubble.call("hide_bubble")
 		_dialog_timer = 0.0
 	else:
-		if custom_icon != null:
-			dialog_bubble.call("show_icon", custom_icon)
+		var word_to_show := custom_word if not custom_word.is_empty() else dialog_word
+		var icon_to_show := custom_icon if custom_icon != null else dialog_icon
+		if icon_to_show != null:
+			dialog_bubble.call("show_symbol_and_word", icon_to_show, word_to_show)
 		else:
-			dialog_bubble.call("show_heart")
+			dialog_bubble.call("show_heart", word_to_show)
 		_dialog_timer = dialog_auto_hide_seconds
 
 
