@@ -38,7 +38,10 @@ Siguiendo el diseno visual de la vision de **Lennox**, el jugador viaja acompana
 <p align="center"><strong>La captura más reciente del juego</strong></p>
 
 
-https://github.com/user-attachments/assets/53d6cd8b-25e3-4bee-afba-5ebc8461a7c8
+
+
+https://github.com/user-attachments/assets/242e53a6-bf94-48ca-92d3-e11ae9e5d1c4
+
 
 
 ---
