@@ -8,18 +8,24 @@ extends Node2D
 const HEART_ICON_TEXTURE: Texture2D = preload("res://assets/common/icons/Item9_2.png")
 const APPLE_ICON_TEXTURE: Texture2D = preload("res://assets/common/icons/Alchemy4_2.png")
 
-# Colores ciclicos para los cuadritos de letras (tomados del widget en lennox_project_vision.jpg)
-const TILE_FILL_COLORS := [
-	Color("#E5A93C"), # Amarillo/ambar calido ('A')
-	Color("#88C440"), # Verde lima ('B')
-	Color("#F08C34"), # Naranja ('C')
-	Color("#64B896"), # Turquesa/menta ('N')
+# Colores ciclicos para los cuadritos de letras (inspirados en la puerta magica y el cielo de title_art_03.jpg)
+const TILE_BG_COLORS := [
+	Color("#2C263D"),
+	Color("#233238"),
+	Color("#2D253E"),
+	Color("#1F333B"),
 ]
-const TILE_HI_COLORS := [
-	Color("#FFCE6B"),
-	Color("#B4E66C"),
-	Color("#FFB46B"),
-	Color("#94DEC0"),
+const LETTER_CORE_COLORS := [
+	Color("#FFE875"), # Dorado solar brillante ('A')
+	Color("#A8FF60"), # Verde esmeralda luminoso ('M')
+	Color("#FFAE52"), # Ambar / fuego magico ('O')
+	Color("#68F2FF"), # Cian magico ('R')
+]
+const LETTER_HALO_COLORS := [
+	Color("#FF9424"),
+	Color("#32D848"),
+	Color("#FF5828"),
+	Color("#1CB8FF"),
 ]
 
 # Fuente pixel-art 5x7 para letras A-Z, 0-9 y signos basicos
@@ -225,26 +231,51 @@ func _draw() -> void:
 		var draw_pos := slot_rect.position + (slot_rect.size - draw_size) * 0.5
 		draw_texture_rect_region(tex, Rect2(draw_pos, draw_size), src_rect)
 
-	# Fila de cuadritos con letras debajo del icono (como los bloques A, B, C, N en la Vision de Lennox)
+	# Fila de cuadritos con letras magicas luminosas (como en el arco de piedra y el cielo de title_art_03.jpg)
 	if char_count > 0:
 		var tiles_start_x := box_rect.position.x + (box_w - tiles_row_w) * 0.5
 		var tiles_y := slot_rect.end.y + 3.5
 		for i in range(char_count):
 			var ch := clean_word.substr(i, 1)
-			var tile_pos := Vector2(tiles_start_x + i * (tile_w + tile_gap), tiles_y)
-			var tile_rect := Rect2(tile_pos, Vector2(tile_w, tile_h))
 			if ch == " ":
 				continue
-			var fill_col: Color = TILE_FILL_COLORS[i % TILE_FILL_COLORS.size()]
-			var hi_col: Color = TILE_HI_COLORS[i % TILE_HI_COLORS.size()]
-			_draw_pixel_rounded_rect(tile_rect, fill_col, c_outline)
-			draw_line(
-				tile_rect.position + Vector2(2.0, 1.5),
-				tile_rect.position + Vector2(tile_w - 2.0, 1.5),
-				hi_col,
-				1.0
+			# Onda suave desfasada por letra para que parezcan flotar con energia magica
+			var wave := sin(_pulse_time * 4.5 - float(i) * 0.85)
+			var glow_pulse := 0.5 + 0.5 * wave
+			var letter_bob := roundf(wave * 0.65)
+			var tile_pos := Vector2(tiles_start_x + i * (tile_w + tile_gap), tiles_y + letter_bob)
+			var tile_rect := Rect2(tile_pos, Vector2(tile_w, tile_h))
+
+			var bg_col: Color = TILE_BG_COLORS[i % TILE_BG_COLORS.size()]
+			var core_col: Color = LETTER_CORE_COLORS[i % LETTER_CORE_COLORS.size()]
+			var halo_col: Color = LETTER_HALO_COLORS[i % LETTER_HALO_COLORS.size()]
+
+			# 1. Aura exterior difusa alrededor del bloque de piedra/magia
+			var outer_aura := Color(halo_col.r, halo_col.g, halo_col.b, 0.16 + 0.18 * glow_pulse)
+			_draw_pixel_rounded_rect(
+				Rect2(tile_rect.position - Vector2(1.0, 1.0), tile_rect.size + Vector2(2.0, 2.0)),
+				outer_aura,
+				Color.TRANSPARENT
 			)
-			_draw_pixel_glyph(ch, tile_pos + Vector2(3.0, 2.0), c_outline)
+
+			# 2. Bloque oscuro con borde iluminado por el color magico de la letra
+			var rim_col := c_outline.lerp(halo_col, 0.35 + 0.35 * glow_pulse)
+			_draw_pixel_rounded_rect(tile_rect, bg_col, rim_col)
+
+			# 3. Resplandor interior suave dentro del bloque
+			var inner_glow := Color(halo_col.r, halo_col.g, halo_col.b, 0.18 + 0.16 * glow_pulse)
+			draw_rect(Rect2(tile_rect.position + Vector2(2.0, 2.0), tile_rect.size - Vector2(4.0, 4.0)), inner_glow, true)
+
+			# 4. Letra con halo magico + nucleo incandescente
+			var bright_core := core_col.lerp(Color.WHITE, 0.25 + 0.35 * glow_pulse)
+			var halo_alpha_col := Color(halo_col.r, halo_col.g, halo_col.b, 0.48 + 0.32 * glow_pulse)
+			_draw_glowing_pixel_glyph(ch, tile_pos + Vector2(3.0, 2.0), bright_core, halo_alpha_col)
+
+		# 5. Estrellitas / chispas magicas (sparkles) parpadeando alrededor de las letras
+		_draw_magic_sparkles(
+			Rect2(Vector2(tiles_start_x - 3.0, tiles_y - 2.0), Vector2(tiles_row_w + 6.0, tile_h + 4.0)),
+			char_count
+		)
 
 	# Barra naranja inferior (como el boton/barra inferior del GUI en la Vision de Lennox)
 	var bar_w := clampf(box_w - 14.0, 30.0, box_w - 10.0)
@@ -260,13 +291,48 @@ func _draw() -> void:
 	)
 
 
-func _draw_pixel_glyph(ch: String, top_left: Vector2, color: Color) -> void:
+func _draw_glowing_pixel_glyph(ch: String, top_left: Vector2, core_color: Color, halo_color: Color) -> void:
 	var rows: Array = PIXEL_FONT_5X7.get(ch, PIXEL_FONT_5X7["?"])
+	# Primero dibujamos el halo luminoso 1px alrededor de cada pixel activo de la letra
+	var offsets := [Vector2(-1.0, 0.0), Vector2(1.0, 0.0), Vector2(0.0, -1.0), Vector2(0.0, 1.0)]
 	for ry in range(rows.size()):
 		var row_str: String = rows[ry]
 		for rx in range(row_str.length()):
 			if row_str[rx] == "1":
-				draw_rect(Rect2(top_left + Vector2(rx, ry), Vector2(1.0, 1.0)), color, true)
+				var p := top_left + Vector2(rx, ry)
+				for off: Vector2 in offsets:
+					draw_rect(Rect2(p + off, Vector2(1.0, 1.0)), halo_color, true)
+
+	# Encima dibujamos el nucleo brillante de la letra
+	for ry in range(rows.size()):
+		var row_str: String = rows[ry]
+		for rx in range(row_str.length()):
+			if row_str[rx] == "1":
+				var p := top_left + Vector2(rx, ry)
+				draw_rect(Rect2(p, Vector2(1.0, 1.0)), core_color, true)
+
+
+func _draw_magic_sparkles(region: Rect2, count: int) -> void:
+	var sparkle_count := maxi(3, count)
+	for s in range(sparkle_count):
+		var phase := _pulse_time * 3.2 + float(s) * 1.75
+		var twinkle := sin(phase)
+		if twinkle < 0.15:
+			continue
+		var norm := (twinkle - 0.15) / 0.85
+		var t_x := fmod(float(s) * 0.37 + 0.12, 1.0)
+		var t_y := 0.15 if (s % 2 == 0) else 0.88
+		var pos := Vector2(
+			region.position.x + region.size.x * t_x,
+			region.position.y + region.size.y * t_y + cos(phase * 0.7) * 1.2
+		)
+		var col: Color = LETTER_CORE_COLORS[s % LETTER_CORE_COLORS.size()].lerp(Color.WHITE, 0.6)
+		col.a = clampf(norm * 0.95, 0.0, 1.0)
+		draw_rect(Rect2(pos, Vector2(1.0, 1.0)), col, true)
+		if norm > 0.65:
+			var ray_col := Color(col.r, col.g, col.b, col.a * 0.45)
+			draw_rect(Rect2(pos + Vector2(-1.0, 0.0), Vector2(3.0, 1.0)), ray_col, true)
+			draw_rect(Rect2(pos + Vector2(0.0, -1.0), Vector2(1.0, 3.0)), ray_col, true)
 
 
 func _draw_pixel_rounded_rect(rect: Rect2, fill_color: Color, border_color: Color) -> void:
