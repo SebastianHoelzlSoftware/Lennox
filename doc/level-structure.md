@@ -22,10 +22,10 @@ Los fragmentos de código siguientes son esquemas de diseño y pueden diferir de
 
 | Parametro | Valor | Descripcion |
 |-----------|-------|-------------|
-| **Tamano del Nivel** | 64x64 chunks | Tamano total de un nivel |
+| **Tamano del Nivel (Demo actual)** | 10x10 chunks (configurable hasta 64x64) | Tamano del nivel en `scenes/main.gd` (semilla `691`) |
 | **Tamano del Chunk** | 32x32 baldosas | Numero de baldosas por chunk |
-| **Tamano de Baldosa** | 16x16 pixeles | Tamano del atlas de rocas en Godot |
-| **Tamano Total** | 1024x1024 pixeles | 64 x 32 x 16 = 1024 pixeles por eje |
+| **Tamano de Baldosa** | 16x16 pixeles | Tamano de celda en `terrain_master_16x16.tres` y `rocks_16x16.tres` |
+| **Tamano Total (10x10)** | 5120x5120 pixeles | 10 x 32 x 16 = 5120 pixeles por eje (320x320 baldosas) |
 
 ### Clase Level (GDScript)
 

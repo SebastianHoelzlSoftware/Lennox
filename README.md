@@ -20,6 +20,17 @@
   <img src="doc/images/lennox_project_vision.jpg" alt="Vision del juego educativo Lennox con biomas, exploracion y aprendizaje de lectura" width="100%">
 </p>
 
+### 💬 Companera NPC y Burbuja Educativa de Palabras (`AMOR`)
+
+Siguiendo el diseno visual de la vision de **Lennox**, el jugador viaja acompanado por una **arquera companera (`NpcFriend`)** que sigue sus pasos de forma natural por el mundo. Al acercarse a ella y pulsar la tecla **`E`** (`interact`), se despliega una **burbuja de dialogo interactiva (`NpcDialogBubble`)** que combina:
+
+- **Asociacion visual simbolo + palabra**: Muestra un icono ilustrativo (como el corazon ❤️) junto a la palabra representada en **bloques de letras de colores (`A` `M` `O` `R`)**, facilitando que los ninos conecten la imagen con cada letra de forma intuitiva en espanol e ingles.
+- **Totalmente configurable desde el Inspector de Godot**: Tanto el icono (`dialog_icon`) como la palabra (`dialog_word = "AMOR"`) se pueden ajustar directamente en cada NPC o dinamicamente por codigo para crear nuevos encuentros y vocabulario.
+
+<p align="center">
+  <img src="doc/images/npc_dialog_amor_vision.png" alt="Companera arquera mostrando el icono de corazon y la palabra AMOR en bloques de letras al pulsar E" width="68%">
+</p>
+
 ---
 
 ## 🎬 Daily Screencap
@@ -103,7 +114,8 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 | **LEN-15** | Colocar aperturas en las barreras | ✅ Completado | Aperturas generadas e interactivas (puertas, desfiladeros, vados) |
 | **LEN-34** | Población ecológica y catálogo de objetos | ✅ Completado | Catálogo dinámico `ObjectCatalog` y 4 reglas de población para los 8 biomas |
 | **LEN-17** | Pruebas de integración de barreras y chunks | ✅ Completado | Pruebas unitarias y de integración para la generación y aplicación de formaciones |
-| **LEN-16** | Integrar Godot y crear nivel de demostración | ✅ Completado | Escena de exploración con cámara suave, zoom y ordenación en Y |
+| **LEN-16** | Integrar Godot y crear nivel de demostración | ✅ Completado | Escena principal con mapa horneado (seed `691`), cámara suave, compañera NPC y diálogo `AMOR` |
+| **LEN-43** | Burbuja de diálogo NPC con bloques de letras | 🔄 En progreso | Ventana de diálogo al pulsar `E` con icono y palabra configurable (`AMOR` / `LOVE`) |
 | **LEN-20** | Añadir características de mundo entre chunks | 📋 Por hacer | Soporte para ríos continuos entre límites de chunks |
 
 ---
@@ -135,7 +147,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   │       ├── biome_type.gd            # Enum global de los 8 biomas (BiomeType)
   │       └── tile_type.gd             # Enum global de tipos de baldosa (TileType)
   ├── test/
-  │   ├── unit/                        # Tests unitarios con GUT (11 suites, 83 tests)
+  │   ├── unit/                        # Tests unitarios con GUT (11 suites, 84 tests)
   │   │   ├── test_barrier.gd
   │   │   ├── test_biome.gd
   │   │   ├── test_chunk.gd
@@ -156,11 +168,12 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   │   ├── tiles/                       # TileSet maestro de terreno (terrain_master_16x16.tres) y rocas
   │   └── title_art/                   # Arte conceptual y portada del proyecto
   ├── scenes/
-  │   ├── main.tscn                    # Escena principal (mundo horneado seed 691 + jugador y companeros)
+  │   ├── main.tscn                    # Escena principal (mundo horneado seed 691 + jugador y companera)
   │   ├── main.gd                      # Controlador de escena, camara suave, zoom y capturas
   │   ├── level.gd                     # Renderizado multicapa del terreno (TerrainPainter) y objetos
-  │   ├── player.gd                    # Controlador del jugador, movimiento y animaciones
-  │   ├── npc_friend.gd                # Companero NPC con seguimiento por migas de pan (arquera / dino)
+  │   ├── player.gd                    # Controlador del jugador, movimiento, animaciones e interaccion (E)
+  │   ├── npc_friend.gd                # Companero NPC con seguimiento por migas de pan e interaccion
+  │   ├── npc_dialog_bubble.gd         # Burbuja de dialogo estilo Vision de Lennox (icono + bloques AMOR)
   │   ├── terrain_lab.tscn             # Escena del laboratorio visual de estilos por bioma
   │   ├── terrain_lab.gd               # Generador de galeria de pruebas para los 8 biomas
   │   ├── test_autotiling_level.tscn   # Escena de prueba de autotiling para los 8 biomas
@@ -207,7 +220,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 
 ## 🧪 Pruebas
 
-El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 83 pruebas unitarias y 6 de integracion (89 en total), con una tasa de exito del 100%.
+El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 84 pruebas unitarias y 6 de integracion (90 en total), con una tasa de exito del 100%.
 
 | Suite | Cantidad | Cobertura |
 |-------|---------:|-----------|
@@ -216,7 +229,7 @@ El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit T
 | [`test_chunk.gd`](test/unit/test_chunk.gd) | 11 | Inicializacion de chunks, barreras y aplicacion de baldosas |
 | [`test_cliff_autotiler.gd`](test/unit/test_cliff_autotiler.gd) | 7 | Clasificacion 9-slice, esquinas, bordes y dibujado de mesetas |
 | [`test_level.gd`](test/unit/test_level.gd) | 15 | Generacion de niveles, reglas de forma, estilos y poblacion de objetos |
-| [`test_npc_friend.gd`](test/unit/test_npc_friend.gd) | 6 | Companeros NPC (arquera, dino y oso polar), animaciones 4 direcciones y seguimiento |
+| [`test_npc_friend.gd`](test/unit/test_npc_friend.gd) | 7 | Companeros NPC, animaciones 4 direcciones, seguimiento y burbuja de dialogo |
 | [`test_object_catalog.gd`](test/unit/test_object_catalog.gd) | 5 | Catalogo de activos para los 8 biomas y categorias comunes |
 | [`test_terrain_painter.gd`](test/unit/test_terrain_painter.gd) | 6 | Autotiling 3x3 + esquinas concavas, caras 3/4, derrames y estilos |
 | [`test_tilemapper.gd`](test/unit/test_tilemapper.gd) | 3 | Dibujado de patrones en TileMapLayer |

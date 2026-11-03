@@ -30,13 +30,11 @@ Godot binaries and generated editor data are local tooling, not project source. 
 
 ### Map and TileSet notes
 
-- The current demo scene is `scenes/main.tscn` with logic in `scenes/main.gd`. It generates 12x12 chunks, each 32x32 tiles, using seed `12345`.
+- The current demo scene is `scenes/main.tscn` with logic in `scenes/main.gd`. It generates 10x10 chunks, each 32x32 tiles, using seed `691` (with the generated layers and 3,348 world objects baked directly into `scenes/main.tscn` via `assets/tiles/terrain_master_16x16.tres` and `regenerate_on_start = false` by default so manual editor changes are preserved).
 - `Level.biome_map` is indexed `[x][y]`; chunk biome is `chunk.biome`. Biome enums are in `src/core/biome_type.gd`; tile enums are in `src/core/tile_type.gd`.
-- The demo starts the player in the connected `GRASSLAND` region nearest the map center and selects a walkable `TileType.GRASS` cell in its center chunk.
-- `scenes/main.tscn` uses `assets/tiles/rocks/rocks_16x16.tres`, a combined 16x16-pixel TileSet with named atlas sources including `Objects` and `Ground_rocks`. Keep this distinct from the per-sheet `.tres` files under `assets/tiles/rocks/tilesets/`; scene integration tests should use the combined resource.
-- Named object resources are in `assets/tiles/rocks/tile_object_library.tres`; `TileObjectLibrary.get_pattern()` returns explicit patterns or lazily creates a pattern from `atlas_groups`. Group names like `objects_r04_c08` identify connected atlas coordinates, not guaranteed semantic objects; inspect the source texture before selecting one. `bone_fragment` is a hand-authored 2x3 object.
-- The scene has a separate `ObjectTileMap` over the terrain layer. Current grass-biome decoration is intentionally temporary pending LEN-34: it tries 2-4 seed-derived patterns per grass chunk, restricts every footprint cell to `TileType.GRASS`, tracks occupied cells, and leaves a 5x5 spawn clearing. Placement attempts can skip objects when a chunk has no suitable space.
-- `test/unit/test_main_object_layer.gd` covers the scene's terrain restrictions and distribution. The latest full suite has 68 GUT tests (60 unit, 8 integration); update the README count when changing tests.
+- Multi-layer 3/4 terrain autotiling is handled by `src/core/terrain_painter.gd` and `src/core/terrain_styles.gd` across all 8 biomes, while ecological object population is handled by `src/core/object_catalog.gd` and `Level._populate_chunk_objects()`.
+- `scenes/npc_friend.gd` and `scenes/npc_dialog_bubble.gd` implement the NPC companion (`NpcFriend`, female archer) that follows the player via a breadcrumb trail and displays a Vision-styled dialog bubble with an icon and colored letter blocks (`dialog_word = "AMOR"` in `scenes/main.tscn`) when the player presses `E` (`interact`).
+- The latest full suite has 90 GUT tests (84 unit in 11 suites, 6 integration); update the README count when changing tests.
 
 ### Player sprite sheets
 

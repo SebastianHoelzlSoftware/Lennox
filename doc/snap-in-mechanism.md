@@ -1,373 +1,185 @@
-# Snap-In-Mechanismus für Lennox
+# Mecanismo de Encaje (Snap-In) para Lennox
 
-## 📌 Status: **Geplant (LEN-4)** 📋
+## 📌 Estado: **Planificado (LEN-23 / LEN-27)** 📋
 
-Der Snap-In-Mechanismus ist der **Kernmechanismus** für das Lernspiel Lennox. Er ermöglicht es Spielern, Buchstaben oder Silben durch Drag & Drop zu kombinieren, um Wörter zu bilden.
+El mecanismo de encaje (*Snap-In*) es la **mecánica educativa central** del juego **Lennox**. Permite a los niños combinar letras o sílabas mediante arrastrar y soltar (*Drag & Drop*) para formar palabras asociadas a los iconos y encuentros con compañeros NPC (como la burbuja de diálogo con el corazón y la palabra `AMOR`).
 
-**Implementierungsstatus:**
-- ⏳ Snap-In-Logik (Drag & Drop, Einrasten, Rücksetzen)
-- ⏳ Silbenmodus (Puzzleteile = Silben statt Buchstaben)
-- ⏳ Audiounterstützung (phonetisches Abspielen von Buchstaben/Silben)
+**Estado de implementación:**
+- ✅ Visualización de icono + bloques de letras de colores en la burbuja de diálogo NPC (`scenes/npc_dialog_bubble.gd`)
+- ⏳ Lógica interactiva de *Snap-In* (arrastrar, encajar en la casilla correcta y reiniciar si no coincide)
+- ⏳ Modo de sílabas (piezas de rompecabezas por sílabas además de letras individuales)
+- ⏳ Soporte de audio fonético (reproducción de cada letra, sílaba y palabra completa en español e inglés)
 
 ---
 
-## Übersicht
+## Descripción General
 
-### Mechanismus
-1. **Drag & Drop:** Spieler zieht Puzzleteile (Buchstaben oder Silben) auf freie Felder
-2. **Snap-In:** Teile rasten ein, wenn sie an der richtigen Position sind
-3. **Rücksetzen:** Falsch platzierte Teile kehren zum Start zurück
-4. **Fertigstellung:** Bei korrekter Kombination wird das Wort/Silbenwort abgespielt
+### Funcionamiento
+1. **Arrastrar y soltar (*Drag & Drop*):** El jugador arrastra bloques de letras o sílabas hacia las casillas vacías de la palabra.
+2. **Encaje (*Snap-In*):** La pieza encaja automáticamente cuando se acerca a su casilla correcta y reproduce su sonido fonético.
+3. **Reinicio suave:** Si una pieza se suelta en una posición incorrecta, regresa suavemente a su posición inicial.
+4. **Palabra completada:** Al encajar todas las piezas en orden, se reproduce el audio de la palabra completa y una animación de celebración.
 
-### Modi
-| Modus | Puzzleteile | Beispiel | Zielgruppe |
+### Modos de Aprendizaje
+| Modo | Piezas del Rompecabezas | Ejemplo | Público Objetivo |
 |-------|-------------|----------|------------|
-| **Buchstabenmodus** | Einzelne Buchstaben | M, A, M, A → MAMA | Anfänger |
-| **Silbenmodus** | Silben | Ma, ma → Mama | Fortgeschrittene |
+| **Modo Letras** | Letras individuales | `A`, `M`, `O`, `R` → `AMOR` | Principiantes |
+| **Modo Sílabas** | Sílabas | `MA`, `MA` → `MAMA` / `MAN`, `ZA`, `NA` → `MANZANA` | Intermedios / Avanzados |
 
 ---
 
-## Technische Anforderungen
+## Diseño Técnico
 
-### 1. Puzzleteil-Klasse
+### 1. Clase de Pieza (`PuzzlePiece`)
 
 ```gdscript
 # puzzle_piece.gd
 class_name PuzzlePiece
 
-# Typ: Buchstabe oder Silbe
 enum PieceType { LETTER, SYLLABLE }
 
 var type: PieceType = PieceType.LETTER
-var value: String = ""          # "A", "B", "Ma", "ma" etc.
-var audio_path: String = ""    # Pfad zur Audiodatei
-var is_snapped: bool = false    # Ist das Teil eingerastet?
-var correct_position: Vector2   # Zielposition für Snap-In
-var current_position: Vector2   # Aktuelle Position
-var start_position: Vector2     # Startposition (für Rücksetzen)
+var value: String = ""          # "A", "M", "MA", etc.
+var audio_path: String = ""     # Ruta al archivo de audio fonético
+var is_snapped: bool = false    # ¿Está encajada en su casilla?
+var correct_position: Vector2   # Posición objetivo del slot
+var current_position: Vector2   # Posición actual
+var start_position: Vector2     # Posición inicial para reinicio
 
-# --- Methoden ---
 func snap_in() -> void:
-    """Rastet das Teil an der korrekten Position ein."""
-    current_position = correct_position
-    is_snapped = true
-    play_audio()
+	"""Encaja la pieza en la posición correcta y reproduce su sonido."""
+	current_position = correct_position
+	is_snapped = true
+	play_audio()
 
 func reset() -> void:
-    """Setzt das Teil auf die Startposition zurück."""
-    current_position = start_position
-    is_snapped = false
+	"""Devuelve la pieza a su posición inicial."""
+	current_position = start_position
+	is_snapped = false
 
 func play_audio() -> void:
-    """Spielt die Audiodatei ab."""
-    if audio_path != "":
-        var audio := load(audio_path)
-        if audio:
-            audio.play()
+	"""Reproduce el archivo de audio asociado a la letra o sílaba."""
+	if audio_path != "":
+		var audio := load(audio_path)
+		if audio:
+			audio.play()
 ```
 
-### 2. Snap-In-Logik
+### 2. Gestor de Encaje (`SnapInManager`)
 
 ```gdscript
 # snap_in_manager.gd
 class_name SnapInManager
 
-# Alle Puzzleteile
+const SNAP_RADIUS := 18.0
+
 var puzzle_pieces: Array[PuzzlePiece] = []
-
-# Zielwort (für Validierung)
 var target_word: String = ""
-
-# Aktuell platzierte Teile
 var placed_pieces: Array[PuzzlePiece] = []
 
-# --- Methoden ---
 func check_snap(p_piece: PuzzlePiece, p_position: Vector2) -> bool:
-    """Prüft, ob ein Puzzleteil an der Position einrasten soll."""
-    # Prüfe, ob die Position der korrekten Position des Teils entspricht
-    if p_position.distance_to(p_piece.correct_position) < SNAP_RADIUS:
-        p_piece.snap_in()
-        placed_pieces.append(p_piece)
-        check_completion()
-        return true
-    return false
+	"""Verifica si una pieza debe encajar en su casilla objetivo."""
+	if p_position.distance_to(p_piece.correct_position) < SNAP_RADIUS:
+		p_piece.snap_in()
+		placed_pieces.append(p_piece)
+		check_completion()
+		return true
+	return false
 
 func check_completion() -> bool:
-    """Prüft, ob alle Teile korrekt platziert sind."""
-    if placed_pieces.size() == puzzle_pieces.size():
-        # Alle Teile platziert - Wort ist fertig
-        play_complete_audio()
-        return true
-    return false
+	"""Comprueba si todas las piezas de la palabra han sido colocadas."""
+	if placed_pieces.size() == puzzle_pieces.size():
+		play_complete_audio()
+		return true
+	return false
 
 func play_complete_audio() -> void:
-    """Spielt das vollständige Wort ab."""
-    # Kombiniere alle platzierten Teile
-    var word := ""
-    for piece in placed_pieces:
-        word += piece.value
-    
-    # Spiele die Audiodatei für das vollständige Wort ab
-    var audio_path := "res://audio/words/" + word.to_lower() + ".ogg"
-    var audio := load(audio_path)
-    if audio:
-        audio.play()
+	"""Reproduce el audio de la palabra completa."""
+	var word := ""
+	for piece in placed_pieces:
+		word += piece.value
+	var audio_path := "res://audio/words/" + word.to_lower() + ".ogg"
+	var audio := load(audio_path)
+	if audio:
+		audio.play()
 
 func reset_all() -> void:
-    """Setzt alle Puzzleteile zurück."""
-    for piece in puzzle_pieces:
-        piece.reset()
-    placed_pieces.clear()
+	"""Reinicia todas las piezas del rompecabezas."""
+	for piece in puzzle_pieces:
+		piece.reset()
+	placed_pieces.clear()
 ```
 
-### 3. Silbenmodus
-
-#### Silben-Generierung
+### 3. Generador de Sílabas (`SyllableGenerator`)
 
 ```gdscript
 # syllable_generator.gd
 class_name SyllableGenerator
 
-# Wörterbuch: Wort → Silben
 var syllable_dictionary: Dictionary = {
-    "Mama": ["Ma", "ma"],
-    "Papa": ["Pa", "pa"],
-    "Ball": ["Ba", "ll"],
-    "Haus": ["Hau", "s"],
-    "Baum": ["Bau", "m"],
-    "Wasser": ["Was", "ser"],
-    "Buch": ["Bu", "ch"],
-    "Schule": ["Schu", "le"],
-    "Apfel": ["Ap", "fel"],
-    "Banane": ["Ba", "na", "ne"]
+	"AMOR": ["A", "MOR"],
+	"MAMA": ["MA", "MA"],
+	"PAPA": ["PA", "PA"],
+	"CASA": ["CA", "SA"],
+	"AGUA": ["A", "GUA"],
+	"ARBOL": ["AR", "BOL"],
+	"MANZANA": ["MAN", "ZA", "NA"],
 }
 
 func get_syllables_for_word(p_word: String) -> Array:
-    """Gibt die Silben für ein Wort zurück."""
-    if syllable_dictionary.has(p_word):
-        return syllable_dictionary[p_word]
-    
-    # Fallback: Zerlege das Wort in einzelne Buchstaben
-    var syllables := []
-    for i in range(p_word.length()):
-        syllables.append(p_word[i])
-    return syllables
-
-func generate_puzzle_pieces(p_word: String, p_mode: int) -> Array[PuzzlePiece]:
-    """Generiert Puzzleteile für ein Wort im angegebenen Modus.
-    
-    Args:
-        p_word: Das Zielwort
-        p_mode: PieceType.LETTER oder PieceType.SYLLABLE
-    """
-    var pieces := []
-    var parts := []
-    
-    if p_mode == PieceType.SYLLABLE:
-        parts = get_syllables_for_word(p_word)
-    else:
-        # Buchstabenmodus
-        for i in range(p_word.length()):
-            parts.append(p_word[i])
-    
-    # Erstelle Puzzleteile für jeden Teil
-    var x_offset := 0
-    for part in parts:
-        var piece := PuzzlePiece.new()
-        piece.type = p_mode
-        piece.value = part
-        piece.audio_path = "res://audio/" + ("syllables/" if p_mode == PieceType.SYLLABLE else "letters/") + part.to_lower() + ".ogg"
-        piece.correct_position = Vector2(x_offset, 0)
-        piece.start_position = Vector2(x_offset, -100)  # Oberhalb des Bildschirms
-        piece.current_position = piece.start_position
-        
-        pieces.append(piece)
-        x_offset += 50  # Abstand zwischen den Teilen
-    
-    return pieces
+	var upper := p_word.to_upper()
+	if syllable_dictionary.has(upper):
+		return syllable_dictionary[upper]
+	var syllables := []
+	for i in range(upper.length()):
+		syllables.append(upper[i])
+	return syllables
 ```
 
 ---
 
-## Audiounterstützung
+## Soporte de Audio Bilingüe (Español e Inglés)
 
-### Dateistruktur
+### Estructura de Archivos Propuesta
 ```
-res/
-├── audio/
-│   ├── letters/
-│   │   ├── a.ogg
-│   │   ├── b.ogg
-│   │   ├── c.ogg
-│   │   └── ...
-│   ├── syllables/
-│   │   ├── ma.ogg
-│   │   ├── ba.ogg
-│   │   ├── ll.ogg
-│   │   └── ...
-│   └── words/
-│       ├── mama.ogg
-│       ├── papa.ogg
-│       ├── ball.ogg
-│       └── ...
+res://audio/
+├── es/
+│   ├── letters/    # a.ogg, b.ogg, c.ogg...
+│   ├── syllables/  # ma.ogg, pa.ogg, man.ogg...
+│   └── words/      # amor.ogg, manzana.ogg...
+└── en/
+    ├── letters/    # a.ogg, b.ogg, c.ogg...
+    └── words/      # love.ogg, apple.ogg...
 ```
 
-### Audio-Format
-- **Format:** OGG Vorbis (komprimiert, gut für Mobile)
-- **Sample Rate:** 44.1 kHz oder 48 kHz
-- **Bitrate:** 128 kbps (ausreichend für Sprachaufnahmen)
-- **Dauer:** 0.5–1.5 Sekunden pro Buchstabe/Silbe
-
-### Audio-Aufnahme
-- **Buchstaben:** Einzelne Buchstaben phonetisch (z. B. "A" wie in "Ameise")
-- **Silben:** Natürlich ausgesprochen (z. B. "Ma" wie in "Mama")
-- **Wörter:** Komplettes Wort (z. B. "Mama")
+### Formato Recomendado
+- **Formato:** OGG Vorbis (comprimido, ideal para dispositivos móviles)
+- **Frecuencia de muestreo:** 44.1 kHz o 48 kHz
+- **Duración:** 0.5–1.5 segundos por letra/sílaba
 
 ---
 
-## Spiel-Integration
+## Retroalimentación Visual y Niveles de Dificultad
 
-### Szene-Struktur
-```
-SnapInScene (Node2D)
-├── PuzzlePiece_1 (PuzzlePiece)
-├── PuzzlePiece_2 (PuzzlePiece)
-├── PuzzlePiece_3 (PuzzlePiece)
-├── ...
-├── TargetSlots (Node2D)
-│   ├── Slot_1 (Area2D)
-│   ├── Slot_2 (Area2D)
-│   └── ...
-└── SnapInManager (SnapInManager)
-```
-
-### Input-Handling
-
-```gdscript
-# In der Hauptszene
-func _input(event):
-    if event is InputEventMouseButton and event.pressed:
-        if event.button_index == MOUSE_BUTTON_LEFT:
-            # Starte Drag
-            var piece := get_piece_under_mouse()
-            if piece:
-                drag_start(piece, event.position)
-    
-    elif event is InputEventMouseButton and not event.pressed:
-        if event.button_index == MOUSE_BUTTON_LEFT:
-            # Beende Drag
-            drag_end()
-    
-    elif event is InputEventMouseMotion and is_dragging:
-        # Bewege das gezogene Teil
-        drag_move(event.position)
-
-func drag_start(p_piece: PuzzlePiece, p_position: Vector2) -> void:
-    current_drag_piece = p_piece
-    drag_offset = p_piece.current_position - p_position
-
-func drag_move(p_position: Vector2) -> void:
-    if current_drag_piece:
-        current_drag_piece.current_position = p_position + drag_offset
-        
-        # Prüfe Snap-In
-        snap_in_manager.check_snap(current_drag_piece, current_drag_piece.current_position)
-
-func drag_end() -> void:
-    if current_drag_piece:
-        # Prüfe, ob das Teil nicht eingrastet ist
-        if not current_drag_piece.is_snapped:
-            current_drag_piece.reset()
-        current_drag_piece = null
-```
+| Nivel | Modo | Longitud de Palabra | Ejemplo |
+|-------|------|---------------------|---------|
+| **1–5** | Letras | 3–4 letras | `SOL`, `AMOR`, `LOVE` |
+| **6–10** | Letras | 5–6 letras | `APPLE`, `ARBOL` |
+| **11–15** | Sílabas | 2 sílabas | `MA-MA`, `CA-SA` |
+| **16–20** | Sílabas | 3–4 sílabas | `MAN-ZA-NA` |
 
 ---
 
-## Modus-Umschaltung
+## Próximos Pasos
 
-### UI-Element für Modus-Auswahl
-
-```gdscript
-# In den Einstellungen oder Level-Auswahl
-var current_mode: int = PieceType.LETTER
-
-func set_mode(p_mode: int) -> void:
-    current_mode = p_mode
-    # Aktualisiere UI
-    update_mode_ui()
-    # Lade neue Puzzles
-    load_puzzles_for_mode()
-
-func update_mode_ui() -> void:
-    mode_button.text = "Modus: " + ("Buchstaben" if current_mode == PieceType.LETTER else "Silben")
-```
+1. **Conectar `NpcDialogBubble`** con casillas interactivas para arrastrar letras hacia la palabra mostrada (`AMOR` / `LOVE`).
+2. **Implementar `PuzzlePiece` y `SnapInManager`** en `src/core/` con pruebas unitarias en `test/unit/test_snap_in.gd`.
+3. **Añadir pronunciación fonética** al tocar cada bloque de letra o completar la palabra.
 
 ---
 
-## Fortgeschrittene Features
+## Enlaces de Referencia
 
-### 1. Visuelles Feedback
-- **Einrasten:** Animation (z. B. kurzes Aufleuchten)
-- **Falsche Platzierung:** Rotes Aufleuchten, dann Rücksetzen
-- **Fertigstellung:** Konfetti-Effekt oder Sternchen
-
-### 2. Schwierigkeitsgrade
-| Level | Modus | Wortlänge | Silbenkomplexität |
-|-------|-------|-----------|-------------------|
-| 1–5   | Buchstaben | 3–4 | – |
-| 6–10  | Buchstaben | 5–6 | – |
-| 11–15 | Silben | 2–3 Silben | Einfache Silben (Ma, Pa) |
-| 16–20 | Silben | 3–4 Silben | Komplexe Silben (Schu, ng) |
-
-### 3. Highscore & Fortschritt
-- **Punkte:** Pro korrekt gelöstem Wort
-- **Zeitbonus:** Schnelleres Lösen gibt mehr Punkte
-- **Fehlerzähler:** Zu viele Fehler reduzieren die Punkte
-
----
-
-## Beispiele
-
-### Beispiel 1: Buchstabenmodus
-- **Wort:** "MAMA"
-- **Puzzleteile:** ["M", "A", "M", "A"]
-- **Zielpositionen:** [0, 50, 100, 150]
-- **Audioreihenfolge:** "M" → "A" → "M" → "A" → "MAMA"
-
-### Beispiel 2: Silbenmodus
-- **Wort:** "MAMA"
-- **Puzzleteile:** ["Ma", "ma"]
-- **Zielpositionen:** [0, 100]
-- **Audioreihenfolge:** "Ma" → "ma" → "Mama"
-
-### Beispiel 3: Komplexes Wort
-- **Wort:** "BANANE"
-- **Silbenmodus:** ["Ba", "na", "ne"]
-- **Buchstabenmodus:** ["B", "A", "N", "A", "N", "E"]
-
----
-
-## Abhängigkeiten
-
-- **Godot 4.x:** Für Node2D, Area2D, Input-Handling
-- **Audio-Dateien:** Müssen erstellt/aufgenommen werden
-- **Wörterbuch:** Für Silbenzerlegung (kann erweitert werden)
-
----
-
-## Nächste Schritte
-
-1. **PuzzlePiece-Klasse implementieren** (`src/core/puzzle_piece.gd`)
-2. **SnapInManager implementieren** (`src/core/snap_in_manager.gd`)
-3. **SyllableGenerator implementieren** (`src/core/syllable_generator.gd`)
-4. **UI für Modus-Auswahl erstellen**
-5. **Audio-Dateien erstellen/beschaffen**
-6. **Tests schreiben** (`test/unit/test_snap_in.gd`)
-
----
-
-## Links
-
-- [Godot Input Handling](https://docs.godotengine.org/en/stable/tutorials/inputs/input_examples.html)
-- [Godot Drag & Drop](https://docs.godotengine.org/en/stable/tutorials/ui/drag_and_drop.html)
-- [Godot AudioStreamPlayer](https://docs.godotengine.org/en/stable/classes/class_audiostreamplayer.html)
+- [Manejo de Entrada en Godot](https://docs.godotengine.org/es/stable/tutorials/inputs/input_examples.html)
+- [Arrastrar y Soltar en Godot](https://docs.godotengine.org/es/stable/tutorials/ui/drag_and_drop.html)
+- [AudioStreamPlayer en Godot](https://docs.godotengine.org/es/stable/classes/class_audiostreamplayer.html)
