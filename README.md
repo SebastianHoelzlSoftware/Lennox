@@ -118,7 +118,11 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 | **LEN-34** | Población ecológica y catálogo de objetos | ✅ Completado | Catálogo dinámico `ObjectCatalog` y 4 reglas de población para los 8 biomas |
 | **LEN-17** | Pruebas de integración de barreras y chunks | ✅ Completado | Pruebas unitarias y de integración para la generación y aplicación de formaciones |
 | **LEN-16** | Integrar Godot y crear nivel de demostración | ✅ Completado | Escena principal con mapa horneado (seed `691`), cámara suave, compañera NPC y diálogo `AMOR` |
-| **LEN-43** | Burbuja de diálogo NPC con bloques de letras | 🔄 En progreso | Ventana de diálogo al pulsar `E` con icono y palabra configurable (`AMOR` / `LOVE`) |
+| **LEN-43** | Compañera NPC, burbuja mágica (`AMOR`) y controles táctiles Android | ✅ Completado | Ventana de diálogo con letras brillantes, joystick virtual, lupas de zoom y `lennox.apk` |
+| **LEN-46** | [Roadmap Paso 1] Poblar biomas con NPCs y vocabulario desde el Editor | 📋 Por hacer | Colocar compañeros/encuentros con distintos iconos (`dialog_icon`) y palabras (`dialog_word`) |
+| **LEN-47** | [Roadmap Paso 2] Minijuego de formar la palabra (tocar/recoger letras) | 📋 Por hacer | Completar letras ocultas o desordenadas en la burbuja al estilo de la Visión de Lennox |
+| **LEN-48** | [Roadmap Paso 3] Sonidos mágicos y pronunciación de palabras | 📋 Por hacer | `AudioStreamPlayer2D` con efecto al abrir la burbuja y voz en español/inglés (`dialog_audio`) |
+| **LEN-49** | [Roadmap Paso 4] Conectar puertas/barreras con palabras aprendidas | 📋 Por hacer | Desbloquear aperturas interactivas (`Opening.open()`) al resolver la palabra de un guardián |
 | **LEN-20** | Añadir características de mundo entre chunks | 📋 Por hacer | Soporte para ríos continuos entre límites de chunks |
 
 ---
