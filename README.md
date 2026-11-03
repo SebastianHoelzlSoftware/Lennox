@@ -200,10 +200,33 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 
 ## 🚀 Instalacion y Ejecucion
 
-### Requisitos
+### 📱 Probar directamente en Android (Descarga APK)
+
+Si quieres probar la ultima version de **Lennox** directamente en tu movil o tablet Android sin instalar el motor de desarrollo:
+
+<p align="center">
+  <a href="https://github.com/SebastianHoelzlSoftware/Lennox/raw/main/build/android/lennox.apk">
+    <strong>⬇️ Descargar la ultima version de prueba para Android (<code>lennox.apk</code>)</strong>
+  </a>
+</p>
+
+> **💡 Cómo instalar `lennox.apk` en tu móvil Android:**
+>
+> Como es una versión de prueba en desarrollo y todavía no está publicada en la Google Play Store, Android te pedirá un par de confirmaciones de seguridad al abrir el archivo:
+>
+> 1. **Toca el archivo `lennox.apk`** cuando termine de descargarse.
+> 2. Si te sale un aviso de *"Instalar aplicaciones desconocidas"*, toca en **Ajustes** (*Configuración*) y activa **Permitir desde esta fuente** (*Confiar en esta fuente*).
+> 3. Si te aparece una ventana de **Google Play Protect** diciendo *"Se bloqueó la app"* o *"App no reconocida"*, toca en **Más detalles** (abajo) y luego en **Instalar de todas formas** (*Instalar sin analizar*).
+> 4. ¡Y listo! Ya puedes darle a **Abrir** y probar el juego (con el joystick táctil a la izquierda y el botón ❤️ **`E`** o tocando a la arquera para ver la burbuja mágica de **`AMOR`**).
+
+---
+
+### 💻 Ejecutar desde el Editor de Godot (PC y Desarrollo)
+
+#### Requisitos
 - [Godot Engine 4.x](https://godotengine.org/download) (recomendado: 4.6+)
 
-### Pasos
+#### Pasos
 1. Clona el repositorio:
    ```bash
    git clone https://github.com/SebastianHoelzlSoftware/Lennox.git
@@ -217,8 +240,8 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
    - Pulsa **F5** (**Run Project**) o abre `scenes/main.tscn` y pulsa **F6** (**Run Current Scene**).
    - Puedes moverte con `W/A/S/D` o flechas, mantener `Shift` para correr, pulsar `E` para hablar con la arquera o usar directamente el joystick y los botones tactiles en pantalla con el raton.
 
-4. **Ejecutar o exportar en Android (Google Pixel 6 y otros dispositivos)**:
-   - Consulta la guia completa en [`doc/android-mobile-export.md`](doc/android-mobile-export.md) para desplegar por USB con un clic (*One-Click Deploy*), generar el archivo `build/android/lennox.apk` o compartir versiones de prueba por canal privado o *GitHub Releases*.
+4. **Compilar o desplegar en Android por USB**:
+   - Consulta la guia completa en [`doc/android-mobile-export.md`](doc/android-mobile-export.md) para desplegar por USB con un clic (*One-Click Deploy* en Google Pixel 6 y otros dispositivos) o volver a exportar [`build/android/lennox.apk`](build/android/lennox.apk).
 
 5. **Ejecutar pruebas** (opcional):
    - Abre el panel **GUT** en el editor de Godot
