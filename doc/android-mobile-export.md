@@ -10,11 +10,10 @@ La capa `MobileControls` (`CanvasLayer` en [`scenes/main.tscn`](../scenes/main.t
 
 | Control / Gesto | Ubicacion | Funcionamiento |
 | :--- | :--- | :--- |
-| **Joystick Virtual** | Abajo a la izquierda | Arrastra suavemente para **caminar** (`walk`). Si empujas el mando hasta el anillo exterior (`>= 88 %`), el personaje **corre automaticamente** (`run`) y el mando se ilumina en naranja. Tambien acepta toque flotante en toda la esquina inferior izquierda. |
+| **Joystick Virtual** | Abajo a la izquierda | Semitransparente y discreto. Arrastra suavemente para **caminar** (`walk`). Si empujas el mando hasta el anillo exterior (`>= 85 %`), el personaje **corre automaticamente** (`run`) a una velocidad fluida (`145 px/s`). Tambien acepta toque flotante en toda la esquina inferior izquierda. |
 | **Boton `E` (Corazon ❤️)** | Abajo a la derecha | Interactua con el companero NPC mas cercano (`interact_with_nearest_npc()`). Cuando la arquera (`NpcFriend`) esta dentro del radio de interaccion, el boton muestra un **aura dorada pulsante**. |
 | **Toque directo sobre el NPC** | En el mundo | Tocar directamente a la arquera en la pantalla abre o cierra su burbuja de dialogo (`AMOR`), pensado para que sea muy intuitivo para ninos en pantallas tactiles. |
-| **Boton `RUN`** | Abajo a la derecha (junto a `E`) | Mantener pulsado para correr con cualquier inclinacion del joystick. |
-| **Zoom (`+` / `-` y Pellizco)** | Arriba a la derecha / 2 dedos | Botones `+` y `-` en la esquina superior derecha o gesto de pellizco con dos dedos (*pinch-to-zoom*) para acercar o alejar la camara (`0.3x` a `3.5x`). |
+| **Lupas de Zoom y Pellizco** | Arriba a la derecha / 2 dedos | Dos botones semitransparentes con una **lupa pequena (`-`)** y una **lupa mas grande (`+`)** en la esquina superior derecha, o gesto de pellizco con dos dedos (*pinch-to-zoom*) para acercar o alejar la camara (`0.3x` a `3.5x`). |
 
 > **Prueba en PC:** En [`project.godot`](../project.godot) esta activo `pointing/emulate_touch_from_mouse=true`, por lo que puedes probar el joystick y todos los botones tactiles directamente con el raton en el ordenador.
 

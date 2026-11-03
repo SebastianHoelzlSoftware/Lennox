@@ -22,11 +22,11 @@ const DialogBubbleScript = preload("res://scenes/npc_dialog_bubble.gd")
 var dialog_bubble: Node2D = null
 
 const WALK_SPEED := 105.0
-const RUN_SPEED := 210.0
+const RUN_SPEED := 152.0
 const ACCELERATION := 650.0
 const FRICTION := 800.0
 const STOP_SPEED_THRESHOLD := 8.0
-const RUN_SPEED_THRESHOLD := 145.0
+const RUN_SPEED_THRESHOLD := 125.0
 const FRAME_SIZE := Vector2i(64, 64)
 const DIRECTION_ROWS := {
 	&"down": 0,
@@ -284,7 +284,7 @@ func _create_sprite_frames() -> SpriteFrames:
 	else:
 		_add_sheet(frames, &"idle", ARCHER_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
 		_add_sheet(frames, &"walk", ARCHER_WALK_SHEET, 6, 9.0, true)
-		_add_sheet(frames, &"run", ARCHER_RUN_SHEET, 8, 12.0, true)
+		_add_sheet(frames, &"run", ARCHER_RUN_SHEET, 8, 14.0, true)
 		_add_sheet(frames, &"attack", ARCHER_ATTACK_SHEET, 8, 12.0, false)
 		_add_sheet(frames, &"hurt", ARCHER_HURT_SHEET, 5, 10.0, false)
 		_add_sheet(frames, &"death", ARCHER_DEATH_SHEET, 7, 8.0, false)

@@ -815,6 +815,7 @@ texture_filter = 1
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=275283869]
 zoom = Vector2(2.5, 2.5)
 position_smoothing_enabled = true
+position_smoothing_speed = 12.0
 
 [node name="NpcFriend" type="CharacterBody2D" parent="." unique_id=1849302112]
 position = Vector2(2540, 2574)

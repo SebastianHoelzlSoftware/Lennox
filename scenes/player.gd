@@ -3,7 +3,7 @@ extends CharacterBody2D
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 const WALK_SPEED := 100.0
-const RUN_SPEED := 200.0
+const RUN_SPEED := 145.0
 const FRAME_SIZE := Vector2i(64, 64)
 const DIRECTION_ROWS := {
 	&"down": 0,
@@ -129,7 +129,7 @@ func _create_sprite_frames() -> SpriteFrames:
 	frames.remove_animation(&"default")
 	_add_sheet(frames, &"idle", IDLE_SHEET, 12, 6.0, true, {&"up": 4})
 	_add_sheet(frames, &"walk", WALK_SHEET, 6, 9.0, true)
-	_add_sheet(frames, &"run", RUN_SHEET, 8, 12.0, true)
+	_add_sheet(frames, &"run", RUN_SHEET, 8, 14.0, true)
 	_add_sheet(frames, &"attack", ATTACK_SHEET, 8, 12.0, false)
 	_add_sheet(frames, &"walk_attack", WALK_ATTACK_SHEET, 6, 12.0, false)
 	_add_sheet(frames, &"run_attack", RUN_ATTACK_SHEET, 8, 12.0, false)
