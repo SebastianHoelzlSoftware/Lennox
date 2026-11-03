@@ -8,6 +8,9 @@ extends Node2D
 @onready var object_tilemap: TileMapLayer = $ObjectTileMap
 @onready var player: CharacterBody2D = $CharacterBody2D
 @onready var npc_friend: CharacterBody2D = get_node_or_null("NpcFriend") as CharacterBody2D
+@onready var mobile_controls: CanvasLayer = get_node_or_null("MobileControls") as CanvasLayer
+
+const MobileControlsScript = preload("res://scenes/mobile_controls.gd")
 
 var start_cell := Vector2i.ZERO
 var level: Level
@@ -37,6 +40,12 @@ func _ready() -> void:
 	player.position = to_local(level_tilemap.to_global(level_tilemap.map_to_local(start_cell)))
 	if npc_friend != null and npc_friend.has_method("set_follow_target"):
 		npc_friend.call("set_follow_target", player, true)
+
+	if mobile_controls == null:
+		mobile_controls = MobileControlsScript.new()
+		mobile_controls.name = "MobileControls"
+		mobile_controls.set("player", player)
+		add_child(mobile_controls)
 
 	var args := OS.get_cmdline_user_args() + OS.get_cmdline_args()
 	for arg: String in args:

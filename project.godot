@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Lennox"
-run/main_scene="uid://cjytfwk5v8era"
+run/main_scene="uid://bcuc0co4mbff7"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 
@@ -19,6 +19,9 @@ config/icon="res://icon.svg"
 
 window/size/viewport_width=1150
 window/size/viewport_height=900
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=4
 
 [editor_plugins]
 
@@ -61,6 +64,10 @@ interact={
 ]
 }
 
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
@@ -69,3 +76,4 @@ interact={
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true

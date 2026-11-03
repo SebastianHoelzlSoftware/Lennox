@@ -2,6 +2,7 @@ extends GutTest
 
 const NpcFriendScript = preload("res://scenes/npc_friend.gd")
 const PlayerScript = preload("res://scenes/player.gd")
+const MobileControlsScript = preload("res://scenes/mobile_controls.gd")
 
 
 func test_archer_sprite_frames_have_all_directions():
@@ -150,3 +151,58 @@ func test_npc_interaction_toggles_question_mark_dialog():
 	# Al volver a pulsar E mientras esta abierta, se cierra
 	player.interact_with_nearest_npc()
 	assert_false(npc.is_dialog_visible(), "La ventana se oculta al interactuar de nuevo")
+
+
+func test_mobile_touch_controls_move_player_and_trigger_npc_dialog():
+	var root := Node2D.new()
+	add_child_autofree(root)
+
+	var player := PlayerScript.new()
+	player.name = "CharacterBody2D"
+	var player_sprite := AnimatedSprite2D.new()
+	player_sprite.name = "AnimatedSprite2D"
+	player.add_child(player_sprite)
+	var camera := Camera2D.new()
+	camera.name = "Camera2D"
+	camera.zoom = Vector2(2.0, 2.0)
+	player.add_child(camera)
+	root.add_child(player)
+	player.global_position = Vector2(100, 100)
+
+	var npc := NpcFriendScript.new()
+	root.add_child(npc)
+	npc.global_position = Vector2(80, 100)
+
+	var controls := MobileControlsScript.new()
+	controls.player = player
+	root.add_child(controls)
+	controls._process(0.05)
+	assert_true(controls.is_interact_highlighted, "El boton E se ilumina cuando la arquera esta cerca")
+
+	# 1. Simular toque y arrastre en el joystick virtual hacia la derecha (caminar -> correr en el borde)
+	var joy_base: Vector2 = controls._joystick_default_pos
+	controls._handle_screen_touch(0, joy_base, true)
+	controls._handle_screen_drag(0, joy_base + Vector2(controls.joystick_outer_radius * 0.5, 0.0))
+	player._physics_process(0.05)
+	assert_gt(player.velocity.x, 0.0, "El joystick virtual mueve al jugador hacia la derecha")
+	assert_lt(player.velocity.x, PlayerScript.RUN_SPEED, "A mitad de recorrido camina")
+
+	controls._handle_screen_drag(0, joy_base + Vector2(controls.joystick_outer_radius, 0.0))
+	player._physics_process(0.05)
+	assert_almost_eq(player.velocity.x, PlayerScript.RUN_SPEED, 1.0, "En el borde exterior del joystick corre automaticamente")
+
+	controls._handle_screen_touch(0, joy_base, false)
+	player._physics_process(0.05)
+	assert_eq(player.velocity, Vector2.ZERO, "Al soltar el joystick el jugador se detiene")
+
+	# 2. Simular toque en el boton de interaccion E / Corazon
+	assert_false(npc.is_dialog_visible(), "La burbuja empieza cerrada")
+	controls._handle_screen_touch(1, controls._interact_btn_center, true)
+	controls._handle_screen_touch(1, controls._interact_btn_center, false)
+	assert_true(npc.is_dialog_visible(), "Tocar el boton E abre la burbuja de dialogo del NPC")
+
+	# 3. Simular botones de zoom + y -
+	var initial_zoom := camera.zoom.x
+	controls._handle_screen_touch(2, controls._zoom_in_rect.get_center(), true)
+	controls._handle_screen_touch(2, controls._zoom_in_rect.get_center(), false)
+	assert_gt(camera.zoom.x, initial_zoom, "El boton + acerca la camara")

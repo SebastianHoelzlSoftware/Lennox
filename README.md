@@ -150,7 +150,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   │       ├── biome_type.gd            # Enum global de los 8 biomas (BiomeType)
   │       └── tile_type.gd             # Enum global de tipos de baldosa (TileType)
   ├── test/
-  │   ├── unit/                        # Tests unitarios con GUT (11 suites, 84 tests)
+  │   ├── unit/                        # Tests unitarios con GUT (11 suites, 85 tests)
   │   │   ├── test_barrier.gd
   │   │   ├── test_biome.gd
   │   │   ├── test_chunk.gd
@@ -177,12 +177,14 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   │   ├── player.gd                    # Controlador del jugador, movimiento, animaciones e interaccion (E)
   │   ├── npc_friend.gd                # Companero NPC con seguimiento por migas de pan e interaccion
   │   ├── npc_dialog_bubble.gd         # Burbuja de dialogo estilo Vision de Lennox (icono + bloques AMOR)
+  │   ├── mobile_controls.gd           # Controles tactiles para Android / movil (joystick, boton E, RUN y zoom)
   │   ├── terrain_lab.tscn             # Escena del laboratorio visual de estilos por bioma
   │   ├── terrain_lab.gd               # Generador de galeria de pruebas para los 8 biomas
   │   ├── test_autotiling_level.tscn   # Escena de prueba de autotiling para los 8 biomas
   │   ├── test_autotiling_level.gd     # Script de escena de prueba de autotiling
   │   └── grassland_test_pattern.tscn  # Escena de referencia manual de patrones en pradera
   ├── doc/
+  │   ├── android-mobile-export.md     # Guia de controles tactiles, exportacion APK y despliegue en Android
   │   ├── map-generation.md            # Arquitectura del generador de mundo y autotiling 3/4
   │   ├── biomes.md                    # Catalogo y guia visual de los 8 biomas
   │   ├── barriers.md                  # Formaciones naturales, mesetas y aperturas
@@ -190,6 +192,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
   │   ├── snap-in-mechanism.md         # Mecanismo de encaje de piezas y patrones
   │   ├── images/                      # Capturas de pantalla y diagramas de arquitectura
   │   └── video/                       # Videos de demostracion (daily_screencap.mp4)
+  ├── export_presets.cfg               # Perfil de exportacion Android (arm64-v8a + armeabi-v7a)
   └── README.md
   ```
 
@@ -198,7 +201,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 ## 🚀 Instalacion y Ejecucion
 
 ### Requisitos
-- [Godot Engine 4.x](https://godotengine.org/download) (recomendado: 4.2+)
+- [Godot Engine 4.x](https://godotengine.org/download) (recomendado: 4.6+)
 
 ### Pasos
 1. Clona el repositorio:
@@ -210,12 +213,14 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
    - Ejecuta `project.godot` con Godot Engine
    - O arrastra la carpeta del proyecto al editor
 
-3. **Iniciar el juego**:
-   - En el panel **FileSystem**, selecciona y abre `scenes/main.tscn`.
-   - Pulsa **F6** (**Run Current Scene**) para ejecutar la escena principal.
-   - No uses **F5** para iniciar el juego: el proyecto tiene GUT configurado como escena de inicio.
+3. **Iniciar el juego en PC**:
+   - Pulsa **F5** (**Run Project**) o abre `scenes/main.tscn` y pulsa **F6** (**Run Current Scene**).
+   - Puedes moverte con `W/A/S/D` o flechas, mantener `Shift` para correr, pulsar `E` para hablar con la arquera o usar directamente el joystick y los botones tactiles en pantalla con el raton.
 
-4. **Ejecutar pruebas** (opcional):
+4. **Ejecutar o exportar en Android (Google Pixel 6 y otros dispositivos)**:
+   - Consulta la guia completa en [`doc/android-mobile-export.md`](doc/android-mobile-export.md) para desplegar por USB con un clic (*One-Click Deploy*), generar el archivo `build/android/lennox.apk` o compartir versiones de prueba por canal privado o *GitHub Releases*.
+
+5. **Ejecutar pruebas** (opcional):
    - Abre el panel **GUT** en el editor de Godot
    - Ejecuta los tests utilizando la interfaz grafica de GUT
 
@@ -223,7 +228,7 @@ El desarrollo de **Lennox** se organiza y supervisa de forma estructurada a trav
 
 ## 🧪 Pruebas
 
-El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 84 pruebas unitarias y 6 de integracion (90 en total), con una tasa de exito del 100%.
+El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit Test). La suite actual contiene 85 pruebas unitarias y 6 de integracion (91 en total), con una tasa de exito del 100%.
 
 | Suite | Cantidad | Cobertura |
 |-------|---------:|-----------|
@@ -232,7 +237,7 @@ El proyecto incluye pruebas unitarias y de integracion con **GUT** (Godot Unit T
 | [`test_chunk.gd`](test/unit/test_chunk.gd) | 11 | Inicializacion de chunks, barreras y aplicacion de baldosas |
 | [`test_cliff_autotiler.gd`](test/unit/test_cliff_autotiler.gd) | 7 | Clasificacion 9-slice, esquinas, bordes y dibujado de mesetas |
 | [`test_level.gd`](test/unit/test_level.gd) | 15 | Generacion de niveles, reglas de forma, estilos y poblacion de objetos |
-| [`test_npc_friend.gd`](test/unit/test_npc_friend.gd) | 7 | Companeros NPC, animaciones 4 direcciones, seguimiento y burbuja de dialogo |
+| [`test_npc_friend.gd`](test/unit/test_npc_friend.gd) | 8 | Companeros NPC, animaciones 4 direcciones, seguimiento, burbuja y controles tactiles |
 | [`test_object_catalog.gd`](test/unit/test_object_catalog.gd) | 5 | Catalogo de activos para los 8 biomas y categorias comunes |
 | [`test_terrain_painter.gd`](test/unit/test_terrain_painter.gd) | 6 | Autotiling 3x3 + esquinas concavas, caras 3/4, derrames y estilos |
 | [`test_tilemapper.gd`](test/unit/test_tilemapper.gd) | 3 | Dibujado de patrones en TileMapLayer |

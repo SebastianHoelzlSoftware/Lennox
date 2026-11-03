@@ -6,6 +6,7 @@
 [ext_resource type="TileSet" uid="uid://b8uuaflyj3ja8" path="res://assets/tiles/terrain_master_16x16.tres" id="4_ags1l"]
 [ext_resource type="Script" uid="uid://smk1y6gutxhw" path="res://scenes/player.gd" id="4_jyhfs"]
 [ext_resource type="Script" uid="uid://dch8nqkl1ieg7" path="res://scenes/npc_friend.gd" id="5_npcf1"]
+[ext_resource type="Script" path="res://scenes/mobile_controls.gd" id="6_mctrl"]
 [ext_resource type="Texture2D" uid="uid://dcwwrxbyl13wb" path="res://assets/biomes/cave/objects/Volcano2_light_shadow_frame6.png" id="6_600lq"]
 [ext_resource type="Texture2D" uid="uid://cljsyatbhy2kv" path="res://assets/biomes/cave/objects/Red_stone_vertical4.png" id="7_qsxfc"]
 [ext_resource type="Texture2D" uid="uid://dmspxg6djcqan" path="res://assets/biomes/cave/objects/Geyser2.png" id="8_7f6vt"]
@@ -826,6 +827,10 @@ shape = SubResource("CapsuleShape2D_tbgi4")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="NpcFriend" unique_id=1849302114]
 texture_filter = 1
+
+[node name="MobileControls" type="CanvasLayer" parent="." unique_id=1950403115]
+script = ExtResource("6_mctrl")
+player_path = NodePath("../CharacterBody2D")
 
 [node name="WorldObjects" type="Node2D" parent="." unique_id=1727101789]
 y_sort_enabled = true

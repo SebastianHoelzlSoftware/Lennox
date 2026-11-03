@@ -33,8 +33,8 @@ Godot binaries and generated editor data are local tooling, not project source. 
 - The current demo scene is `scenes/main.tscn` with logic in `scenes/main.gd`. It generates 10x10 chunks, each 32x32 tiles, using seed `691` (with the generated layers and 3,348 world objects baked directly into `scenes/main.tscn` via `assets/tiles/terrain_master_16x16.tres` and `regenerate_on_start = false` by default so manual editor changes are preserved).
 - `Level.biome_map` is indexed `[x][y]`; chunk biome is `chunk.biome`. Biome enums are in `src/core/biome_type.gd`; tile enums are in `src/core/tile_type.gd`.
 - Multi-layer 3/4 terrain autotiling is handled by `src/core/terrain_painter.gd` and `src/core/terrain_styles.gd` across all 8 biomes, while ecological object population is handled by `src/core/object_catalog.gd` and `Level._populate_chunk_objects()`.
-- `scenes/npc_friend.gd` and `scenes/npc_dialog_bubble.gd` implement the NPC companion (`NpcFriend`, female archer) that follows the player via a breadcrumb trail and displays a Vision-styled dialog bubble with an icon and colored letter blocks (`dialog_word = "AMOR"` in `scenes/main.tscn`) when the player presses `E` (`interact`).
-- The latest full suite has 90 GUT tests (84 unit in 11 suites, 6 integration); update the README count when changing tests.
+- `scenes/npc_friend.gd` and `scenes/npc_dialog_bubble.gd` implement the NPC companion (`NpcFriend`, female archer) that follows the player via a breadcrumb trail and displays a Vision-styled dialog bubble with an icon and colored letter blocks (`dialog_word = "AMOR"` in `scenes/main.tscn`) when the player presses `E` (`interact`). `scenes/mobile_controls.gd` provides the touch HUD (virtual joystick, `E` / heart interact button, `RUN` button, `+`/`-` zoom buttons, pinch-to-zoom, and direct tap on the NPC).
+- The latest full suite has 91 GUT tests (85 unit in 11 suites, 6 integration); update the README count when changing tests.
 
 ### Player sprite sheets
 

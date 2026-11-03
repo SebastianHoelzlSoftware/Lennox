@@ -37,6 +37,8 @@ const DEATH_SHEET: Texture2D = preload(
 )
 
 var _facing_direction: StringName = &"down"
+var touch_move_vector: Vector2 = Vector2.ZERO
+var touch_run_active: bool = false
 
 
 func _ready() -> void:
@@ -98,13 +100,15 @@ func interact_with_nearest_npc() -> Node2D:
 
 func _physics_process(_delta: float) -> void:
 	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	var is_running := Input.is_action_pressed("run")
+	if touch_move_vector.length() > direction.length():
+		direction = touch_move_vector.limit_length(1.0)
+	var is_running := Input.is_action_pressed("run") or touch_run_active
 	velocity = direction * (RUN_SPEED if is_running else WALK_SPEED)
-	_update_animation(direction)
+	_update_animation(direction, is_running)
 	move_and_slide()
 
 
-func _update_animation(direction: Vector2) -> void:
+func _update_animation(direction: Vector2, is_running: bool = false) -> void:
 	if not direction.is_zero_approx():
 		if absf(direction.x) > absf(direction.y):
 			_facing_direction = &"right" if direction.x > 0.0 else &"left"
@@ -113,7 +117,8 @@ func _update_animation(direction: Vector2) -> void:
 
 	var movement_animation: StringName = &"idle"
 	if not direction.is_zero_approx():
-		movement_animation = &"run" if Input.is_action_pressed("run") else &"walk"
+		var running_now := is_running or Input.is_action_pressed("run") or touch_run_active
+		movement_animation = &"run" if running_now else &"walk"
 	var animation_name := StringName("%s_%s" % [movement_animation, _facing_direction])
 	if animated_sprite.animation != animation_name or not animated_sprite.is_playing():
 		animated_sprite.play(animation_name)

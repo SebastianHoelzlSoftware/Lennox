@@ -13,6 +13,11 @@
 # Ignore test output xml
 latest_test_output.xml
 
-# Executable folder
+# Executable & build output folders
 /bin/
+/build/
+*.apk
+*.aab
+*.idsig
+
 
