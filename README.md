@@ -223,6 +223,7 @@ Si quieres probar la ultima version de **Lennox** directamente en tu movil o tab
 > 3. Si te aparece una ventana de **Google Play Protect** diciendo *"Se bloqueó la app"* o *"App no reconocida"*, toca en **Más detalles** (abajo) y luego en **Instalar de todas formas** (*Instalar sin analizar*).
 > 4. ¡Y listo! Ya puedes darle a **Abrir** y probar el juego (con el joystick táctil a la izquierda y el botón ❤️ **`E`** o tocando a la arquera para ver la burbuja mágica de **`AMOR`**).
 
+#### ANNOTACION: En mi Pixel 6 hice "Scan App" por Google Play Protect y dijo que fuera seguro.
 ---
 
 ### 💻 Ejecutar desde el Editor de Godot (PC y Desarrollo)
