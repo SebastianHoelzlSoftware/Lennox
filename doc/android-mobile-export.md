@@ -61,7 +61,7 @@ Para probar cambios al instante en tu propio telefono sin copiar archivos manual
 ## 📦 4. Compilar el Archivo `lennox.apk` para Compartir
 
 El proyecto ya incluye el perfil preconfigurado **`Android`** en [`export_presets.cfg`](../export_presets.cfg) con:
-- **Nombre del paquete:** `com.sebastianhoelzl.lennox`
+- **Nombre del paquete:** `com.sebastianhoelzlsoftware.lennox`
 - **Arquitecturas activas:** `arm64-v8a` (todos los moviles modernos de 64 bits, incluido Pixel 6) + `armeabi-v7a` (compatibilidad con moviles Android mas antiguos de 32 bits), para que funcione en **cualquier telefono Android** sin importar el modelo.
 - **Modo inmersivo y pantalla:** Horizontal (*Sensor Landscape*), escalado `canvas_items` + `expand`.
 - **Exclusion automatica de archivos de prueba:** `addons/gut/*`, `test/*`, `bin/*`.
