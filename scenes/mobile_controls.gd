@@ -350,8 +350,9 @@ func _on_hud_draw() -> void:
 	)
 
 	# --- 3. BOTONES DE ZOOM CON LUPA PEQUENA (-) Y LUPA MAS GRANDE (+) SEMITRANSPARENTES ---
-	_draw_magnifier_button(_zoom_out_rect, 8.5, false)
-	_draw_magnifier_button(_zoom_in_rect, 12.5, true)
+	# Annotacion: Lo he desactivado temporalmente porque es unencesarion on pinch
+	#_draw_magnifier_button(_zoom_out_rect, 8.5, false)
+	#_draw_magnifier_button(_zoom_in_rect, 12.5, true)
 
 
 func _draw_magnifier_button(rect: Rect2, lens_radius: float, is_zoom_in: bool) -> void:
