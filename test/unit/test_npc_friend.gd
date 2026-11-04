@@ -52,6 +52,37 @@ func test_polar_bear_sprite_frames_have_all_directions():
 	assert_eq(frames.get_frame_count(&"idle_down"), 12, "idle_down del oso polar tiene 12 frames")
 
 
+func test_mage_sprite_frames_and_stationary_mode():
+	var root := Node2D.new()
+	add_child_autofree(root)
+
+	var player := CharacterBody2D.new()
+	player.name = "CharacterBody2D"
+	root.add_child(player)
+	player.global_position = Vector2(300, 100)
+
+	var mage := NpcFriendScript.new()
+	mage.character_style = "mage"
+	mage.can_follow = false
+	root.add_child(mage)
+	mage.global_position = Vector2(100, 100)
+	mage.target = player
+
+	var frames: SpriteFrames = mage.animated_sprite.sprite_frames
+	assert_not_null(frames, "SpriteFrames de la maga creado")
+	for prefix in [&"idle", &"walk", &"run", &"attack", &"hurt", &"death"]:
+		for dir in [&"down", &"left", &"right", &"up"]:
+			var anim := StringName("%s_%s" % [prefix, dir])
+			assert_true(frames.has_animation(anim), "Animacion de maga existente: %s" % anim)
+			assert_gt(frames.get_frame_count(anim), 0, "Frames > 0 en %s" % anim)
+
+	# Con can_follow = false, permanece en su sitio aunque el jugador este lejos
+	for _i in range(10):
+		mage._physics_process(0.05)
+	assert_eq(mage.velocity, Vector2.ZERO, "El NPC estacionario no camina tras el jugador")
+	assert_eq(mage.global_position, Vector2(100, 100), "Mantiene su posicion en el mapa")
+
+
 func test_npc_stays_idle_when_within_comfort_distance():
 	var root := Node2D.new()
 	add_child_autofree(root)

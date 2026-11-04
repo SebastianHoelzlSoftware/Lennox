@@ -1,11 +1,22 @@
+@tool
 extends CharacterBody2D
-# Compañero NPC que sigue a un objetivo (el jugador o a otro compañero) de forma natural.
+# Compañero o habitante NPC que puede seguir a un objetivo (el jugador o a otro compañero)
+# o permanecer estacionario en su lugar del mundo (`can_follow = false`).
 #
-# Soporta tres estilos visuales ("archer", "dino" y "polar_bear") con hojas de 4 direcciones
-# (down, left, right, up), una cola de migas de pan (breadcrumb trail) para recorrer
-# el camino con suavidad, aceleracion/frenado progresivo y miradas curiosas en reposo.
+# Es un `@tool` script para que al cambiar `character_style` en el Inspector de Godot
+# se actualicen inmediatamente los `SpriteFrames` en el editor 2D sin tener que configurar
+# animaciones a mano. Soporta:
+# - "archer", "mage", "mage_lvl2", "mage_lvl3", "dino", "polar_bear"
+# - "custom" (respeta los `SpriteFrames` asignados manualmente en el editor)
 
-@export_enum("archer", "dino", "polar_bear") var character_style: String = "archer"
+@export_enum("archer", "mage", "mage_lvl2", "mage_lvl3", "dino", "polar_bear", "custom")
+var character_style: String = "archer":
+	set(value):
+		character_style = value
+		if is_inside_tree():
+			_apply_character_style()
+
+@export var can_follow: bool = true
 @export var target_path: NodePath
 @export var follow_distance: float = 28.0
 @export var run_catchup_distance: float = 58.0
@@ -13,8 +24,16 @@ extends CharacterBody2D
 @export var breadcrumb_spacing: float = 12.0
 @export var interaction_radius: float = 64.0
 @export var dialog_auto_hide_seconds: float = 3.5
-@export var dialog_word: String = "LOVE"
-@export var dialog_icon: Texture2D = null
+@export var dialog_word: String = "LOVE":
+	set(value):
+		dialog_word = value
+		if dialog_bubble != null:
+			dialog_bubble.set("word_text", dialog_word)
+@export var dialog_icon: Texture2D = null:
+	set(value):
+		dialog_icon = value
+		if dialog_bubble != null and dialog_icon != null:
+			dialog_bubble.set("icon_texture", dialog_icon)
 
 const DialogBubbleScript = preload("res://scenes/npc_dialog_bubble.gd")
 
@@ -74,6 +93,45 @@ const POLAR_BEAR_RUN_SHEET: Texture2D = preload(
 	"res://assets/common/characters/PolarBear_Run_without_shadow.png"
 )
 
+const MAGE_LVL1_IDLE_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Idle_full_without_shadow.png"
+)
+const MAGE_LVL1_WALK_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Walk_full_without_shadow.png"
+)
+const MAGE_LVL1_RUN_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Run_full_without_shadow.png"
+)
+const MAGE_LVL1_ATTACK_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_attack_full_without_shadow.png"
+)
+const MAGE_LVL1_HURT_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Hurt_full_without_shadow.png"
+)
+const MAGE_LVL1_DEATH_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Death_full_without_shadow.png"
+)
+
+const MAGE_LVL2_IDLE_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Mage_2lvl/Without_shadow/Mage_lvl2_Idle_full_without_shadow.png"
+)
+const MAGE_LVL2_WALK_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Mage_2lvl/Without_shadow/Mage_lvl2_Walk_full_without_shadow.png"
+)
+const MAGE_LVL2_RUN_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Mage_2lvl/Without_shadow/Mage_lvl2_Run_full_without_shadow.png"
+)
+
+const MAGE_LVL3_IDLE_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_Idle_full_without_shadow.png"
+)
+const MAGE_LVL3_WALK_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_Walk_full_without_shadow.png"
+)
+const MAGE_LVL3_RUN_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_Run_full_without_shadow.png"
+)
+
 var target: Node2D = null
 var _facing_direction: StringName = &"down"
 var _breadcrumbs: Array[Vector2] = []
@@ -88,14 +146,12 @@ func _ready() -> void:
 	collision_mask = 0
 	add_to_group(&"npc_companions")
 
-	if animated_sprite == null:
-		animated_sprite = AnimatedSprite2D.new()
-		animated_sprite.name = "AnimatedSprite2D"
-		animated_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		add_child(animated_sprite)
+	_ensure_animated_sprite()
+	_apply_character_style()
 
-	animated_sprite.sprite_frames = _create_sprite_frames()
-	animated_sprite.play(&"idle_down")
+	if Engine.is_editor_hint():
+		set_physics_process(false)
+		return
 
 	dialog_bubble = get_node_or_null("DialogBubble") as Node2D
 	if dialog_bubble == null:
@@ -112,6 +168,29 @@ func _ready() -> void:
 		target = get_node_or_null(target_path) as Node2D
 	if target == null and get_parent() != null:
 		target = get_parent().get_node_or_null("CharacterBody2D") as Node2D
+
+
+func _ensure_animated_sprite() -> void:
+	if animated_sprite == null:
+		animated_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+	if animated_sprite == null:
+		animated_sprite = AnimatedSprite2D.new()
+		animated_sprite.name = "AnimatedSprite2D"
+		animated_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		add_child(animated_sprite)
+
+
+func _apply_character_style() -> void:
+	_ensure_animated_sprite()
+	if character_style == "custom":
+		if animated_sprite.sprite_frames != null and animated_sprite.sprite_frames.has_animation(&"idle_down"):
+			animated_sprite.play(&"idle_down")
+		return
+	animated_sprite.sprite_frames = _create_sprite_frames()
+	var start_anim := StringName("idle_%s" % _facing_direction)
+	if not animated_sprite.sprite_frames.has_animation(start_anim):
+		start_anim = &"idle_down"
+	animated_sprite.play(start_anim)
 
 
 func interact(interactor: Node2D = null, custom_icon: Texture2D = null, custom_word: String = "") -> void:
@@ -149,6 +228,9 @@ func set_follow_target(p_target: Node2D, p_snap: bool = false) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
+
 	if _dialog_timer > 0.0:
 		_dialog_timer -= delta
 		if _dialog_timer <= 0.0 and dialog_bubble != null:
@@ -156,6 +238,15 @@ func _physics_process(delta: float) -> void:
 
 	if target == null or not is_instance_valid(target):
 		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
+		_update_animation(velocity)
+		move_and_slide()
+		return
+
+	if not can_follow:
+		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
+		if velocity.length() < STOP_SPEED_THRESHOLD:
+			velocity = Vector2.ZERO
+			_update_idle_glance(delta)
 		_update_animation(velocity)
 		move_and_slide()
 		return
@@ -240,9 +331,10 @@ func _update_idle_glance(delta: float) -> void:
 	if _idle_glance_timer > 0.0:
 		return
 	_idle_glance_timer = randf_range(2.4, 4.8)
-	# De vez en cuando mira hacia el jugador cuando estan parados juntos
+	# De vez en cuando mira hacia el jugador cuando estan parados cerca
 	var to_player := target.global_position - global_position
-	if to_player.length() > 4.0:
+	var max_glance_dist := interaction_radius * 2.5 if not can_follow else teleport_distance
+	if to_player.length() > 4.0 and to_player.length() <= max_glance_dist:
 		_facing_direction = direction_name_from_vector(to_player)
 
 
@@ -281,6 +373,21 @@ func _create_sprite_frames() -> SpriteFrames:
 		_add_sheet(frames, &"idle", POLAR_BEAR_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
 		_add_sheet(frames, &"walk", POLAR_BEAR_WALK_SHEET, 6, 10.0, true)
 		_add_sheet(frames, &"run", POLAR_BEAR_RUN_SHEET, 8, 13.0, true)
+	elif character_style == "mage":
+		_add_sheet(frames, &"idle", MAGE_LVL1_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
+		_add_sheet(frames, &"walk", MAGE_LVL1_WALK_SHEET, 6, 9.0, true)
+		_add_sheet(frames, &"run", MAGE_LVL1_RUN_SHEET, 8, 14.0, true)
+		_add_sheet(frames, &"attack", MAGE_LVL1_ATTACK_SHEET, 7, 12.0, false)
+		_add_sheet(frames, &"hurt", MAGE_LVL1_HURT_SHEET, 5, 10.0, false)
+		_add_sheet(frames, &"death", MAGE_LVL1_DEATH_SHEET, 7, 8.0, false)
+	elif character_style == "mage_lvl2":
+		_add_sheet(frames, &"idle", MAGE_LVL2_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
+		_add_sheet(frames, &"walk", MAGE_LVL2_WALK_SHEET, 6, 9.0, true)
+		_add_sheet(frames, &"run", MAGE_LVL2_RUN_SHEET, 8, 14.0, true)
+	elif character_style == "mage_lvl3":
+		_add_sheet(frames, &"idle", MAGE_LVL3_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
+		_add_sheet(frames, &"walk", MAGE_LVL3_WALK_SHEET, 6, 9.0, true)
+		_add_sheet(frames, &"run", MAGE_LVL3_RUN_SHEET, 8, 14.0, true)
 	else:
 		_add_sheet(frames, &"idle", ARCHER_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
 		_add_sheet(frames, &"walk", ARCHER_WALK_SHEET, 6, 9.0, true)
