@@ -9,7 +9,7 @@ extends CharacterBody2D
 # - "archer", "mage", "mage_lvl2", "mage_lvl3", "dino", "polar_bear"
 # - "custom" (respeta los `SpriteFrames` asignados manualmente en el editor)
 
-@export_enum("archer", "mage", "mage_lvl2", "mage_lvl3", "dino", "polar_bear", "custom")
+@export_enum("archer", "mage", "mage_lvl2", "mage_lvl3", "dino", "polar_bear", "base_male", "custom")
 var character_style: String = "archer":
 	set(value):
 		character_style = value
@@ -130,6 +130,16 @@ const MAGE_LVL3_WALK_SHEET: Texture2D = preload(
 )
 const MAGE_LVL3_RUN_SHEET: Texture2D = preload(
 	"res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_Run_full_without_shadow.png"
+)
+
+const BASE_MALE_IDLE_SHEET: Texture2D = preload(
+	"res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Idle_without_shadow.png"
+)
+const BASE_MALE_WALK_SHEET: Texture2D = preload(
+	"res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Walk_without_shadow.png"
+)
+const BASE_MALE_RUN_SHEET: Texture2D = preload(
+	"res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Run_without_shadow.png"
 )
 
 var target: Node2D = null
@@ -388,13 +398,17 @@ func _create_sprite_frames() -> SpriteFrames:
 		_add_sheet(frames, &"idle", MAGE_LVL3_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
 		_add_sheet(frames, &"walk", MAGE_LVL3_WALK_SHEET, 6, 9.0, true)
 		_add_sheet(frames, &"run", MAGE_LVL3_RUN_SHEET, 8, 14.0, true)
-	else:
+	elif character_style == "archer":
 		_add_sheet(frames, &"idle", ARCHER_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
 		_add_sheet(frames, &"walk", ARCHER_WALK_SHEET, 6, 9.0, true)
 		_add_sheet(frames, &"run", ARCHER_RUN_SHEET, 8, 14.0, true)
 		_add_sheet(frames, &"attack", ARCHER_ATTACK_SHEET, 8, 12.0, false)
 		_add_sheet(frames, &"hurt", ARCHER_HURT_SHEET, 5, 10.0, false)
 		_add_sheet(frames, &"death", ARCHER_DEATH_SHEET, 7, 8.0, false)
+	else:
+		_add_sheet(frames, &"idle", BASE_MALE_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
+		_add_sheet(frames, &"walk", BASE_MALE_WALK_SHEET, 6, 9.0, true)
+		_add_sheet(frames, &"run", BASE_MALE_RUN_SHEET, 8, 14.0, true)
 	return frames
 
 
