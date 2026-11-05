@@ -1,3 +1,4 @@
+@tool
 extends CharacterBody2D
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -42,11 +43,19 @@ var touch_run_active: bool = false
 
 
 func _ready() -> void:
-	animated_sprite.sprite_frames = _create_sprite_frames()
-	animated_sprite.play(&"idle_down")
+	if animated_sprite == null:
+		animated_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+	if animated_sprite != null:
+		animated_sprite.sprite_frames = _create_sprite_frames()
+		animated_sprite.play(&"idle_down")
+	if Engine.is_editor_hint():
+		set_physics_process(false)
+		set_process_unhandled_input(false)
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if Engine.is_editor_hint():
+		return
 	if _is_interact_event(event):
 		if interact_with_nearest_npc() != null:
 			var vp := get_viewport()
@@ -55,7 +64,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 static func _is_interact_event(event: InputEvent) -> bool:
-	if event.is_action_pressed(&"interact"):
+	if InputMap.has_action(&"interact") and event.is_action_pressed(&"interact"):
 		return true
 	if event is InputEventKey:
 		var key_event := event as InputEventKey
@@ -99,10 +108,12 @@ func interact_with_nearest_npc() -> Node2D:
 
 
 func _physics_process(_delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if touch_move_vector.length() > direction.length():
 		direction = touch_move_vector.limit_length(1.0)
-	var is_running := Input.is_action_pressed("run") or touch_run_active
+	var is_running := (InputMap.has_action(&"run") and Input.is_action_pressed("run")) or touch_run_active
 	velocity = direction * (RUN_SPEED if is_running else WALK_SPEED)
 	_update_animation(direction, is_running)
 	move_and_slide()
@@ -117,7 +128,7 @@ func _update_animation(direction: Vector2, is_running: bool = false) -> void:
 
 	var movement_animation: StringName = &"idle"
 	if not direction.is_zero_approx():
-		var running_now := is_running or Input.is_action_pressed("run") or touch_run_active
+		var running_now := is_running or (InputMap.has_action(&"run") and Input.is_action_pressed("run")) or touch_run_active
 		movement_animation = &"run" if running_now else &"walk"
 	var animation_name := StringName("%s_%s" % [movement_animation, _facing_direction])
 	if animated_sprite.animation != animation_name or not animated_sprite.is_playing():

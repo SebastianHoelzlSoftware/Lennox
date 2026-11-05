@@ -18,8 +18,8 @@ config/icon="res://assets/icons/icon_512x512.png"
 
 [display]
 
-window/size/viewport_width=1150
-window/size/viewport_height=900
+window/size/viewport_width=1600
+window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=4
