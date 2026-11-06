@@ -5,10 +5,6 @@ extends TileMapLayer
 # caras y cimas de acantilado, derrames). Este TileMapLayer se queda vacio y conserva su
 # TileSet de patrones para herramientas/tests (TileMapper / CliffAutotiler).
 
-const TerrainPainter = preload("res://src/core/terrain_painter.gd")
-const TerrainStyles = preload("res://src/core/terrain_styles.gd")
-const ObjectCatalog = preload("res://src/core/object_catalog.gd")
-
 # Las capas de terreno quedan por debajo de jugador y objetos (z 0)
 const TERRAIN_Z_BASE := -20
 

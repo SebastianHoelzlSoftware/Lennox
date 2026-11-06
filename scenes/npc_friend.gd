@@ -1048,8 +1048,10 @@ func _create_sprite_frames() -> SpriteFrames:
 		var texture := load(str(config[sheet_key])) as Texture2D
 		if texture == null:
 			continue
+		@warning_ignore("INTEGER_DIVISION")
 		var cell_px := maxi(int(texture.get_height() / 4), 1)
 		var detected_frame_size := Vector2i(cell_px, cell_px)
+		@warning_ignore("INTEGER_DIVISION")
 		var detected_frame_count := maxi(int(texture.get_width() / cell_px), 1)
 		var overrides: Dictionary = {}
 		if not is_monster and sheet_key == "idle":

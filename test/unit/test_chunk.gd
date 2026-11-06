@@ -143,5 +143,3 @@ func test_get_barrier_at_none():
 	
 	var found := chunk.get_barrier_at(20, 20)
 	assert_eq(found, null, "Fuera de las barreras get_barrier_at debe devolver null")
-
-

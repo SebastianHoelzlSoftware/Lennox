@@ -2,10 +2,6 @@
 class_name Level
 extends RefCounted
 
-const CliffAutotiler = preload("res://src/core/cliff_autotiler.gd")
-const ObjectCatalog = preload("res://src/core/object_catalog.gd")
-const TerrainStyles = preload("res://src/core/terrain_styles.gd")
-
 # Alto maximo (en baldosas) de una cara de acantilado; usado para detectar caras.
 const MAX_FACE_HEIGHT := 3
 # Amplitud (en macro-celdas) de la deformacion de las fronteras entre biomas.
