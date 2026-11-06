@@ -55,42 +55,42 @@ const DIRECTION_ROWS := {
 }
 
 const ARCHER_IDLE_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Archer_lvl1_Idle_without_shadow.png"
+	"res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Idle_without_shadow.png"
 )
 const ARCHER_WALK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Archer_lvl1_Walk_without_shadow.png"
+	"res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Walk_without_shadow.png"
 )
 const ARCHER_RUN_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Archer_lvl1_Run_without_shadow.png"
+	"res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Run_without_shadow.png"
 )
 const ARCHER_ATTACK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Archer_lvl1_Attack_without_shadow.png"
+	"res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Attack_without_shadow.png"
 )
 const ARCHER_HURT_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Archer_lvl1_Hurt_without_shadow.png"
+	"res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Hurt_without_shadow.png"
 )
 const ARCHER_DEATH_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Archer_lvl1_Death_without_shadow.png"
+	"res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Death_without_shadow.png"
 )
 
 const DINO_IDLE_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Dino_Idle_without_shadow.png"
+	"res://assets/common/characters/Dino/Dino_Idle_without_shadow.png"
 )
 const DINO_WALK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Dino_Walk_without_shadow.png"
+	"res://assets/common/characters/Dino/Dino_Walk_without_shadow.png"
 )
 const DINO_RUN_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Dino_Run_without_shadow.png"
+	"res://assets/common/characters/Dino/Dino_Run_without_shadow.png"
 )
 
 const POLAR_BEAR_IDLE_SHEET: Texture2D = preload(
-	"res://assets/common/characters/PolarBear_Idle_without_shadow.png"
+	"res://assets/common/characters/PolarBear/PolarBear_Idle_without_shadow.png"
 )
 const POLAR_BEAR_WALK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/PolarBear_Walk_without_shadow.png"
+	"res://assets/common/characters/PolarBear/PolarBear_Walk_without_shadow.png"
 )
 const POLAR_BEAR_RUN_SHEET: Texture2D = preload(
-	"res://assets/common/characters/PolarBear_Run_without_shadow.png"
+	"res://assets/common/characters/PolarBear/PolarBear_Run_without_shadow.png"
 )
 
 const MAGE_LVL1_IDLE_SHEET: Texture2D = preload(
@@ -141,6 +141,8 @@ const BASE_MALE_WALK_SHEET: Texture2D = preload(
 const BASE_MALE_RUN_SHEET: Texture2D = preload(
 	"res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Run_without_shadow.png"
 )
+
+
 
 var target: Node2D = null
 var _facing_direction: StringName = &"down"
