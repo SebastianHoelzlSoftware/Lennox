@@ -224,7 +224,7 @@ Si quieres probar la ultima version de **Lennox** directamente en tu movil o tab
 > 4. ¡Y listo! Ya puedes darle a **Abrir** y probar el juego (con el joystick táctil a la izquierda y el botón ❤️ **`E`** o tocando a la arquera para ver la burbuja mágica de **`AMOR`**).
 
 #### ANOTACIÓN: En mi Pixel 6 hice "Scan App" por Google Play Protect y dijo que era seguro.
-#### ANOTACIÓN: Parece necesario en mi Pixel 6 hacer "Scan App" y que pase está prueba para poder instalarlo.
+#### ANOTACIÓN: Parece necesario en mi Pixel 6 hacer "Scan App" y que pase esa prueba para poder instalarlo.
 ---
 
 ### 💻 Ejecutar desde el Editor de Godot (PC y Desarrollo)
