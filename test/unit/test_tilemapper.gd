@@ -97,10 +97,6 @@ func test_tilemapper_draws_all_tiles_correctly():
 			var ret_x = returned_atlas_coords[0]
 			var ret_y = returned_atlas_coords[1]
 			var ret_as_vec = Vector2i(ret_x, ret_y)
-			print("ATLAS COORDS:")
-			print(atlas_coords)
-			print("RETURNED COORDS:")
-			print(ret_as_vec)
 			assert_eq(ret_as_vec, atlas_coords[0], "Retrieved atlas coordinates should be equal with registry ones")
 
 			# Move draw position to the right
