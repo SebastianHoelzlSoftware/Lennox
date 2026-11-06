@@ -829,6 +829,19 @@ func _ready() -> void:
 		target = get_parent().get_node_or_null("CharacterBody2D") as Node2D
 
 
+func _notification(what: int) -> void:
+	if not Engine.is_editor_hint() or character_style == "custom":
+		return
+	if animated_sprite == null:
+		animated_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+	if animated_sprite == null:
+		return
+	if what == NOTIFICATION_EDITOR_PRE_SAVE:
+		animated_sprite.sprite_frames = null
+	elif what == NOTIFICATION_EDITOR_POST_SAVE:
+		_apply_character_style()
+
+
 func _ensure_animated_sprite() -> void:
 	if animated_sprite == null:
 		animated_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D

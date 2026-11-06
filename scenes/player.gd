@@ -53,6 +53,16 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 
 
+func _notification(what: int) -> void:
+	if not Engine.is_editor_hint() or animated_sprite == null:
+		return
+	if what == NOTIFICATION_EDITOR_PRE_SAVE:
+		animated_sprite.sprite_frames = null
+	elif what == NOTIFICATION_EDITOR_POST_SAVE:
+		animated_sprite.sprite_frames = _create_sprite_frames()
+		animated_sprite.play(&"idle_down")
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if Engine.is_editor_hint():
 		return
