@@ -237,3 +237,37 @@ func test_mobile_touch_controls_move_player_and_trigger_npc_dialog():
 	controls._handle_screen_touch(2, controls._zoom_in_rect.get_center(), true)
 	controls._handle_screen_touch(2, controls._zoom_in_rect.get_center(), false)
 	assert_gt(camera.zoom.x, initial_zoom, "El boton + acerca la camara")
+
+
+func test_all_character_styles_load_valid_sprite_frames():
+	var npc := NpcFriendScript.new()
+	add_child_autofree(npc)
+	var styles: Array = NpcFriendScript.CHARACTER_STYLE_SHEETS.keys()
+	assert_eq(styles.size(), 73, "Estan registrados los 73 estilos de personajes")
+
+	for style_name: String in styles:
+		npc.character_style = style_name
+		var frames: SpriteFrames = npc.animated_sprite.sprite_frames
+		assert_not_null(frames, "SpriteFrames creado para %s" % style_name)
+		var cfg: Dictionary = NpcFriendScript.CHARACTER_STYLE_SHEETS[style_name]
+		var is_monster := str(cfg.get("layout", "humanoid")) == "monster"
+
+		for prefix in [&"idle", &"walk", &"run"]:
+			for dir in [&"down", &"left", &"right", &"up"]:
+				var anim := StringName("%s_%s" % [prefix, dir])
+				assert_true(frames.has_animation(anim), "Estilo '%s' tiene animacion %s" % [style_name, anim])
+				var count := frames.get_frame_count(anim)
+				assert_gt(count, 0, "Estilo '%s' tiene frames en %s" % [style_name, anim])
+				var first_tex := frames.get_frame_texture(anim, 0) as AtlasTexture
+				assert_not_null(first_tex, "Frame 0 de '%s' (%s) es AtlasTexture" % [style_name, anim])
+				assert_not_null(first_tex.atlas, "Textura atlas cargada para '%s' (%s)" % [style_name, anim])
+
+		if not is_monster:
+			assert_eq(frames.get_frame_count(&"idle_up"), 4, "Humanoid/animal '%s' idle_up tiene 4 frames" % style_name)
+		else:
+			assert_eq(
+				frames.get_frame_count(&"idle_up"),
+				frames.get_frame_count(&"idle_down"),
+				"Monster '%s' idle_up tiene tantos frames como idle_down" % style_name
+			)
+

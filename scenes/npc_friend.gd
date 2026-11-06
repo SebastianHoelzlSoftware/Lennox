@@ -5,11 +5,85 @@ extends CharacterBody2D
 #
 # Es un `@tool` script para que al cambiar `character_style` en el Inspector de Godot
 # se actualicen inmediatamente los `SpriteFrames` en el editor 2D sin tener que configurar
-# animaciones a mano. Soporta:
-# - "archer", "mage", "mage_lvl2", "mage_lvl3", "dino", "polar_bear"
-# - "custom" (respeta los `SpriteFrames` asignados manualmente en el editor)
+# animaciones a mano. Soporta todos los estilos de personaje de `res://assets/common/characters/`
+# además de `"custom"` (que respeta los `SpriteFrames` asignados manualmente en el editor).
 
-@export_enum("archer", "mage", "mage_lvl2", "mage_lvl3", "dino", "polar_bear", "base_male", "ent_lvl1", "custom")
+@export_enum(
+	"archer",
+	"archer_lvl2",
+	"archer_lvl3",
+	"archer_lvl4",
+	"archer_lvl5",
+	"archer_lvl6",
+	"archer_lvl7",
+	"archer_lvl8",
+	"archer_lvl9",
+	"mage",
+	"mage_lvl2",
+	"mage_lvl3",
+	"mage_lvl4",
+	"mage_lvl5",
+	"mage_lvl6",
+	"mage_lvl7",
+	"mage_lvl8",
+	"mage_lvl9",
+	"base_male",
+	"base_male_sword",
+	"dino",
+	"polar_bear",
+	"beholder_lvl1",
+	"beholder_lvl2",
+	"beholder_lvl3",
+	"demon_lvl1",
+	"demon_lvl2",
+	"demon_lvl3",
+	"ent_lvl1",
+	"ent_lvl2",
+	"ent_lvl3",
+	"ghost_lvl1",
+	"ghost_lvl2",
+	"ghost_lvl3",
+	"goblin_lvl1",
+	"goblin_lvl2",
+	"goblin_lvl3",
+	"golem_lvl1",
+	"golem_lvl2",
+	"golem_lvl3",
+	"imp_lvl1",
+	"imp_lvl2",
+	"imp_lvl3",
+	"lich_lvl1",
+	"lich_lvl2",
+	"lich_lvl3",
+	"lizardman_lvl1",
+	"lizardman_lvl2",
+	"lizardman_lvl3",
+	"orc_lvl1",
+	"orc_lvl2",
+	"orc_lvl3",
+	"plant_lvl1",
+	"plant_lvl2",
+	"plant_lvl3",
+	"rat_lvl1",
+	"rat_lvl2",
+	"rat_lvl3",
+	"skeleton_lvl1",
+	"skeleton_lvl2",
+	"skeleton_lvl3",
+	"slime_lvl1",
+	"slime_lvl2",
+	"slime_lvl3",
+	"slime_boss_lvl1",
+	"slime_boss_lvl2",
+	"slime_boss_lvl3",
+	"vampire_lvl1",
+	"vampire_lvl2",
+	"vampire_lvl3",
+	"zombie_lvl1",
+	"zombie_lvl2",
+	"zombie_lvl3",
+	"custom"
+)
 var character_style: String = "archer":
 	set(value):
 		character_style = value
@@ -61,103 +135,660 @@ const ENT_DIRECTION_ROWS := {
 	&"right": 3,
 }
 
-const ARCHER_IDLE_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Idle_without_shadow.png"
-)
-const ARCHER_WALK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Walk_without_shadow.png"
-)
-const ARCHER_RUN_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Run_without_shadow.png"
-)
-const ARCHER_ATTACK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Attack_without_shadow.png"
-)
-const ARCHER_HURT_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Hurt_without_shadow.png"
-)
-const ARCHER_DEATH_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Death_without_shadow.png"
-)
-
-const DINO_IDLE_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Dino/Dino_Idle_without_shadow.png"
-)
-const DINO_WALK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Dino/Dino_Walk_without_shadow.png"
-)
-const DINO_RUN_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Dino/Dino_Run_without_shadow.png"
-)
-
-const POLAR_BEAR_IDLE_SHEET: Texture2D = preload(
-	"res://assets/common/characters/PolarBear/PolarBear_Idle_without_shadow.png"
-)
-const POLAR_BEAR_WALK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/PolarBear/PolarBear_Walk_without_shadow.png"
-)
-const POLAR_BEAR_RUN_SHEET: Texture2D = preload(
-	"res://assets/common/characters/PolarBear/PolarBear_Run_without_shadow.png"
-)
-
-const MAGE_LVL1_IDLE_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Idle_full_without_shadow.png"
-)
-const MAGE_LVL1_WALK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Walk_full_without_shadow.png"
-)
-const MAGE_LVL1_RUN_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Run_full_without_shadow.png"
-)
-const MAGE_LVL1_ATTACK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_attack_full_without_shadow.png"
-)
-const MAGE_LVL1_HURT_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Hurt_full_without_shadow.png"
-)
-const MAGE_LVL1_DEATH_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Death_full_without_shadow.png"
-)
-
-const MAGE_LVL2_IDLE_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Mage_2lvl/Without_shadow/Mage_lvl2_Idle_full_without_shadow.png"
-)
-const MAGE_LVL2_WALK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Mage_2lvl/Without_shadow/Mage_lvl2_Walk_full_without_shadow.png"
-)
-const MAGE_LVL2_RUN_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Mage_2lvl/Without_shadow/Mage_lvl2_Run_full_without_shadow.png"
-)
-
-const MAGE_LVL3_IDLE_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_Idle_full_without_shadow.png"
-)
-const MAGE_LVL3_WALK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_Walk_full_without_shadow.png"
-)
-const MAGE_LVL3_RUN_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_Run_full_without_shadow.png"
-)
-
-const BASE_MALE_IDLE_SHEET: Texture2D = preload(
-	"res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Idle_without_shadow.png"
-)
-const BASE_MALE_WALK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Walk_without_shadow.png"
-)
-const BASE_MALE_RUN_SHEET: Texture2D = preload(
-	"res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Run_without_shadow.png"
-)
-
-const ENT_LVL1_IDLE_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Ent1/Without_shadow/Ent1_Idle_without_shadow.png"
-)
-const ENT_LVL1_WALK_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Ent1/Without_shadow/Ent1_Walk_without_shadow.png"
-)
-const ENT_LVL1_RUN_SHEET: Texture2D = preload(
-	"res://assets/common/characters/Ent1/Without_shadow/Ent1_Run_without_shadow.png"
-)
+const CHARACTER_STYLE_SHEETS := {
+	# === Grupo A: Humanoides y animales (DIRECTION_ROWS = down:0, left:1, right:2, up:3; idle_up = 4 frames) ===
+	"archer": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Archer_Lvl1/Archer_lvl1_Death_without_shadow.png",
+	},
+	"archer_lvl2": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Archer_Lvl2/Archer_lvl2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Archer_Lvl2/Archer_lvl2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Archer_Lvl2/Archer_lvl2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Archer_Lvl2/Archer_lvl2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Archer_Lvl2/Archer_lvl2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Archer_Lvl2/Archer_lvl2_Death_without_shadow.png",
+	},
+	"archer_lvl3": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Archer_Lvl3/Archer_lvl3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Archer_Lvl3/Archer_lvl3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Archer_Lvl3/Archer_lvl3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Archer_Lvl3/Archer_lvl3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Archer_Lvl3/Archer_lvl3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Archer_Lvl3/Archer_lvl3_Death_without_shadow.png",
+	},
+	"archer_lvl4": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Archer_Lvl4/Without_shadow/lvl4_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Archer_Lvl4/Without_shadow/lvl4_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Archer_Lvl4/Without_shadow/lvl4_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Archer_Lvl4/Without_shadow/lvl4_Attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Archer_Lvl4/Without_shadow/lvl4_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Archer_Lvl4/Without_shadow/lvl4_Death_full_without_shadow.png",
+	},
+	"archer_lvl5": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Archer_Lvl5/Without_shadow/lvl5_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Archer_Lvl5/Without_shadow/lvl5_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Archer_Lvl5/Without_shadow/lvl5_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Archer_Lvl5/Without_shadow/lvl5_Attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Archer_Lvl5/Without_shadow/lvl5_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Archer_Lvl5/Without_shadow/lvl5_Death_full_without_shadow.png",
+	},
+	"archer_lvl6": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Archer_Lvl6/Without_shadow/Archer_lvl6_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Archer_Lvl6/Without_shadow/Archer_lvl6_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Archer_Lvl6/Without_shadow/Archer_lvl6_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Archer_Lvl6/Without_shadow/Archer_lvl6_Attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Archer_Lvl6/Without_shadow/Archer_lvl6_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Archer_Lvl6/Without_shadow/Archer_lvl6_Death_full_without_shadow.png",
+	},
+	"archer_lvl7": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Archer_Lvl7/Without_shadow/Archer_lvl7_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Archer_Lvl7/Without_shadow/Archer_lvl7_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Archer_Lvl7/Without_shadow/Archer_lvl7_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Archer_Lvl7/Without_shadow/Archer_lvl7_Attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Archer_Lvl7/Without_shadow/Archer_lvl7_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Archer_Lvl7/Without_shadow/Archer_lvl7_Death_full_without_shadow.png",
+	},
+	"archer_lvl8": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Archer_Lvl8/Without_shadow/Archer_lvl8_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Archer_Lvl8/Without_shadow/Archer_lvl8_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Archer_Lvl8/Without_shadow/Archer_lvl8_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Archer_Lvl8/Without_shadow/Archer_lvl8_Attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Archer_Lvl8/Without_shadow/Archer_lvl8_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Archer_Lvl8/Without_shadow/Archer_lvl8_Death_full_without_shadow.png",
+	},
+	"archer_lvl9": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Archer_Lvl9/Without_shadow/Archer_lvl9_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Archer_Lvl9/Without_shadow/Archer_lvl9_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Archer_Lvl9/Without_shadow/Archer_lvl9_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Archer_Lvl9/Without_shadow/Archer_lvl9_Attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Archer_Lvl9/Without_shadow/Archer_lvl9_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Archer_Lvl9/Without_shadow/Archer_lvl9_Death_full_without_shadow.png",
+	},
+	"mage": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Mage_1lvl/Without_shadow/Mage_lvl1_Death_full_without_shadow.png",
+	},
+	"mage_lvl2": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Mage_2lvl/Without_shadow/Mage_lvl2_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Mage_2lvl/Without_shadow/Mage_lvl2_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Mage_2lvl/Without_shadow/Mage_lvl2_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Mage_2lvl/Without_shadow/Mage_lvl2_attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Mage_2lvl/Without_shadow/Mage_lvl2_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Mage_2lvl/Without_shadow/Mage_lvl2_Death_full_without_shadow.png",
+	},
+	"mage_lvl3": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Mage_3lvl/Without_shadow/Mage_lvl3_Death_full_without_shadow.png",
+	},
+	"mage_lvl4": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Mage_4lvl/Without_shadow/Mage_lvl4_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Mage_4lvl/Without_shadow/Mage_lvl4_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Mage_4lvl/Without_shadow/Mage_lvl4_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Mage_4lvl/Without_shadow/Mage_lvl4_attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Mage_4lvl/Without_shadow/Mage_lvl4_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Mage_4lvl/Without_shadow/Mage_lvl4_Death_full_without_shadow.png",
+	},
+	"mage_lvl5": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Mage_5lvl/Without_shadow/Mage_lvl5_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Mage_5lvl/Without_shadow/Mage_lvl5_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Mage_5lvl/Without_shadow/Mage_lvl5_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Mage_5lvl/Without_shadow/Mage_lvl5_attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Mage_5lvl/Without_shadow/Mage_lvl5_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Mage_5lvl/Without_shadow/Mage_lvl5_Death_full_without_shadow.png",
+	},
+	"mage_lvl6": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Mage_6lvl/Without_shadow/Mage_lvl6_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Mage_6lvl/Without_shadow/Mage_lvl6_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Mage_6lvl/Without_shadow/Mage_lvl6_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Mage_6lvl/Without_shadow/Mage_lvl6_attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Mage_6lvl/Without_shadow/Mage_lvl6_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Mage_6lvl/Without_shadow/Mage_lvl6_Death_full_without_shadow.png",
+	},
+	"mage_lvl7": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Mage_7lvl/Without_shadow/Mage7_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Mage_7lvl/Without_shadow/Mage7_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Mage_7lvl/Without_shadow/Mage7_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Mage_7lvl/Without_shadow/Mage7_attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Mage_7lvl/Without_shadow/Mage7_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Mage_7lvl/Without_shadow/Mage7_Death_full_without_shadow.png",
+	},
+	"mage_lvl8": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Mage_8lvl/Without_shadow/Mage8_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Mage_8lvl/Without_shadow/Mage8_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Mage_8lvl/Without_shadow/Mage8_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Mage_8lvl/Without_shadow/Mage8_attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Mage_8lvl/Without_shadow/Mage8_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Mage_8lvl/Without_shadow/Mage8_Death_full_without_shadow.png",
+	},
+	"mage_lvl9": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Mage_9lvl/Without_shadow/Mage9_Idle_full_without_shadow.png",
+		"walk": "res://assets/common/characters/Mage_9lvl/Without_shadow/Mage9_Walk_full_without_shadow.png",
+		"run": "res://assets/common/characters/Mage_9lvl/Without_shadow/Mage9_Run_full_without_shadow.png",
+		"attack": "res://assets/common/characters/Mage_9lvl/Without_shadow/Mage9_attack_full_without_shadow.png",
+		"hurt": "res://assets/common/characters/Mage_9lvl/Without_shadow/Mage9_Hurt_full_without_shadow.png",
+		"death": "res://assets/common/characters/Mage_9lvl/Without_shadow/Mage9_Death_full_without_shadow.png",
+	},
+	"base_male": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Run_without_shadow.png",
+		"hurt": "res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Death_without_shadow.png",
+	},
+	"base_male_sword": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/BaseMale/Sword/Without_shadow/Sword_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/BaseMale/Sword/Without_shadow/Sword_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/BaseMale/Sword/Without_shadow/Sword_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/BaseMale/Sword/Without_shadow/Sword_attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/BaseMale/Sword/Without_shadow/Sword_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/BaseMale/Sword/Without_shadow/Sword_Death_without_shadow.png",
+	},
+	"dino": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/Dino/Dino_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Dino/Dino_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Dino/Dino_Run_without_shadow.png",
+	},
+	"polar_bear": {
+		"layout": "humanoid",
+		"idle": "res://assets/common/characters/PolarBear/PolarBear_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/PolarBear/PolarBear_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/PolarBear/PolarBear_Run_without_shadow.png",
+	},
+	# === Grupo B: Criaturas y monstruos (ENT_DIRECTION_ROWS = down:0, up:1, left:2, right:3; 4 filas completas) ===
+	"beholder_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Beholder1/Without_shadow/Beholder1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Beholder1/Without_shadow/Beholder1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Beholder1/Without_shadow/Beholder1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Beholder1/Without_shadow/Beholder1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Beholder1/Without_shadow/Beholder1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Beholder1/Without_shadow/Beholder1_Death_without_shadow.png",
+	},
+	"beholder_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Beholder2/Without_shadow/Beholder2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Beholder2/Without_shadow/Beholder2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Beholder2/Without_shadow/Beholder2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Beholder2/Without_shadow/Beholder2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Beholder2/Without_shadow/Beholder2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Beholder2/Without_shadow/Beholder2_Death_without_shadow.png",
+	},
+	"beholder_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Beholder3/Without_shadow/Beholder3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Beholder3/Without_shadow/Beholder3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Beholder3/Without_shadow/Beholder3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Beholder3/Without_shadow/Beholder3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Beholder3/Without_shadow/Beholder3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Beholder3/Without_shadow/Beholder3_Death_without_shadow.png",
+	},
+	"demon_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Demon1/Without_shadow/Demon1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Demon1/Without_shadow/Demon1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Demon1/Without_shadow/Demon1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Demon1/Without_shadow/Demon1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Demon1/Without_shadow/Demon1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Demon1/Without_shadow/Demon1_Death_without_shadow.png",
+	},
+	"demon_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Demon2/Without_shadow/Demon2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Demon2/Without_shadow/Demon2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Demon2/Without_shadow/Demon2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Demon2/Without_shadow/Demon2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Demon2/Without_shadow/Demon2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Demon2/Without_shadow/Demon2_Death_without_shadow.png",
+	},
+	"demon_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Demon3/Without_shadow/Demon3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Demon3/Without_shadow/Demon3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Demon3/Without_shadow/Demon3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Demon3/Without_shadow/Demon3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Demon3/Without_shadow/Demon3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Demon3/Without_shadow/Demon3_Death_without_shadow.png",
+	},
+	"ent_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Ent1/Without_shadow/Ent1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Ent1/Without_shadow/Ent1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Ent1/Without_shadow/Ent1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Ent1/Without_shadow/Ent1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Ent1/Without_shadow/Ent1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Ent1/Without_shadow/Ent1_Death_without_shadow.png",
+	},
+	"ent_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Ent2/Without_shadow/Ent2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Ent2/Without_shadow/Ent2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Ent2/Without_shadow/Ent2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Ent2/Without_shadow/Ent2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Ent2/Without_shadow/Ent2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Ent2/Without_shadow/Ent2_Death_without_shadow.png",
+	},
+	"ent_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Ent3/Without_shadow/Ent3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Ent3/Without_shadow/Ent3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Ent3/Without_shadow/Ent3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Ent3/Without_shadow/Ent3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Ent3/Without_shadow/Ent3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Ent3/Without_shadow/Ent3_Death_without_shadow.png",
+	},
+	"ghost_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Ghost1/Without_shadow/Ghost1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Ghost1/Without_shadow/Ghost1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Ghost1/Without_shadow/Ghost1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Ghost1/Without_shadow/Ghost1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Ghost1/Without_shadow/Ghost1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Ghost1/Without_shadow/Ghost1_Death_without_shadow.png",
+	},
+	"ghost_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Ghost2/Without_shadow/Ghost2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Ghost2/Without_shadow/Ghost2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Ghost2/Without_shadow/Ghost2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Ghost2/Without_shadow/Ghost2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Ghost2/Without_shadow/Ghost2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Ghost2/Without_shadow/Ghost2_Death_without_shadow.png",
+	},
+	"ghost_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Ghost3/Without_shadow/Ghost3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Ghost3/Without_shadow/Ghost3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Ghost3/Without_shadow/Ghost3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Ghost3/Without_shadow/Ghost3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Ghost3/Without_shadow/Ghost3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Ghost3/Without_shadow/Ghost3_Death_without_shadow.png",
+	},
+	"goblin_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Goblin1/Without_shadow/Idle0_without_shadow.png",
+		"walk": "res://assets/common/characters/Goblin1/Without_shadow/Walk0_without_shadow.png",
+		"run": "res://assets/common/characters/Goblin1/Without_shadow/Run0_without_shadow.png",
+		"attack": "res://assets/common/characters/Goblin1/Without_shadow/Attack0_without_shadow.png",
+		"hurt": "res://assets/common/characters/Goblin1/Without_shadow/Hurt0_without_shadow.png",
+		"death": "res://assets/common/characters/Goblin1/Without_shadow/Death0_without_shadow.png",
+	},
+	"goblin_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Goblin2/Without_shadow/Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Goblin2/Without_shadow/Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Goblin2/Without_shadow/Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Goblin2/Without_shadow/Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Goblin2/Without_shadow/Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Goblin2/Without_shadow/Death_without_shadow.png",
+	},
+	"goblin_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Goblin3/Without_shadow/Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Goblin3/Without_shadow/Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Goblin3/Without_shadow/Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Goblin3/Without_shadow/Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Goblin3/Without_shadow/Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Goblin3/Without_shadow/Death_without_shadow.png",
+	},
+	"golem_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Golem1/Without_shadow/Golem1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Golem1/Without_shadow/Golem1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Golem1/Without_shadow/Golem1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Golem1/Without_shadow/Golem1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Golem1/Without_shadow/Golem1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Golem1/Without_shadow/Golem1_Death_without_shadow.png",
+	},
+	"golem_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Golem2/Without_shadow/Golem2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Golem2/Without_shadow/Golem2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Golem2/Without_shadow/Golem2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Golem2/Without_shadow/Golem2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Golem2/Without_shadow/Golem2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Golem2/Without_shadow/Golem2_Death_without_shadow.png",
+	},
+	"golem_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Golem3/Without_shadow/Golem3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Golem3/Without_shadow/Golem3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Golem3/Without_shadow/Golem3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Golem3/Without_shadow/Golem3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Golem3/Without_shadow/Golem3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Golem3/Without_shadow/Golem3_Death_without_shadow.png",
+	},
+	"imp_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Imp1/Without_shadow/Imp1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Imp1/Without_shadow/Imp1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Imp1/Without_shadow/Imp1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Imp1/Without_shadow/Imp1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Imp1/Without_shadow/Imp1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Imp1/Without_shadow/Imp1_Death_without_shadow.png",
+	},
+	"imp_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Imp2/Without_shadow/Imp2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Imp2/Without_shadow/Imp2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Imp2/Without_shadow/Imp2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Imp2/Without_shadow/Imp2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Imp2/Without_shadow/Imp2_Hurt__without_shadow.png",
+		"death": "res://assets/common/characters/Imp2/Without_shadow/Imp2_Death_without_shadow.png",
+	},
+	"imp_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Imp3/Without_shadow/Imp3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Imp3/Without_shadow/Imp3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Imp3/Without_shadow/Imp3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Imp3/Without_shadow/Imp3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Imp3/Without_shadow/Imp3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Imp3/Without_shadow/Imp3_Death_without_shadow.png",
+	},
+	"lich_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Lich1/Without_shadow/Lich1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Lich1/Without_shadow/Lich1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Lich1/Without_shadow/Lich1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Lich1/Without_shadow/Lich1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Lich1/Without_shadow/Lich1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Lich1/Without_shadow/Lich1_Death_without_shadow.png",
+	},
+	"lich_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Lich2/Without_shadow/Lich2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Lich2/Without_shadow/Lich2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Lich2/Without_shadow/Lich2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Lich2/Without_shadow/Lich2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Lich2/Without_shadow/Lich2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Lich2/Without_shadow/Lich2_Death_without_shadow.png",
+	},
+	"lich_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Lich3/Without_shadow/Lich3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Lich3/Without_shadow/Lich3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Lich3/Without_shadow/Lich3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Lich3/Without_shadow/Lich3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Lich3/Without_shadow/Lich3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Lich3/Without_shadow/Lich3_Death_without_shadow.png",
+	},
+	"lizardman_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Lizardman1/Without_shadow/Lizardman1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Lizardman1/Without_shadow/Lizardman1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Lizardman1/Without_shadow/Lizardman1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Lizardman1/Without_shadow/Lizardman1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Lizardman1/Without_shadow/Lizardman1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Lizardman1/Without_shadow/Lizardman1_Death_without_shadow.png",
+	},
+	"lizardman_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Lizardman2/Without_shadow/Lizardman2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Lizardman2/Without_shadow/Lizardman2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Lizardman2/Without_shadow/Lizardman2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Lizardman2/Without_shadow/Lizardman2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Lizardman2/Without_shadow/Lizardman2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Lizardman2/Without_shadow/Lizardman2_Death_without_shadow.png",
+	},
+	"lizardman_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Lizardman3/Without_shadow/Lizardman3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Lizardman3/Without_shadow/Lizardman3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Lizardman3/Without_shadow/Lizardman3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Lizardman3/Without_shadow/Lizardman3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Lizardman3/Without_shadow/Lizardman3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Lizardman3/Without_shadow/Lizardman3_Death_without_shadow.png",
+	},
+	"orc_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Orc1/Without_shadow/orc1_idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Orc1/Without_shadow/orc1_walk_without_shadow.png",
+		"run": "res://assets/common/characters/Orc1/Without_shadow/orc1_run_without_shadow.png",
+		"attack": "res://assets/common/characters/Orc1/Without_shadow/orc1_attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Orc1/Without_shadow/orc1_hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Orc1/Without_shadow/orc1_death_without_shadow.png",
+	},
+	"orc_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Orc2/Without_shadow/orc2_idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Orc2/Without_shadow/orc2_walk_without_shadow.png",
+		"run": "res://assets/common/characters/Orc2/Without_shadow/orc2_run_without_shadow.png",
+		"attack": "res://assets/common/characters/Orc2/Without_shadow/orc2_attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Orc2/Without_shadow/orc2_hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Orc2/Without_shadow/orc2_death_without_shadow.png",
+	},
+	"orc_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Orc3/Without_shadow/orc3_idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Orc3/Without_shadow/orc3_walk_without_shadow.png",
+		"run": "res://assets/common/characters/Orc3/Without_shadow/orc3_run_without_shadow.png",
+		"attack": "res://assets/common/characters/Orc3/Without_shadow/orc3_attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Orc3/Without_shadow/orc3_hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Orc3/Without_shadow/orc3_death_without_shadow.png",
+	},
+	"plant_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Plant1/Without_shadow/Plant1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Plant1/Without_shadow/Plant1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Plant1/Without_shadow/Plant1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Plant1/Without_shadow/Plant1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Plant1/Without_shadow/Plant1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Plant1/Without_shadow/Plant1_Death_without_shadow.png",
+	},
+	"plant_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Plant2/Without_shadow/Plant2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Plant2/Without_shadow/Plant2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Plant2/Without_shadow/Plant2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Plant2/Without_shadow/Plant2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Plant2/Without_shadow/Plant2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Plant2/Without_shadow/Plant2_Death_without_shadow.png",
+	},
+	"plant_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Plant3/Without_shadow/Plant3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Plant3/Without_shadow/Plant3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Plant3/Without_shadow/Plant3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Plant3/Without_shadow/Plant3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Plant3/Without_shadow/Plant3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Plant3/Without_shadow/Plant3_Death_without_shadow.png",
+	},
+	"rat_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Rat1/Without_shadow/Rat1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Rat1/Without_shadow/Rat1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Rat1/Without_shadow/Rat1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Rat1/Without_shadow/Rat1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Rat1/Without_shadow/Rat1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Rat1/Without_shadow/Rat1_Death_without_shadow.png",
+	},
+	"rat_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Rat2/Without_shadow/Rat2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Rat2/Without_shadow/Rat2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Rat2/Without_shadow/Rat2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Rat2/Without_shadow/Rat2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Rat2/Without_shadow/Rat2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Rat2/Without_shadow/Rat2_Death_without_shadow.png",
+	},
+	"rat_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Rat3/Without_shadow/Rat3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Rat3/Without_shadow/Rat3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Rat3/Without_shadow/Rat3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Rat3/Without_shadow/Rat3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Rat3/Without_shadow/Rat3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Rat3/Without_shadow/Rat3_Death_without_shadow.png",
+	},
+	"skeleton_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Skeleton1/Without_shadow/Skeleton1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Skeleton1/Without_shadow/Skeleton1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Skeleton1/Without_shadow/Skeleton1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Skeleton1/Without_shadow/Skeleton1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Skeleton1/Without_shadow/Skeleton1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Skeleton1/Without_shadow/Skeleton1_Death_without_shadow.png",
+	},
+	"skeleton_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Skeleton2/Without_shadow/Skeleton2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Skeleton2/Without_shadow/Skeleton2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Skeleton2/Without_shadow/Skeleton2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Skeleton2/Without_shadow/Skeleton2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Skeleton2/Without_shadow/Skeleton2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Skeleton2/Without_shadow/Skeleton2_Death_without_shadow.png",
+	},
+	"skeleton_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Skeleton3/Without_shadow/Skeleton3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Skeleton3/Without_shadow/Skeleton3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Skeleton3/Without_shadow/Skeleton3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Skeleton3/Without_shadow/Skeleton3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Skeleton3/Without_shadow/Skeleton3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Skeleton3/Without_shadow/Skeleton3_Death_without_shadow.png",
+	},
+	"slime_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Slime1/Without_shadow/Slime1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Slime1/Without_shadow/Slime1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Slime1/Without_shadow/Slime1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Slime1/Without_shadow/Slime1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Slime1/Without_shadow/Slime1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Slime1/Without_shadow/Slime1_Death_without_shadow.png",
+	},
+	"slime_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Slime2/Without_shadow/Slime2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Slime2/Without_shadow/Slime2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Slime2/Without_shadow/Slime2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Slime2/Without_shadow/Slime2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Slime2/Without_shadow/Slime2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Slime2/Without_shadow/Slime2_Death_without_shadow.png",
+	},
+	"slime_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Slime3/Without_shadow/Slime3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Slime3/Without_shadow/Slime3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Slime3/Without_shadow/Slime3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Slime3/Without_shadow/Slime3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Slime3/Without_shadow/Slime3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Slime3/Without_shadow/Slime3_Death_without_shadow.png",
+	},
+	"slime_boss_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Slime_boss1/Without_shadow/Slime_boss1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Slime_boss1/Without_shadow/Slime_boss1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Slime_boss1/Without_shadow/Slime_boss1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Slime_boss1/Without_shadow/Slime_boss1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Slime_boss1/Without_shadow/Slime_boss1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Slime_boss1/Without_shadow/Slime_boss1_Death_without_shadow.png",
+	},
+	"slime_boss_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Slime_boss2/Without_shadow/Slime_boss2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Slime_boss2/Without_shadow/Slime_boss2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Slime_boss2/Without_shadow/Slime_boss2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Slime_boss2/Without_shadow/Slime_boss2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Slime_boss2/Without_shadow/Slime_boss2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Slime_boss2/Without_shadow/Slime_boss2_Death_without_shadow.png",
+	},
+	"slime_boss_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Slime_boss3/Without_shadow/Slime_boss3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Slime_boss3/Without_shadow/Slime_boss3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Slime_boss3/Without_shadow/Slime_boss3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Slime_boss3/Without_shadow/Slime_boss3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Slime_boss3/Without_shadow/Slime_boss3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Slime_boss3/Without_shadow/Slime_boss3_Death_without_shadow.png",
+	},
+	"vampire_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Vampires1/Without_shadow/Vampires1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Vampires1/Without_shadow/Vampires1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Vampires1/Without_shadow/Vampires1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Vampires1/Without_shadow/Vampires1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Vampires1/Without_shadow/Vampires1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Vampires1/Without_shadow/Vampires1_Death_without_shadow.png",
+	},
+	"vampire_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Vampires2/Without_shadow/Vampires2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Vampires2/Without_shadow/Vampires2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Vampires2/Without_shadow/Vampires2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Vampires2/Without_shadow/Vampires2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Vampires2/Without_shadow/Vampires2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Vampires2/Without_shadow/Vampires2_Death_without_shadow.png",
+	},
+	"vampire_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Vampires3/Without_shadow/Vampires3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Vampires3/Without_shadow/Vampires3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Vampires3/Without_shadow/Vampires3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Vampires3/Without_shadow/Vampires3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Vampires3/Without_shadow/Vampires3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Vampires3/Without_shadow/Vampires3_Death_without_shadow.png",
+	},
+	"zombie_lvl1": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Zombie1/Without_shadow/Zombie1_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Zombie1/Without_shadow/Zombie1_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Zombie1/Without_shadow/Zombie1_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Zombie1/Without_shadow/Zombie1_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Zombie1/Without_shadow/Zombie1_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Zombie1/Without_shadow/Zombie1_Death_without_shadow.png",
+	},
+	"zombie_lvl2": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Zombie2/Without_shadow/Zombie2_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Zombie2/Without_shadow/Zombie2_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Zombie2/Without_shadow/Zombie2_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Zombie2/Without_shadow/Zombie2_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Zombie2/Without_shadow/Zombie2_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Zombie2/Without_shadow/Zombie2_Death_without_shadow.png",
+	},
+	"zombie_lvl3": {
+		"layout": "monster",
+		"idle": "res://assets/common/characters/Zombie3/Without_shadow/Zombie3_Idle_without_shadow.png",
+		"walk": "res://assets/common/characters/Zombie3/Without_shadow/Zombie3_Walk_without_shadow.png",
+		"run": "res://assets/common/characters/Zombie3/Without_shadow/Zombie3_Run_without_shadow.png",
+		"attack": "res://assets/common/characters/Zombie3/Without_shadow/Zombie3_Attack_without_shadow.png",
+		"hurt": "res://assets/common/characters/Zombie3/Without_shadow/Zombie3_Hurt_without_shadow.png",
+		"death": "res://assets/common/characters/Zombie3/Without_shadow/Zombie3_Death_without_shadow.png",
+	},
+}
 
 
 var target: Node2D = null
@@ -390,47 +1021,50 @@ func _update_animation(move_vec: Vector2) -> void:
 		animated_sprite.play(animation_name)
 
 
+const ANIMATION_SPECS := [
+	{"prefix": &"idle", "key": "idle", "fps": 6.0, "loop": true},
+	{"prefix": &"walk", "key": "walk", "fps": 9.5, "loop": true},
+	{"prefix": &"run", "key": "run", "fps": 13.5, "loop": true},
+	{"prefix": &"attack", "key": "attack", "fps": 12.0, "loop": false},
+	{"prefix": &"hurt", "key": "hurt", "fps": 10.0, "loop": false},
+	{"prefix": &"death", "key": "death", "fps": 8.0, "loop": false},
+]
+
+
 func _create_sprite_frames() -> SpriteFrames:
 	var frames := SpriteFrames.new()
 	frames.remove_animation(&"default")
-	if character_style == "dino":
-		_add_sheet(frames, &"idle", DINO_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
-		_add_sheet(frames, &"walk", DINO_WALK_SHEET, 6, 10.0, true)
-		_add_sheet(frames, &"run", DINO_RUN_SHEET, 8, 13.0, true)
-	elif character_style == "polar_bear":
-		_add_sheet(frames, &"idle", POLAR_BEAR_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
-		_add_sheet(frames, &"walk", POLAR_BEAR_WALK_SHEET, 6, 10.0, true)
-		_add_sheet(frames, &"run", POLAR_BEAR_RUN_SHEET, 8, 13.0, true)
-	elif character_style == "mage":
-		_add_sheet(frames, &"idle", MAGE_LVL1_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
-		_add_sheet(frames, &"walk", MAGE_LVL1_WALK_SHEET, 6, 9.0, true)
-		_add_sheet(frames, &"run", MAGE_LVL1_RUN_SHEET, 8, 14.0, true)
-		_add_sheet(frames, &"attack", MAGE_LVL1_ATTACK_SHEET, 7, 12.0, false)
-		_add_sheet(frames, &"hurt", MAGE_LVL1_HURT_SHEET, 5, 10.0, false)
-		_add_sheet(frames, &"death", MAGE_LVL1_DEATH_SHEET, 7, 8.0, false)
-	elif character_style == "mage_lvl2":
-		_add_sheet(frames, &"idle", MAGE_LVL2_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
-		_add_sheet(frames, &"walk", MAGE_LVL2_WALK_SHEET, 6, 9.0, true)
-		_add_sheet(frames, &"run", MAGE_LVL2_RUN_SHEET, 8, 14.0, true)
-	elif character_style == "mage_lvl3":
-		_add_sheet(frames, &"idle", MAGE_LVL3_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
-		_add_sheet(frames, &"walk", MAGE_LVL3_WALK_SHEET, 6, 9.0, true)
-		_add_sheet(frames, &"run", MAGE_LVL3_RUN_SHEET, 8, 14.0, true)
-	elif character_style == "archer":
-		_add_sheet(frames, &"idle", ARCHER_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
-		_add_sheet(frames, &"walk", ARCHER_WALK_SHEET, 6, 9.0, true)
-		_add_sheet(frames, &"run", ARCHER_RUN_SHEET, 8, 14.0, true)
-		_add_sheet(frames, &"attack", ARCHER_ATTACK_SHEET, 8, 12.0, false)
-		_add_sheet(frames, &"hurt", ARCHER_HURT_SHEET, 5, 10.0, false)
-		_add_sheet(frames, &"death", ARCHER_DEATH_SHEET, 7, 8.0, false)
-	elif character_style == "ent_lvl1":
-		_add_sheet(frames, &"idle", ENT_LVL1_IDLE_SHEET, 4, 6.0, true, {}, ENT_DIRECTION_ROWS, ENT_FRAME_SIZE)
-		_add_sheet(frames, &"walk", ENT_LVL1_WALK_SHEET, 6, 10.0, true, {}, ENT_DIRECTION_ROWS, ENT_FRAME_SIZE)
-		_add_sheet(frames, &"run", ENT_LVL1_RUN_SHEET, 8, 14.0, true, {}, ENT_DIRECTION_ROWS, ENT_FRAME_SIZE)
-	else:
-		_add_sheet(frames, &"idle", BASE_MALE_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
-		_add_sheet(frames, &"walk", BASE_MALE_WALK_SHEET, 6, 9.0, true)
-		_add_sheet(frames, &"run", BASE_MALE_RUN_SHEET, 8, 14.0, true)
+	var config: Dictionary = CHARACTER_STYLE_SHEETS.get(
+		character_style,
+		CHARACTER_STYLE_SHEETS["base_male"]
+	)
+	var is_monster := str(config.get("layout", "humanoid")) == "monster"
+	var direction_rows: Dictionary = ENT_DIRECTION_ROWS if is_monster else DIRECTION_ROWS
+
+	for spec: Dictionary in ANIMATION_SPECS:
+		var sheet_key: String = spec["key"]
+		if not config.has(sheet_key):
+			continue
+		var texture := load(str(config[sheet_key])) as Texture2D
+		if texture == null:
+			continue
+		var cell_px := maxi(int(texture.get_height() / 4), 1)
+		var detected_frame_size := Vector2i(cell_px, cell_px)
+		var detected_frame_count := maxi(int(texture.get_width() / cell_px), 1)
+		var overrides: Dictionary = {}
+		if not is_monster and sheet_key == "idle":
+			overrides = {&"up": 4}
+		_add_sheet(
+			frames,
+			spec["prefix"],
+			texture,
+			detected_frame_count,
+			float(spec["fps"]),
+			bool(spec["loop"]),
+			overrides,
+			direction_rows,
+			detected_frame_size
+		)
 	return frames
 
 
