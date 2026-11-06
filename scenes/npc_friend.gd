@@ -9,7 +9,7 @@ extends CharacterBody2D
 # - "archer", "mage", "mage_lvl2", "mage_lvl3", "dino", "polar_bear"
 # - "custom" (respeta los `SpriteFrames` asignados manualmente en el editor)
 
-@export_enum("archer", "mage", "mage_lvl2", "mage_lvl3", "dino", "polar_bear", "base_male", "custom")
+@export_enum("archer", "mage", "mage_lvl2", "mage_lvl3", "dino", "polar_bear", "base_male", "ent_lvl1", "custom")
 var character_style: String = "archer":
 	set(value):
 		character_style = value
@@ -47,11 +47,18 @@ const FRICTION := 800.0
 const STOP_SPEED_THRESHOLD := 8.0
 const RUN_SPEED_THRESHOLD := 125.0
 const FRAME_SIZE := Vector2i(64, 64)
+const ENT_FRAME_SIZE := Vector2i(128, 128)
 const DIRECTION_ROWS := {
 	&"down": 0,
 	&"left": 1,
 	&"right": 2,
 	&"up": 3,
+}
+const ENT_DIRECTION_ROWS := {
+	&"down": 0,
+	&"up": 1,
+	&"left": 2,
+	&"right": 3,
 }
 
 const ARCHER_IDLE_SHEET: Texture2D = preload(
@@ -142,6 +149,15 @@ const BASE_MALE_RUN_SHEET: Texture2D = preload(
 	"res://assets/common/characters/BaseMale/Unarmed/Without_shadow/Unarmed_Run_without_shadow.png"
 )
 
+const ENT_LVL1_IDLE_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Ent1/Without_shadow/Ent1_Idle_without_shadow.png"
+)
+const ENT_LVL1_WALK_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Ent1/Without_shadow/Ent1_Walk_without_shadow.png"
+)
+const ENT_LVL1_RUN_SHEET: Texture2D = preload(
+	"res://assets/common/characters/Ent1/Without_shadow/Ent1_Run_without_shadow.png"
+)
 
 
 var target: Node2D = null
@@ -407,6 +423,10 @@ func _create_sprite_frames() -> SpriteFrames:
 		_add_sheet(frames, &"attack", ARCHER_ATTACK_SHEET, 8, 12.0, false)
 		_add_sheet(frames, &"hurt", ARCHER_HURT_SHEET, 5, 10.0, false)
 		_add_sheet(frames, &"death", ARCHER_DEATH_SHEET, 7, 8.0, false)
+	elif character_style == "ent_lvl1":
+		_add_sheet(frames, &"idle", ENT_LVL1_IDLE_SHEET, 4, 6.0, true, {}, ENT_DIRECTION_ROWS, ENT_FRAME_SIZE)
+		_add_sheet(frames, &"walk", ENT_LVL1_WALK_SHEET, 6, 10.0, true, {}, ENT_DIRECTION_ROWS, ENT_FRAME_SIZE)
+		_add_sheet(frames, &"run", ENT_LVL1_RUN_SHEET, 8, 14.0, true, {}, ENT_DIRECTION_ROWS, ENT_FRAME_SIZE)
 	else:
 		_add_sheet(frames, &"idle", BASE_MALE_IDLE_SHEET, 12, 6.0, true, {&"up": 4})
 		_add_sheet(frames, &"walk", BASE_MALE_WALK_SHEET, 6, 9.0, true)
@@ -421,20 +441,22 @@ func _add_sheet(
 	frame_count: int,
 	fps: float,
 	loop_animation: bool,
-	direction_frame_overrides: Dictionary = {}
+	direction_frame_overrides: Dictionary = {},
+	direction_rows: Dictionary = DIRECTION_ROWS,
+	frame_size: Vector2i = FRAME_SIZE
 ) -> void:
-	for direction: StringName in DIRECTION_ROWS:
+	for direction: StringName in direction_rows:
 		var animation_name := StringName("%s_%s" % [animation_prefix, direction])
 		frames.add_animation(animation_name)
 		frames.set_animation_speed(animation_name, fps)
 		frames.set_animation_loop(animation_name, loop_animation)
-		var row: int = DIRECTION_ROWS[direction]
+		var row: int = direction_rows[direction]
 		var count: int = direction_frame_overrides.get(direction, frame_count)
 		for frame_index in range(count):
 			var atlas_frame := AtlasTexture.new()
 			atlas_frame.atlas = texture
 			atlas_frame.region = Rect2(
-				Vector2(frame_index * FRAME_SIZE.x, row * FRAME_SIZE.y),
-				Vector2(FRAME_SIZE)
+				Vector2(frame_index * frame_size.x, row * frame_size.y),
+				Vector2(frame_size)
 			)
 			frames.add_frame(animation_name, atlas_frame)
