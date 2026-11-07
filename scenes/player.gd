@@ -58,6 +58,7 @@ func _notification(what: int) -> void:
 		return
 	if what == NOTIFICATION_EDITOR_PRE_SAVE:
 		animated_sprite.sprite_frames = null
+		animated_sprite.animation = &""
 	elif what == NOTIFICATION_EDITOR_POST_SAVE:
 		animated_sprite.sprite_frames = _create_sprite_frames()
 		animated_sprite.play(&"idle_down")

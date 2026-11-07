@@ -1,0 +1,65 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/mage_tower_exterior.gd" id="1_script"]
+[ext_resource type="TileSet" path="res://assets/tiles/mage_tower.tres" id="2_tset"]
+[ext_resource type="Texture2D" uid="uid://c4p7834rkwwn8" path="res://assets/common/mage_tower/Exterior.png" id="3_ext"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(88, 52)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_portal"]
+size = Vector2(30, 18)
+
+[node name="MageTowerExterior" type="Node2D"]
+y_sort_enabled = true
+texture_filter = 1
+script = ExtResource("1_script")
+
+[node name="CourtyardTileMap" type="TileMapLayer" parent="."]
+z_index = -1
+texture_filter = 1
+tile_set = ExtResource("2_tset")
+
+[node name="DragonBack" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -14)
+offset = Vector2(-28, -94)
+
+[node name="TowerBase" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("3_ext")
+offset = Vector2(0, -104)
+region_enabled = true
+region_rect = Rect2(0, 0, 112, 240)
+
+[node name="DoorSprite" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, 0)
+offset = Vector2(0, -24)
+
+[node name="DragonBody" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, 2)
+offset = Vector2(-24, -56)
+
+[node name="DragonWing" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, 4)
+offset = Vector2(-66, -70)
+
+[node name="DragonTail" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, 8)
+offset = Vector2(50, -14)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -22)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="EntrancePortal" type="Area2D" parent="."]
+position = Vector2(0, 8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EntrancePortal"]
+shape = SubResource("RectangleShape2D_portal")

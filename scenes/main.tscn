@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://cv1p1j8ejkni0" path="res://scenes/level.gd" id="3_sugp2"]
 [ext_resource type="TileSet" uid="uid://b8uuaflyj3ja8" path="res://assets/tiles/terrain_master_16x16.tres" id="4_ags1l"]
 [ext_resource type="Script" uid="uid://smk1y6gutxhw" path="res://scenes/player.gd" id="4_jyhfs"]
+[ext_resource type="PackedScene" path="res://scenes/mage_tower_exterior.tscn" id="5_mtex"]
 [ext_resource type="Script" uid="uid://dch8nqkl1ieg7" path="res://scenes/npc_friend.gd" id="5_npcf1"]
 [ext_resource type="Texture2D" uid="uid://dcwwrxbyl13wb" path="res://assets/biomes/cave/objects/Volcano2_light_shadow_frame6.png" id="6_600lq"]
 [ext_resource type="Script" uid="uid://6x4p622deql4" path="res://scenes/mobile_controls.gd" id="6_mctrl"]
@@ -810,7 +811,7 @@ shape = SubResource("CapsuleShape2D_tbgi4")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=1168804960]
 texture_filter = 1
-animation = &"idle_down"
+animation = &""
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=275283869]
 zoom = Vector2(3, 3)
@@ -832,7 +833,7 @@ shape = SubResource("CapsuleShape2D_tbgi4")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="NpcFriend" unique_id=1849302114]
 texture_filter = 1
-animation = &"idle_down"
+animation = &""
 
 [node name="NpcSophia" type="CharacterBody2D" parent="." unique_id=525909617]
 position = Vector2(2288, 2113)
@@ -852,12 +853,15 @@ metadata/_edit_group_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="NpcSophia" unique_id=464285556]
 texture_filter = 1
-animation = &"idle_down"
+animation = &""
 metadata/_edit_group_ = true
 
 [node name="MobileControls" type="CanvasLayer" parent="." unique_id=1950403115]
 script = ExtResource("6_mctrl")
 player_path = NodePath("../CharacterBody2D")
+
+[node name="MageTowerExterior" parent="." unique_id=1950403199 instance=ExtResource("5_mtex")]
+position = Vector2(1680, 1759)
 
 [node name="WorldObjects" type="Node2D" parent="." unique_id=1727101789]
 y_sort_enabled = true

@@ -838,6 +838,7 @@ func _notification(what: int) -> void:
 		return
 	if what == NOTIFICATION_EDITOR_PRE_SAVE:
 		animated_sprite.sprite_frames = null
+		animated_sprite.animation = &""
 	elif what == NOTIFICATION_EDITOR_POST_SAVE:
 		_apply_character_style()
 
