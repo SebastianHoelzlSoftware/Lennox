@@ -31,15 +31,17 @@ func _ready() -> void:
 	start_cell = level.find_open_tile_near(center)
 
 	# Si el mapa ya esta horneado en la escena (para edicion manual en el editor de Godot),
-	# conservamos las capas pintadas y solo regeneramos cuando regenerate_on_start es true
-	# o cuando aun no existen las capas en la escena.
+	# conservamos las capas pintadas y las posiciones del jugador/NPCs colocadas en el editor 2D.
+	# Solo regeneramos y reposicionamos cuando regenerate_on_start es true o cuando aun no existe el mapa.
 	var has_baked_map := level_tilemap.get_node_or_null("Ground") != null
 	if regenerate_on_start or not has_baked_map:
 		level_tilemap.load_level(level, tile_mapper)
+		player.position = to_local(level_tilemap.to_global(level_tilemap.map_to_local(start_cell)))
+	else:
+		start_cell = level_tilemap.local_to_map(level_tilemap.to_local(player.global_position))
 
-	player.position = to_local(level_tilemap.to_global(level_tilemap.map_to_local(start_cell)))
 	if npc_friend != null and npc_friend.has_method("set_follow_target"):
-		npc_friend.call("set_follow_target", player, true)
+		npc_friend.call("set_follow_target", player, regenerate_on_start or not has_baked_map)
 
 	if mobile_controls == null:
 		mobile_controls = MobileControlsScript.new()

@@ -6,49 +6,29 @@
 [ext_resource type="TileSet" uid="uid://b8uuaflyj3ja8" path="res://assets/tiles/terrain_master_16x16.tres" id="4_ags1l"]
 [ext_resource type="Script" uid="uid://smk1y6gutxhw" path="res://scenes/player.gd" id="4_jyhfs"]
 [ext_resource type="Script" uid="uid://dch8nqkl1ieg7" path="res://scenes/npc_friend.gd" id="5_npcf1"]
-[ext_resource type="Texture2D" uid="uid://dklop6h48t2gc" path="res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_attack_without_shadow.png" id="6_3kdu5"]
 [ext_resource type="Texture2D" uid="uid://dcwwrxbyl13wb" path="res://assets/biomes/cave/objects/Volcano2_light_shadow_frame6.png" id="6_600lq"]
 [ext_resource type="Script" uid="uid://6x4p622deql4" path="res://scenes/mobile_controls.gd" id="6_mctrl"]
-[ext_resource type="Texture2D" uid="uid://cl7iyisim3v3h" path="res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Death_without_shadow.png" id="7_d18in"]
 [ext_resource type="Texture2D" uid="uid://cljsyatbhy2kv" path="res://assets/biomes/cave/objects/Red_stone_vertical4.png" id="7_qsxfc"]
 [ext_resource type="Texture2D" uid="uid://dmspxg6djcqan" path="res://assets/biomes/cave/objects/Geyser2.png" id="8_7f6vt"]
-[ext_resource type="Texture2D" uid="uid://bd3a0qnfi1yn1" path="res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Hurt_without_shadow.png" id="8_jgbu0"]
-[ext_resource type="Texture2D" uid="uid://nnw4l0a4elrr" path="res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Idle_without_shadow.png" id="9_5jkgy"]
 [ext_resource type="Texture2D" uid="uid://bb6yfrib2v5ks" path="res://assets/biomes/cave/objects/Pink_flower2.png" id="9_61riw"]
 [ext_resource type="Texture2D" uid="uid://dsdtrt8v4wmuo" path="res://assets/biomes/cave/objects/Geyser1.png" id="10_u82fx"]
-[ext_resource type="Texture2D" uid="uid://dm1w7he034dp6" path="res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Run_Attack_without_shadow.png" id="10_xb35a"]
 [ext_resource type="Texture2D" uid="uid://dcxwi6g3o624u" path="res://assets/common/cursed_land/Eye_plant_shadow1_3.png" id="11_23nrj"]
-[ext_resource type="Texture2D" uid="uid://b0ibokh3igmhc" path="res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Run_without_shadow.png" id="11_oy1t7"]
 [ext_resource type="Texture2D" uid="uid://ce6b1qon24rj8" path="res://assets/common/cursed_land/Bones_shadow1_10.png" id="12_8ejtd"]
-[ext_resource type="Texture2D" uid="uid://crhrshgg8noq0" path="res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Walk_Attack_without_shadow.png" id="12_p72qc"]
-[ext_resource type="Texture2D" uid="uid://brrt37lpaqu2b" path="res://assets/player_sprites/Swordsman_lvl1/Without_shadow/Swordsman_lvl1_Walk_without_shadow.png" id="13_72qfj"]
 [ext_resource type="Texture2D" uid="uid://dktotj5ii7h7r" path="res://assets/common/cursed_land/Eye_plant_shadow1_1.png" id="13_aq8fb"]
 [ext_resource type="Texture2D" uid="uid://b0g1lpsvu4uq3" path="res://assets/common/icons/Bar10_2.png" id="13_fchwe"]
 [ext_resource type="Texture2D" uid="uid://dy74di3esncid" path="res://assets/biomes/cave/objects/Volcano3_light_shadow_frame6.png" id="14_cfr51"]
-[ext_resource type="Texture2D" uid="uid://ci487blxvp6wn" path="res://assets/common/characters/Archer_Lvl2/Archer_lvl2_Attack_without_shadow.png" id="15_3kdu5"]
 [ext_resource type="Texture2D" uid="uid://buac54tpvxvb0" path="res://assets/biomes/cave/objects/black_stalagmites_dark_shadow4.png" id="15_nip53"]
-[ext_resource type="Texture2D" uid="uid://ck88neci51e0c" path="res://assets/common/characters/Archer_Lvl2/Archer_lvl2_Death_without_shadow.png" id="16_d18in"]
 [ext_resource type="Texture2D" uid="uid://capxtrr28f3qg" path="res://assets/biomes/cave/objects/Long_mushrooms_light_shadow3.png" id="16_wwya4"]
 [ext_resource type="Texture2D" uid="uid://w2eil0fqvvi2" path="res://assets/biomes/cave/objects/Orange_stone_dark_shadow3.png" id="17_1dyf3"]
-[ext_resource type="Texture2D" uid="uid://0i5kolm541w4" path="res://assets/common/characters/Archer_Lvl2/Archer_lvl2_Hurt_without_shadow.png" id="17_jgbu0"]
-[ext_resource type="Texture2D" uid="uid://bwed7o0f5ho6f" path="res://assets/common/characters/Archer_Lvl2/Archer_lvl2_Idle_without_shadow.png" id="18_5jkgy"]
 [ext_resource type="Texture2D" uid="uid://c8mq73x3g4ryp" path="res://assets/biomes/cave/objects/Walls_elements1.png" id="18_fchwe"]
 [ext_resource type="Texture2D" uid="uid://cjge4gp5w20u7" path="res://assets/biomes/cave/objects/Water_rocks3_frame1.png" id="19_31ev3"]
-[ext_resource type="Texture2D" uid="uid://bkxqffqd1jmkk" path="res://assets/common/characters/Archer_Lvl2/Archer_lvl2_Run_without_shadow.png" id="19_xb35a"]
 [ext_resource type="Texture2D" uid="uid://cwe05icw4hog8" path="res://assets/biomes/cave/objects/Yellow_stone_dark_shadow3.png" id="20_ix4ky"]
-[ext_resource type="Texture2D" uid="uid://4hrliddpj8ep" path="res://assets/common/characters/Archer_Lvl2/Archer_lvl2_Walk_without_shadow.png" id="20_oy1t7"]
 [ext_resource type="Texture2D" uid="uid://b3b02ryj1jbfc" path="res://assets/biomes/cave/objects/Volcano5_dark_shadow_frame6.png" id="21_w1o27"]
-[ext_resource type="Texture2D" uid="uid://cai185lh545jf" path="res://assets/common/characters/Ent2/Without_shadow/Ent2_Attack_without_shadow.png" id="22_p72qc"]
 [ext_resource type="Texture2D" uid="uid://d4k5jtktgnxf8" path="res://assets/biomes/cave/objects/Volcano5_light_shadow_frame3.png" id="22_qa6wq"]
-[ext_resource type="Texture2D" uid="uid://c6iud4nc48eek" path="res://assets/common/characters/Ent2/Without_shadow/Ent2_Death_without_shadow.png" id="23_72qfj"]
 [ext_resource type="Texture2D" uid="uid://gn51dd3vh11n" path="res://assets/biomes/cave/objects/Volcano5_dark_shadow_frame3.png" id="23_agrqy"]
-[ext_resource type="Texture2D" uid="uid://bbycdfavpsbjq" path="res://assets/common/characters/Ent2/Without_shadow/Ent2_Hurt_without_shadow.png" id="24_nq5if"]
 [ext_resource type="Texture2D" uid="uid://doo3wo7uefb4h" path="res://assets/biomes/cave/objects/small_mushrooms_light_shadow3.png" id="24_u6bxy"]
 [ext_resource type="Texture2D" uid="uid://hwpvjkk0c651" path="res://assets/biomes/cave/objects/Green_stone_dark_shadow4.png" id="25_nr2fa"]
-[ext_resource type="Texture2D" uid="uid://c2tgadkqn5oit" path="res://assets/common/characters/Ent2/Without_shadow/Ent2_Idle_without_shadow.png" id="25_pwh87"]
 [ext_resource type="Texture2D" uid="uid://e0mopcd0ahce" path="res://assets/biomes/cave/objects/Volcano5_light_shadow_frame1.png" id="26_3kdu5"]
-[ext_resource type="Texture2D" uid="uid://dqsa5y3w46khu" path="res://assets/common/characters/Ent2/Without_shadow/Ent2_Run_without_shadow.png" id="26_as1t4"]
-[ext_resource type="Texture2D" uid="uid://d04xvknq35oqu" path="res://assets/common/characters/Ent2/Without_shadow/Ent2_Walk_without_shadow.png" id="27_54308"]
 [ext_resource type="Texture2D" uid="uid://dlar8017vyjak" path="res://assets/biomes/cave/objects/Black_stone_dark_shadow4.png" id="27_d18in"]
 [ext_resource type="Texture2D" uid="uid://cqeyid1s3qa2q" path="res://assets/biomes/cave/objects/small_mushrooms_white_dark_shadow3.png" id="28_jgbu0"]
 [ext_resource type="Texture2D" uid="uid://biuo4dlqx08gy" path="res://assets/biomes/cave/objects/Red_stone_light_shadow4.png" id="29_5jkgy"]
@@ -821,7 +801,7 @@ texture_filter = 1
 tile_set = ExtResource("1_o5qli")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=2013656588]
-position = Vector2(2568, 2568)
+position = Vector2(2296, 2002)
 script = ExtResource("4_jyhfs")
 metadata/_edit_group_ = true
 
@@ -830,14 +810,15 @@ shape = SubResource("CapsuleShape2D_tbgi4")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=1168804960]
 texture_filter = 1
+animation = &"idle_down"
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=275283869]
-zoom = Vector2(3.25, 3.25)
+zoom = Vector2(3, 3)
 position_smoothing_enabled = true
 position_smoothing_speed = 12.0
 
 [node name="NpcFriend" type="CharacterBody2D" parent="." unique_id=1849302112]
-position = Vector2(2540, 2574)
+position = Vector2(2272, 1992)
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("5_npcf1")
@@ -851,13 +832,14 @@ shape = SubResource("CapsuleShape2D_tbgi4")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="NpcFriend" unique_id=1849302114]
 texture_filter = 1
+animation = &"idle_down"
 
 [node name="NpcSophia" type="CharacterBody2D" parent="." unique_id=525909617]
-position = Vector2(2709, 2466)
+position = Vector2(2608, 2089)
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("5_npcf1")
-character_style = "ent_lvl2"
+character_style = "mage"
 can_follow = false
 target_path = NodePath("../CharacterBody2D")
 dialog_word = "MAGIC"
@@ -870,6 +852,7 @@ metadata/_edit_group_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="NpcSophia" unique_id=464285556]
 texture_filter = 1
+animation = &"idle_down"
 metadata/_edit_group_ = true
 
 [node name="MobileControls" type="CanvasLayer" parent="." unique_id=1950403115]
